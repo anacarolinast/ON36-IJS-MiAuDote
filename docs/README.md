@@ -1,4 +1,4 @@
-# Nome do Software de Gerenciamento de Abrigo de Animais
+# MiAuDote - Software de Gerenciamento de Abrigo de Animais
 
 ## Descrição
 
