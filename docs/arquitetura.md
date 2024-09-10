@@ -54,7 +54,7 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
 - **Atributos:**
   - `id`: Identificador único da medicação.
   - `animal_id`: Identificador do animal que necessitou da medicação.
-  - `descicao`: Descrição da medicação.
+  - `descricao`: Descrição da medicação.
   - `veterinario_id`: Identificador do veterinário responsável.
   - `gasto_id`: Identificador do gasto gerado.
 
@@ -63,7 +63,7 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
 - **Atributos:**
   - `id`: Identificador único da medicação.
   - `tipo_animal`: Tipo de animal que utiliza.
-  - `descicao`: Descrição do consumível.
+  - `descricao`: Descrição do consumível.
   - `gasto_id`: Identificador do gasto gerado.
 
 ### 2.6. Gastos
@@ -99,13 +99,23 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
   - `id`: Identificador único do veterinário.
   - `especialidade`: Especialidade de atuação do veterinário.
   - `registro_crmv`: Registro do conselho regional de medicina veterinária.
+  - `pessoa_id`: Identificador de pessoa.
 
 ### 2.10. Adotante
-- **Descrição:** Representa as informações referentes aos veterinários que prestaram serviços ao abrigo.
+- **Descrição:** Representa as informações referentes aos adotantes do abrigo.
+- **Atributos:**
+  - `id`: Identificador único do adotante.
+  - `renda`: renda do adotante.
+  - `condicao_entrevista`: condição da entrevista para a adoção do animal.
+  - `pessoa_id`: Identificador de pessoa.
+
+### 2.10. Doador
+- **Descrição:** Representa as informações referentes aos doadores do abrigo.
 - **Atributos:**
   - `id`: Identificador único do veterinário.
-  - `renda`: Especialidade de atuação do veterinário.
-  - `condicao_entrevista`: Registro do conselho regional de medicina veterinária.
+  - `tipo_doacao`: tipo de doação (valores, alimentos, medicamentos, etc).
+  - `descricao`: descrição da doação.
+  - `pessoa_id`: Identificador de pessoa.
 
 
 ## 3. Diagramas e Fluxogramas
