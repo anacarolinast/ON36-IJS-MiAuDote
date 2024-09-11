@@ -1,4 +1,4 @@
-# Arquitetura do Sistema - Projeto de Gerenciamento de Abrigo de Animais
+# Arquitetura do Sistema - Projeto de Gerenciamento de Abrigo de Animais MiAuDote
 
 Este documento descreve a arquitetura do sistema, incluindo a modelagem das entidades, a estrutura da aplicação e orientações para a inclusão de fluxogramas e diagramas.
 
@@ -10,7 +10,7 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
 ## 2. Entidades do Sistema
 
 ### 2.1. Animais
-- **Descrição:** Representa os animais que estão no abrigo.
+- **Descrição:** Representa os aznimais que estão no abrigo.
 - **Atributos:**
   - `id`: Identificador único do animal.
   - `nome`: Nome do animal.
@@ -92,6 +92,7 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
   - `endereco`: Endereço da pessoa.
   - `telefone`: Telefones da pessoa.
   - `email`: Email da pessoa.
+  - `cpf`: cpf da pessoa.
 
 ### 2.9. Veterinário
 - **Descrição:** Representa as informações referentes aos veterinários que prestaram serviços ao abrigo.
@@ -124,9 +125,9 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
 
 - **Descrição:** Diagrama que mostra as entidades do sistema e seus relacionamentos.
 
-    ```markdown
-    ![Diagrama ERD](C:\Users\Law\Documents\GitHub\ON36-IJS-MiAuDote\docs\diagrams\diagrama-uml.jpg)
-    ```
+<p align="center">
+  <img src="docs\diagrams\diagrama-uml.jpg" width="200" alt="Nest Logo" /></a>
+</p>
 
 <!-- ### 3.2. Fluxograma de Processos
 
@@ -138,31 +139,6 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
 
     ```markdown
     ![Fluxograma de Processos](path/to/fluxograma-processos.png)
-    ``` -->
-
-<!-- ## 4. Arquitetura Hexagonal
-
-### 4.1. Componentes
-
-- **Portas:**
-  - Interfaces de entrada e saída do sistema (APIs, interfaces de usuário).
-
-- **Adaptadores:**
-  - Implementações concretas para interagir com o mundo externo (banco de dados, APIs externas).
-
-- **Aplicação:**
-  - Lógica de negócio e regras de domínio. -->
-
-<!-- ### 4.2. Diagrama da Arquitetura Hexagonal
-
-- **Descrição:** Diagrama que mostra a estrutura da arquitetura hexagonal.
-- **Orientação para Inserir:**
-  - Crie um diagrama utilizando ferramentas como [draw.io](https://www.draw.io) ou [Lucidchart](https://www.lucidchart.com).
-  - Exporte o diagrama como imagem (PNG, JPEG) ou PDF.
-  - Insira o diagrama no repositório com a seguinte sintaxe Markdown:
-
-    ```markdown
-    ![Diagrama da Arquitetura Hexagonal](path/to/arquitetura-hexagonal.png)
     ``` -->
 
 ---
