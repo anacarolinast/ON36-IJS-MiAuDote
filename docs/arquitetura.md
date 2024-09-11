@@ -125,7 +125,8 @@ O sistema de gerenciamento de abrigo de animais é estruturado com base na arqui
 
 - **Descrição:** Diagrama que mostra as entidades do sistema e seus relacionamentos.
 
-![UML](C:\Users\Law\Documents\GitHub\ON36-IJS-MiAuDote\docs\diagrams\diagrama-uml.jpg)
+<p><img src="C:\Users\Law\Documents\GitHub\ON36-IJS-MiAuDote\docs\diagrams\diagrama-uml.jpg" alt="Diagrama UML" width="200"></p>
+
 
 <!-- ### 3.2. Fluxograma de Processos
 
