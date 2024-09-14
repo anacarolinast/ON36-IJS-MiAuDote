@@ -10,9 +10,10 @@ import { AdotantesModule } from './adotantes/adotantes.module';
 import { AdocoesModule } from './adocoes/adocoes.module';
 import { CastracoesModule } from './castracoes/castracoes.module';
 import { VacinasModule } from './vacinas/vacinas.module';
+import { MedicamentosModule } from './medicamentos/medicamentos.module';
 
 @Module({
-  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule, AdotantesModule, AdocoesModule, CastracoesModule, VacinasModule],
+  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule, AdotantesModule, AdocoesModule, CastracoesModule, VacinasModule, MedicamentosModule],
   controllers: [AppController],
   providers: [AppService],
 })
