@@ -1,8 +1,8 @@
-import { Adocao } from "src/adocoes/entities/adocao.entity";
-import { Pessoa } from "src/pessoas/entities/pessoa.entity";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Adocao } from 'src/adocoes/entities/adocao.entity';
+import { Pessoa } from 'src/pessoas/entities/pessoa.entity';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
-@Entity("adotante")
+@Entity('adotante')
 export class Adotante {
     @PrimaryGeneratedColumn()
     id: number;
@@ -21,6 +21,5 @@ export class Adotante {
     pessoa: Pessoa;
 
     @OneToMany(() => Adocao, (adocao) => adocao.adotante)
-    @JoinColumn({ name: 'adotante_id' })
     adocoes: Adocao[];
 }

@@ -23,12 +23,12 @@ export class Pessoa {
     @Column({ length: 255 })
     cpf: string;
 
-    @OneToOne(() => Veterinario, (veterinario) => veterinario.pessoa_id)
+    @OneToOne(() => Veterinario, (veterinario) => veterinario.pessoa)
     veterinario: Veterinario;
 
-    @OneToOne(() => Adotante, (adotante) => adotante.pessoa_id)
+    @OneToOne(() => Adotante, (adotante) => adotante.pessoa)
     adotante: Adotante;
 
-    @OneToOne(() => Doador, (doador) => doador.pessoa_id)
+    @OneToOne(() => Doador, (doador) => doador.pessoa)
     doador: Doador;
 }

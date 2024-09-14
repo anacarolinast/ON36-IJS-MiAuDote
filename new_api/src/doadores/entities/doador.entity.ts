@@ -1,5 +1,6 @@
+import { Doacao } from 'src/doacoes/entities/doacao.entity';
 import { Pessoa } from 'src/pessoas/entities/pessoa.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 @Entity('doadores')
 export class Doador {
@@ -15,5 +16,7 @@ export class Doador {
     @OneToOne(() => Pessoa, { eager: true })
     @JoinColumn({ name: 'pessoa_id' })
     pessoa: Pessoa;
-    
+
+    @OneToMany(() => Doacao, (doacao) => doacao.doador)
+    doacoes: Doacao[];
 }

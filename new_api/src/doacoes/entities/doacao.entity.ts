@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Doador } from 'src/doadores/entities/doador.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('doacoes')
 export class Doacao {
@@ -19,4 +20,7 @@ export class Doacao {
 
     @Column()
     gasto_id: number;  
+
+    @ManyToOne(() => Doador, (doador) => doador.doacoes)
+    doador: Doador;
 }
