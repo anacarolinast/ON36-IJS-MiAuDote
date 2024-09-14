@@ -1,1 +1,1 @@
-export class CreateAnimaiDto {}
+export class CreateAnimalDto {}
