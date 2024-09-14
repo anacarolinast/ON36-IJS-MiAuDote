@@ -18,6 +18,6 @@ export class Adocao {
     condicoes_especiais: string;
 
     @Column()
-    status_aprovacao: number;
+    status_aprovacao: string;
 
 }
