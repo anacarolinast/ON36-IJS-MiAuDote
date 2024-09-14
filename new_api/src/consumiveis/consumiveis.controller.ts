@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ConsumiveisService } from './consumiveis.service';
-import { CreateConsumiveiDto } from './dto/create-consumivei.dto';
-import { UpdateConsumiveiDto } from './dto/update-consumivei.dto';
+import { CreateConsumivelDto } from './dto/create-consumivel.dto';
+import { UpdateConsumivelDto } from './dto/update-consumivel.dto';
 
 @Controller('consumiveis')
 export class ConsumiveisController {
   constructor(private readonly consumiveisService: ConsumiveisService) {}
 
   @Post()
-  create(@Body() createConsumiveiDto: CreateConsumiveiDto) {
+  create(@Body() createConsumiveiDto: CreateConsumivelDto) {
     return this.consumiveisService.create(createConsumiveiDto);
   }
 
@@ -23,7 +23,7 @@ export class ConsumiveisController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConsumiveiDto: UpdateConsumiveiDto) {
+  update(@Param('id') id: string, @Body() updateConsumiveiDto: UpdateConsumivelDto) {
     return this.consumiveisService.update(+id, updateConsumiveiDto);
   }
 
