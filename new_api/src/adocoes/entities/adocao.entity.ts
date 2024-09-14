@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Adotante } from "src/adotantes/entities/adotante.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("adocoes")
 export class Adocao {
@@ -19,5 +20,8 @@ export class Adocao {
 
     @Column()
     status_aprovacao: string;
+
+    @ManyToOne(() => Adotante, (adotante) => adotante.adocoes)
+    adotante: Adotante;
 
 }
