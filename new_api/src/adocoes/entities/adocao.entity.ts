@@ -1,7 +1,8 @@
-import { Adotante } from "src/adotantes/entities/adotante.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Adotante } from 'src/adotantes/entities/adotante.entity';
+import { Animal } from 'src/animais/entities/animal.entity';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
-@Entity("adocoes")
+@Entity('adocoes')
 export class Adocao {
     @PrimaryGeneratedColumn()
     id: number;
@@ -24,4 +25,7 @@ export class Adocao {
     @ManyToOne(() => Adotante, (adotante) => adotante.adocoes)
     adotante: Adotante;
 
+    @OneToOne(() => Animal, (animal) => animal.adocao)
+    @JoinColumn({ name: 'animal_id' })
+    animal: Animal;
 }
