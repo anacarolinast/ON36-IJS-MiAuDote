@@ -1,5 +1,8 @@
+import { Castracao } from 'src/castracoes/entities/castracao.entity';
+import { Medicamento } from 'src/medicamentos/entities/medicamento.entity';
 import { Pessoa } from 'src/pessoas/entities/pessoa.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Vacina } from 'src/vacinas/entities/vacina.entity';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('veterinarios')
 export class Veterinario {
@@ -18,5 +21,14 @@ export class Veterinario {
     @OneToOne(() => Pessoa, { eager: true }) 
     @JoinColumn({ name: 'pessoa_id' })
     pessoa: Pessoa;
-    
+
+    @OneToMany(() => Vacina, (vacina) => vacina.veterinario_id)
+    vacinas: Vacina[];
+
+    @OneToMany(() => Medicamento, (medicamento) => medicamento.veterinario_id)
+    medicamentos: Medicamento[];
+
+    @OneToMany(() => Castracao, (castracao) => castracao.veterinario_id)
+    castracoes: Castracao[];
+
 }

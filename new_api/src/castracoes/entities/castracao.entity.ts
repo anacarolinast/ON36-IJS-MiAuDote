@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Veterinario } from 'src/veterinarios/entities/veterinario.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('castracoes')
 export class Castracao {
@@ -19,4 +20,8 @@ export class Castracao {
 
     @Column()
     gasto_id: number; 
+
+    @ManyToOne(() => Veterinario, (veterinario) => veterinario.castracoes)
+    @JoinColumn({ name: 'veterinario_id' })
+    veterinario: Veterinario;
 }
