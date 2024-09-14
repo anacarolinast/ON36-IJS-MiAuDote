@@ -6,9 +6,10 @@ import { VeterinariosModule } from './veterinarios/veterinarios.module';
 import { DoadoresModule } from './doadores/doadores.module';
 import { AdotanteModule } from './adotante/adotante.module';
 import { ConsumiveisModule } from './consumiveis/consumiveis.module';
+import { AdotantesModule } from './adotantes/adotantes.module';
 
 @Module({
-  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule],
+  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule, AdotantesModule],
   controllers: [AppController],
   providers: [AppService],
 })

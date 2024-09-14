@@ -3,13 +3,13 @@ import { CreateAdotanteDto } from './dto/create-adotante.dto';
 import { UpdateAdotanteDto } from './dto/update-adotante.dto';
 
 @Injectable()
-export class AdotanteService {
+export class AdotantesService {
   create(createAdotanteDto: CreateAdotanteDto) {
     return 'This action adds a new adotante';
   }
 
   findAll() {
-    return `This action returns all adotante`;
+    return `This action returns all adotantes`;
   }
 
   findOne(id: number) {

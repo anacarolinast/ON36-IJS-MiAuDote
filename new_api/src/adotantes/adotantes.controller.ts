@@ -1,34 +1,34 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AdotanteService } from './adotante.service';
+import { AdotantesService } from './adotantes.service';
 import { CreateAdotanteDto } from './dto/create-adotante.dto';
 import { UpdateAdotanteDto } from './dto/update-adotante.dto';
 
-@Controller('adotante')
-export class AdotanteController {
-  constructor(private readonly adotanteService: AdotanteService) {}
+@Controller('adotantes')
+export class AdotantesController {
+  constructor(private readonly adotantesService: AdotantesService) {}
 
   @Post()
   create(@Body() createAdotanteDto: CreateAdotanteDto) {
-    return this.adotanteService.create(createAdotanteDto);
+    return this.adotantesService.create(createAdotanteDto);
   }
 
   @Get()
   findAll() {
-    return this.adotanteService.findAll();
+    return this.adotantesService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.adotanteService.findOne(+id);
+    return this.adotantesService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAdotanteDto: UpdateAdotanteDto) {
-    return this.adotanteService.update(+id, updateAdotanteDto);
+    return this.adotantesService.update(+id, updateAdotanteDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.adotanteService.remove(+id);
+    return this.adotantesService.remove(+id);
   }
 }
