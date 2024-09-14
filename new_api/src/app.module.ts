@@ -8,9 +8,10 @@ import { AdotanteModule } from './adotante/adotante.module';
 import { ConsumiveisModule } from './consumiveis/consumiveis.module';
 import { AdotantesModule } from './adotantes/adotantes.module';
 import { AdocoesModule } from './adocoes/adocoes.module';
+import { CastracoesModule } from './castracoes/castracoes.module';
 
 @Module({
-  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule, AdotantesModule, AdocoesModule],
+  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule, AdotantesModule, AdocoesModule, CastracoesModule],
   controllers: [AppController],
   providers: [AppService],
 })
