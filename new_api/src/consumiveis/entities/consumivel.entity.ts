@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Gasto } from 'src/gastos/entities/gasto.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 @Entity('consumiveis')
 export class Consumivel {
@@ -13,4 +14,8 @@ export class Consumivel {
 
     @Column()
     gasto_id: number; 
+
+    @OneToOne(() => Gasto, (gasto) => gasto.consumivel)
+    @JoinColumn({ name: 'gasto_id' })
+    gasto: Gasto;
 }

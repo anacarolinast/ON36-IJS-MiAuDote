@@ -1,5 +1,6 @@
+import { Gasto } from 'src/gastos/entities/gasto.entity';
 import { Doador } from 'src/doadores/entities/doador.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 @Entity('doacoes')
 export class Doacao {
@@ -23,4 +24,8 @@ export class Doacao {
 
     @ManyToOne(() => Doador, (doador) => doador.doacoes)
     doador: Doador;
+
+    @OneToOne(() => Gasto, (gasto) => gasto.doacao)
+    @JoinColumn({ name: 'gasto_id' })
+    gasto: Gasto;
 }

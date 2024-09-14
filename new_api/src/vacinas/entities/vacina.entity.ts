@@ -1,5 +1,6 @@
+import { Gasto } from 'src/gastos/entities/gasto.entity';
 import { Veterinario } from 'src/veterinarios/entities/veterinario.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('vacinas')
 export class Vacina {
@@ -24,4 +25,8 @@ export class Vacina {
     @ManyToOne(() => Veterinario, (veterinario) => veterinario.vacinas)
     @JoinColumn({ name: 'veterinario_id' })
     veterinario: Veterinario;
+
+    @OneToOne(() => Gasto, (gasto) => gasto.vacina)
+    @JoinColumn({ name: 'gasto_id' })
+    gasto: Gasto;
 }
