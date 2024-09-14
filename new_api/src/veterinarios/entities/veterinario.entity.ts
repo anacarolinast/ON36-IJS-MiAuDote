@@ -18,17 +18,16 @@ export class Veterinario {
     @Column()
     pessoa_id: number;
 
-    @OneToOne(() => Pessoa, { eager: true }) 
+    @OneToOne(() => Pessoa, { eager: true })
     @JoinColumn({ name: 'pessoa_id' })
     pessoa: Pessoa;
 
-    @OneToMany(() => Vacina, (vacina) => vacina.veterinario_id)
+    @OneToMany(() => Vacina, (vacina) => vacina.veterinario)
     vacinas: Vacina[];
 
-    @OneToMany(() => Medicamento, (medicamento) => medicamento.veterinario_id)
+    @OneToMany(() => Medicamento, (medicamento) => medicamento.veterinario)
     medicamentos: Medicamento[];
 
-    @OneToMany(() => Castracao, (castracao) => castracao.veterinario_id)
+    @OneToMany(() => Castracao, (castracao) => castracao.veterinario)
     castracoes: Castracao[];
-
 }
