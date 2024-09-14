@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { DoadoresService } from './doadores.service';
-import { CreateDoadoreDto } from './dto/create-doadore.dto';
-import { UpdateDoadoreDto } from './dto/update-doadore.dto';
+import { CreateDoadorDto } from './dto/create-doador.dto';
+import { UpdateDoadorDto } from './dto/update-doador.dto';
 
 @Controller('doadores')
 export class DoadoresController {
   constructor(private readonly doadoresService: DoadoresService) {}
 
   @Post()
-  create(@Body() createDoadoreDto: CreateDoadoreDto) {
-    return this.doadoresService.create(createDoadoreDto);
+  create(@Body() createDoadorDto: CreateDoadorDto) {
+    return this.doadoresService.create(createDoadorDto);
   }
 
   @Get()
@@ -23,8 +23,8 @@ export class DoadoresController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoadoreDto: UpdateDoadoreDto) {
-    return this.doadoresService.update(+id, updateDoadoreDto);
+  update(@Param('id') id: string, @Body() updateDoadorDto: UpdateDoadorDto) {
+    return this.doadoresService.update(+id, updateDoadorDto);
   }
 
   @Delete(':id')
