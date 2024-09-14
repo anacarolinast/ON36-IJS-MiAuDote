@@ -4,9 +4,8 @@ import { AppService } from './app.service';
 import { PessoasModule } from './pessoas/pessoas.module';
 import { VeterinariosModule } from './veterinarios/veterinarios.module';
 import { DoadoresModule } from './doadores/doadores.module';
-import { AdotanteModule } from './adotante/adotante.module';
-import { ConsumiveisModule } from './consumiveis/consumiveis.module';
 import { AdotantesModule } from './adotantes/adotantes.module';
+import { ConsumiveisModule } from './consumiveis/consumiveis.module';
 import { AdocoesModule } from './adocoes/adocoes.module';
 import { CastracoesModule } from './castracoes/castracoes.module';
 import { VacinasModule } from './vacinas/vacinas.module';
@@ -16,7 +15,7 @@ import { GastosModule } from './gastos/gastos.module';
 import { AnimaisModule } from './animais/animais.module';
 
 @Module({
-  imports: [PessoasModule, VeterinariosModule, DoadoresModule, AdotanteModule, ConsumiveisModule, AdotantesModule, AdocoesModule, CastracoesModule, VacinasModule, MedicamentosModule, DoacoesModule, GastosModule, AnimaisModule],
+  imports: [PessoasModule, VeterinariosModule, DoadoresModule, ConsumiveisModule, AdotantesModule, AdocoesModule, CastracoesModule, VacinasModule, MedicamentosModule, DoacoesModule, GastosModule, AnimaisModule],
   controllers: [AppController],
   providers: [AppService],
 })
