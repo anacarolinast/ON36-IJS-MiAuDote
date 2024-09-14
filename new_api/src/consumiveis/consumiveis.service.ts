@@ -5,7 +5,7 @@ import { UpdateConsumivelDto } from './dto/update-consumivel.dto';
 @Injectable()
 export class ConsumiveisService {
   create(createConsumivelDto: CreateConsumivelDto) {
-    return 'This action adds a new consumivei';
+    return 'This action adds a new consumivel';
   }
 
   findAll() {
@@ -13,14 +13,14 @@ export class ConsumiveisService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} consumivei`;
+    return `This action returns a #${id} consumivel`;
   }
 
   update(id: number, updateConsumivelDto: UpdateConsumivelDto) {
-    return `This action updates a #${id} consumivei`;
+    return `This action updates a #${id} consumivel`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} consumivei`;
+    return `This action removes a #${id} consumivel`;
   }
 }
