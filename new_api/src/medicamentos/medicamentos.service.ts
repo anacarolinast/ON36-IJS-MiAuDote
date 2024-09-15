@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult } from 'typeorm';
+import { Medicamento } from './entities/medicamento.entity';
 import { CreateMedicamentoDto } from './dto/create-medicamento.dto';
 import { UpdateMedicamentoDto } from './dto/update-medicamento.dto';
 
 @Injectable()
 export class MedicamentosService {
-  create(createMedicamentoDto: CreateMedicamentoDto) {
-    return 'This action adds a new medicamento';
+  constructor(
+    @InjectRepository(Medicamento)
+    private readonly medicamentoRepository: Repository<Medicamento>,
+  ) {}
+
+  async findAll(): Promise<Medicamento[]> {
+    return this.medicamentoRepository.find();
   }
 
-  findAll() {
-    return `This action returns all medicamentos`;
+  async findOne(id: number): Promise<Medicamento> {
+    const medicamento = await this.medicamentoRepository.findOne({
+      where: { id },
+    });
+    if (!medicamento) {
+      throw new NotFoundException(`Medicamento with ID ${id} not found`);
+    }
+    return medicamento;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} medicamento`;
+  async create(createMedicamentoDto: CreateMedicamentoDto): Promise<Medicamento> {
+    const medicamento = this.medicamentoRepository.create(createMedicamentoDto);
+    return this.medicamentoRepository.save(medicamento);
   }
 
-  update(id: number, updateMedicamentoDto: UpdateMedicamentoDto) {
-    return `This action updates a #${id} medicamento`;
+  async update(id: number, updateMedicamentoDto: UpdateMedicamentoDto): Promise<Medicamento> {
+    const medicamento = await this.findOne(id);
+    Object.assign(medicamento, updateMedicamentoDto);
+    return this.medicamentoRepository.save(medicamento);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} medicamento`;
+  async remove(id: number): Promise<{ affected: number }> {
+    const result: DeleteResult = await this.medicamentoRepository.delete(id);
+    if (result.affected === undefined) {
+      throw new NotFoundException(`Medicamento with ID ${id} not found`);
+    }
+    return { affected: result.affected };
   }
 }
