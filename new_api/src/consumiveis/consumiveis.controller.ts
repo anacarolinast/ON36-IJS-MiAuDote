@@ -18,17 +18,17 @@ export class ConsumiveisController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.consumiveisService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConsumiveiDto: UpdateConsumivelDto) {
+  update(@Param('id') id: number, @Body() updateConsumiveiDto: UpdateConsumivelDto) {
     return this.consumiveisService.update(+id, updateConsumiveiDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.consumiveisService.remove(+id);
   }
 }
