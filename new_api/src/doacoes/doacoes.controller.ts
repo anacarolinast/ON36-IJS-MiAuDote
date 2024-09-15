@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { DoacoesService } from './doacoes.service';
 import { CreateDoacaoDto } from './dto/create-doacao.dto';
 import { UpdateDoacaoDto } from './dto/update-doacao.dto';
@@ -7,28 +7,28 @@ import { UpdateDoacaoDto } from './dto/update-doacao.dto';
 export class DoacoesController {
   constructor(private readonly doacoesService: DoacoesService) {}
 
-  @Post()
-  create(@Body() createDoacaoDto: CreateDoacaoDto) {
-    return this.doacoesService.create(createDoacaoDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll() {
     return this.doacoesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.doacoesService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.doacoesService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateDoacaoDto: UpdateDoacaoDto) {
-    return this.doacoesService.update(+id, updateDoacaoDto);
+  @Post()
+  async create(@Body() createDoacaoDto: CreateDoacaoDto) {
+    return this.doacoesService.create(createDoacaoDto);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateDoacaoDto: UpdateDoacaoDto) {
+    return this.doacoesService.update(id, updateDoacaoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.doacoesService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.doacoesService.remove(id);
   }
 }
