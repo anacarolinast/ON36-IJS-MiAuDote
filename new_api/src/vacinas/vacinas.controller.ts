@@ -18,17 +18,17 @@ export class VacinasController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.vacinasService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVacinaDto: UpdateVacinaDto) {
+  update(@Param('id') id: number, @Body() updateVacinaDto: UpdateVacinaDto) {
     return this.vacinasService.update(+id, updateVacinaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.vacinasService.remove(+id);
   }
 }
