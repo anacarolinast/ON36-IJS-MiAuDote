@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
 import { PessoasService } from './pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
@@ -7,28 +7,28 @@ import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 export class PessoasController {
   constructor(private readonly pessoasService: PessoasService) {}
 
-  @Post()
-  create(@Body() createPessoaDto: CreatePessoaDto) {
-    return this.pessoasService.create(createPessoaDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll() {
     return this.pessoasService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.pessoasService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.pessoasService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updatePessoaDto: UpdatePessoaDto) {
-    return this.pessoasService.update(+id, updatePessoaDto);
+  @Post()
+  async create(@Body() createPessoaDto: CreatePessoaDto) {
+    return this.pessoasService.create(createPessoaDto);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updatePessoaDto: UpdatePessoaDto) {
+    return this.pessoasService.update(id, updatePessoaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.pessoasService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.pessoasService.remove(id);
   }
 }
