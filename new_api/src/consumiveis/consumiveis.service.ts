@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, FindOneOptions } from 'typeorm';
+import { Consumivel } from './entities/consumivel.entity';
 import { CreateConsumivelDto } from './dto/create-consumivel.dto';
 import { UpdateConsumivelDto } from './dto/update-consumivel.dto';
 
 @Injectable()
 export class ConsumiveisService {
-  create(createConsumivelDto: CreateConsumivelDto) {
-    return 'This action adds a new consumivel';
+  constructor(
+    @InjectRepository(Consumivel)
+    private readonly consumivelRepository: Repository<Consumivel>,
+  ) {}
+
+  async findAll(): Promise<Consumivel[]> {
+    return this.consumivelRepository.find();
   }
 
-  findAll() {
-    return `This action returns all consumiveis`;
+  async findOne(id: number): Promise<Consumivel | undefined> {
+    const options: FindOneOptions<Consumivel> = { where: { id } };
+    return this.consumivelRepository.findOne(options);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} consumivel`;
+  async create(createConsumivelDto: CreateConsumivelDto): Promise<Consumivel> {
+    const consumivel = this.consumivelRepository.create(createConsumivelDto);
+    return this.consumivelRepository.save(consumivel);
   }
 
-  update(id: number, updateConsumivelDto: UpdateConsumivelDto) {
-    return `This action updates a #${id} consumivel`;
+  async update(id: number, updateConsumivelDto: UpdateConsumivelDto): Promise<Consumivel> {
+    await this.consumivelRepository.update(id, updateConsumivelDto);
+    return this.findOne(id); 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} consumivel`;
+  async remove(id: number): Promise<{ affected: number }> {
+    const result = await this.consumivelRepository.delete(id);
+    return { affected: result.affected };
   }
 }
