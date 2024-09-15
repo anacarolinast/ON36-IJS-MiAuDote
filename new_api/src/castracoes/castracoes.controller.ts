@@ -18,17 +18,17 @@ export class CastracoesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.castracoesService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCastracaoDto: UpdateCastracaoDto) {
+  update(@Param('id') id: number, @Body() updateCastracaoDto: UpdateCastracaoDto) {
     return this.castracoesService.update(+id, updateCastracaoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.castracoesService.remove(+id);
   }
 }
