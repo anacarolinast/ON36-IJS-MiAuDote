@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult } from 'typeorm';
+import { Doador } from './entities/doador.entity';
 import { CreateDoadorDto } from './dto/create-doador.dto';
 import { UpdateDoadorDto } from './dto/update-doador.dto';
 
 @Injectable()
 export class DoadoresService {
-  create(createDoadorDto: CreateDoadorDto) {
-    return 'This action adds a new doador';
+  constructor(
+    @InjectRepository(Doador)
+    private readonly doadorRepository: Repository<Doador>,
+  ) {}
+
+  async findAll(): Promise<Doador[]> {
+    return await this.doadorRepository.find({ relations: ['pessoa', 'doacoes'] });
   }
 
-  findAll() {
-    return `This action returns all doadores`;
+  async findOne(id: number): Promise<Doador> {
+    const doador = await this.doadorRepository.findOne({
+      where: { id },
+      relations: ['pessoa', 'doacoes'],
+    });
+
+    if (!doador) {
+      throw new NotFoundException(`Doador with ID ${id} not found`);
+    }
+
+    return doador;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} doador`;
+  async create(createDoadorDto: CreateDoadorDto): Promise<Doador> {
+    const doador = this.doadorRepository.create(createDoadorDto);
+    return await this.doadorRepository.save(doador);
   }
 
-  update(id: number, updateDoadorDto: UpdateDoadorDto) {
-    return `This action updates a #${id} doador`;
+  async update(id: number, updateDoadorDto: UpdateDoadorDto): Promise<Doador> {
+    const doador = await this.doadorRepository.preload({
+      id,
+      ...updateDoadorDto,
+    });
+
+    if (!doador) {
+      throw new NotFoundException(`Doador with ID ${id} not found`);
+    }
+
+    return await this.doadorRepository.save(doador);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} doador`;
+  async remove(id: number): Promise<{ affected: number | null }> {
+    const result: DeleteResult = await this.doadorRepository.delete(id);
+    return { affected: result.affected ?? null };
   }
 }
