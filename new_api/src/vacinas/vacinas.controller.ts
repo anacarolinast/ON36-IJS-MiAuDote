@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { VacinasService } from './vacinas.service';
 import { CreateVacinaDto } from './dto/create-vacina.dto';
 import { UpdateVacinaDto } from './dto/update-vacina.dto';
@@ -7,28 +7,28 @@ import { UpdateVacinaDto } from './dto/update-vacina.dto';
 export class VacinasController {
   constructor(private readonly vacinasService: VacinasService) {}
 
-  @Post()
-  create(@Body() createVacinaDto: CreateVacinaDto) {
-    return this.vacinasService.create(createVacinaDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll() {
     return this.vacinasService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.vacinasService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.vacinasService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateVacinaDto: UpdateVacinaDto) {
-    return this.vacinasService.update(+id, updateVacinaDto);
+  @Post()
+  async create(@Body() createVacinaDto: CreateVacinaDto) {
+    return this.vacinasService.create(createVacinaDto);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateVacinaDto: UpdateVacinaDto) {
+    return this.vacinasService.update(id, updateVacinaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.vacinasService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.vacinasService.remove(id);
   }
 }
