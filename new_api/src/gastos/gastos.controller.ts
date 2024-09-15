@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { GastosService } from './gastos.service';
 import { CreateGastoDto } from './dto/create-gasto.dto';
 import { UpdateGastoDto } from './dto/update-gasto.dto';
@@ -7,28 +7,28 @@ import { UpdateGastoDto } from './dto/update-gasto.dto';
 export class GastosController {
   constructor(private readonly gastosService: GastosService) {}
 
-  @Post()
-  create(@Body() createGastoDto: CreateGastoDto) {
-    return this.gastosService.create(createGastoDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll() {
     return this.gastosService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.gastosService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.gastosService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateGastoDto: UpdateGastoDto) {
-    return this.gastosService.update(+id, updateGastoDto);
+  @Post()
+  async create(@Body() createGastoDto: CreateGastoDto) {
+    return this.gastosService.create(createGastoDto);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateGastoDto: UpdateGastoDto) {
+    return this.gastosService.update(id, updateGastoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.gastosService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.gastosService.remove(id);
   }
 }

@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult } from 'typeorm';
+import { Gasto } from './entities/gasto.entity';
 import { CreateGastoDto } from './dto/create-gasto.dto';
 import { UpdateGastoDto } from './dto/update-gasto.dto';
 
 @Injectable()
 export class GastosService {
-  create(createGastoDto: CreateGastoDto) {
-    return 'This action adds a new gasto';
+  constructor(
+    @InjectRepository(Gasto)
+    private readonly gastoRepository: Repository<Gasto>,
+  ) {}
+
+  async findAll(): Promise<Gasto[]> {
+    return this.gastoRepository.find();
   }
 
-  findAll() {
-    return `This action returns all gastos`;
+  async findOne(id: number): Promise<Gasto> {
+    const gasto = await this.gastoRepository.findOne({ where: { id } });
+    if (!gasto) {
+      throw new NotFoundException(`Gasto with ID ${id} not found`);
+    }
+    return gasto;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} gasto`;
+  async create(createGastoDto: CreateGastoDto): Promise<Gasto> {
+    const gasto = this.gastoRepository.create(createGastoDto);
+    return this.gastoRepository.save(gasto);
   }
 
-  update(id: number, updateGastoDto: UpdateGastoDto) {
-    return `This action updates a #${id} gasto`;
+  async update(id: number, updateGastoDto: UpdateGastoDto): Promise<Gasto> {
+    const gasto = await this.gastoRepository.preload({
+      id,
+      ...updateGastoDto,
+    });
+    if (!gasto) {
+      throw new NotFoundException(`Gasto with ID ${id} not found`);
+    }
+    return this.gastoRepository.save(gasto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} gasto`;
+  async remove(id: number): Promise<{ affected: number }> {
+    const result: DeleteResult = await this.gastoRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Gasto with ID ${id} not found`);
+    }
+    return { affected: result.affected ?? 0 }; 
   }
 }
