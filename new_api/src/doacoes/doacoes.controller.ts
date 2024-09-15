@@ -18,17 +18,17 @@ export class DoacoesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.doacoesService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoacaoDto: UpdateDoacaoDto) {
+  update(@Param('id') id: number, @Body() updateDoacaoDto: UpdateDoacaoDto) {
     return this.doacoesService.update(+id, updateDoacaoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.doacoesService.remove(+id);
   }
 }
