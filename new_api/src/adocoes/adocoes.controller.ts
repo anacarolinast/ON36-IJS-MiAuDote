@@ -18,17 +18,17 @@ export class AdocoesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.adocoesService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdocaoDto: UpdateAdocaoDto) {
+  update(@Param('id') id: number, @Body() updateAdocaoDto: UpdateAdocaoDto) {
     return this.adocoesService.update(+id, updateAdocaoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.adocoesService.remove(+id);
   }
 }
