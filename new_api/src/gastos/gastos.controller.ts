@@ -18,17 +18,17 @@ export class GastosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.gastosService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGastoDto: UpdateGastoDto) {
+  update(@Param('id') id: number, @Body() updateGastoDto: UpdateGastoDto) {
     return this.gastosService.update(+id, updateGastoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.gastosService.remove(+id);
   }
 }
