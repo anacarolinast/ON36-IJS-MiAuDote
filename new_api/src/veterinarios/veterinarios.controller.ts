@@ -18,17 +18,17 @@ export class VeterinariosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.veterinariosService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVeterinarioDto: UpdateVeterinarioDto) {
+  update(@Param('id') id: number, @Body() updateVeterinarioDto: UpdateVeterinarioDto) {
     return this.veterinariosService.update(+id, updateVeterinarioDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.veterinariosService.remove(+id);
   }
 }
