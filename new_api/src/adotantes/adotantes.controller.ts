@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { AdotantesService } from './adotantes.service';
 import { CreateAdotanteDto } from './dto/create-adotante.dto';
 import { UpdateAdotanteDto } from './dto/update-adotante.dto';
@@ -7,28 +7,28 @@ import { UpdateAdotanteDto } from './dto/update-adotante.dto';
 export class AdotantesController {
   constructor(private readonly adotantesService: AdotantesService) {}
 
-  @Post()
-  create(@Body() createAdotanteDto: CreateAdotanteDto) {
-    return this.adotantesService.create(createAdotanteDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll() {
     return this.adotantesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adotantesService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.adotantesService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdotanteDto: UpdateAdotanteDto) {
-    return this.adotantesService.update(+id, updateAdotanteDto);
+  @Post()
+  async create(@Body() createAdotanteDto: CreateAdotanteDto) {
+    return this.adotantesService.create(createAdotanteDto);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateAdotanteDto: UpdateAdotanteDto) {
+    return this.adotantesService.update(id, updateAdotanteDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adotantesService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.adotantesService.remove(id);
   }
 }

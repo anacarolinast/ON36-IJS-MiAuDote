@@ -21,7 +21,7 @@ describe('AdotantesController', () => {
       providers: [
         {
           provide: AdotantesService,
-          useValue: mockAdotantesService, // Mockando o serviço
+          useValue: mockAdotantesService,
         },
       ],
     }).compile();
@@ -41,7 +41,7 @@ describe('AdotantesController', () => {
   });
 
   it('should return one adotante', async () => {
-    const result = await controller.findOne('1');
+    const result = await controller.findOne(1);
     expect(result).toEqual({ id: 1, renda: 3000, condicao_entrevista: 'aprovado', pessoa_id: 2 });
     expect(service.findOne).toHaveBeenCalledWith(1); // Verifica se o método foi chamado com o ID correto
   });
@@ -55,13 +55,13 @@ describe('AdotantesController', () => {
 
   it('should update an adotante', async () => {
     const dto = { renda: 4000 };
-    const result = await controller.update('1', dto);
+    const result = await controller.update(1, dto);
     expect(result).toEqual({ id: 1, renda: 4000 });
     expect(service.update).toHaveBeenCalledWith(1, dto);
   });
 
   it('should remove an adotante', async () => {
-    const result = await controller.remove('1');
+    const result = await controller.remove(1);
     expect(result).toEqual({ deleted: true });
     expect(service.remove).toHaveBeenCalledWith(1);
   });

@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Adotante } from './entities/adotante.entity';
 import { CreateAdotanteDto } from './dto/create-adotante.dto';
 import { UpdateAdotanteDto } from './dto/update-adotante.dto';
 
 @Injectable()
 export class AdotantesService {
-  create(createAdotanteDto: CreateAdotanteDto) {
-    return 'This action adds a new adotante';
+  constructor(
+    @InjectRepository(Adotante)
+    private readonly adotanteRepository: Repository<Adotante>,
+  ) {}
+
+  async create(createAdotanteDto: CreateAdotanteDto): Promise<Adotante> {
+    const adotante = this.adotanteRepository.create(createAdotanteDto);
+    return this.adotanteRepository.save(adotante);
   }
 
-  findAll() {
-    return `This action returns all adotantes`;
+  async findAll(): Promise<Adotante[]> {
+    return this.adotanteRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} adotante`;
+  async findOne(id: number): Promise<Adotante | null> {
+    return this.adotanteRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateAdotanteDto: UpdateAdotanteDto) {
-    return `This action updates a #${id} adotante`;
+  async update(id: number, updateAdotanteDto: UpdateAdotanteDto): Promise<Adotante> {
+    await this.adotanteRepository.update(id, updateAdotanteDto);
+    return this.adotanteRepository.findOne({ where: { id } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} adotante`;
+  async remove(id: number): Promise<{ id: number }> {
+    await this.adotanteRepository.delete(id);
+    return { id };
   }
 }
