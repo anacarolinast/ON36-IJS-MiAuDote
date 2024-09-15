@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Castracao } from './entities/castracao.entity';
 import { CreateCastracaoDto } from './dto/create-castracao.dto';
 import { UpdateCastracaoDto } from './dto/update-castracao.dto';
 
 @Injectable()
 export class CastracoesService {
-  create(createCastracaoDto: CreateCastracaoDto) {
-    return 'This action adds a new castracao';
+  constructor(
+    @InjectRepository(Castracao)
+    private readonly castracoesRepository: Repository<Castracao>,
+  ) {}
+
+  async findAll(): Promise<Castracao[]> {
+    return this.castracoesRepository.find();
   }
 
-  findAll() {
-    return `This action returns all castracoes`;
+  async findOne(id: number): Promise<Castracao> {
+    const castracao = await this.castracoesRepository.findOne({ where: { id } });
+    if (!castracao) {
+      throw new NotFoundException(`Castracao with ID ${id} not found`);
+    }
+    return castracao;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} castracao`;
+  async create(createCastracaoDto: CreateCastracaoDto): Promise<Castracao> {
+    const newCastracao = this.castracoesRepository.create(createCastracaoDto);
+    return this.castracoesRepository.save(newCastracao);
   }
 
-  update(id: number, updateCastracaoDto: UpdateCastracaoDto) {
-    return `This action updates a #${id} castracao`;
+  async update(id: number, updateCastracaoDto: UpdateCastracaoDto): Promise<Castracao> {
+    const castracao = await this.findOne(id);
+    const updatedCastracao = Object.assign(castracao, updateCastracaoDto);
+    return this.castracoesRepository.save(updatedCastracao);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} castracao`;
+  async remove(id: number): Promise<{ deleted: boolean }> {
+    const castracao = await this.findOne(id);
+    await this.castracoesRepository.remove(castracao);
+    return { deleted: true };
   }
 }
