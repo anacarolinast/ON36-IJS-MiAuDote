@@ -4,7 +4,7 @@ import { DoacoesService } from './doacoes.service';
 import { CreateDoacaoDto } from './dto/create-doacao.dto';
 import { UpdateDoacaoDto } from './dto/update-doacao.dto';
 
-describe('DoacoesController', () => {
+describe('Testando DoacoesController', () => {
   let controller: DoacoesController;
   let service: DoacoesService;
 
