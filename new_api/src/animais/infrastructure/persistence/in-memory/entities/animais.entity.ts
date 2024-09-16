@@ -5,7 +5,7 @@ import { Castracao } from 'src/castracoes/entities/castracao.entity';
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('animais')
-export class Animal {
+export class AnimalEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
