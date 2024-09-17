@@ -6,7 +6,7 @@ import { VeterinariosModule } from './veterinarios/veterinarios.module';
 import { DoadoresModule } from './doadores/doadores.module';
 import { AdotantesModule } from './adotantes/adotantes.module';
 import { ConsumiveisModule } from './consumiveis/consumiveis.module';
-import { AdocoesModule } from './adocoes/adocoes.module';
+import { AdocoesModule } from './adocoes/application/adocoes.module';
 import { CastracoesModule } from './castracoes/castracoes.module';
 import { VacinasModule } from './vacinas/vacinas.module';
 import { MedicamentosModule } from './medicamentos/medicamentos.module';

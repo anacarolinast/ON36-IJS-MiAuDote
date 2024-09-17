@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdocoesService } from './adocoes.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Adocao } from './entities/adocao.entity';
+import { Adocao } from '../domain/adocao';
 import { Repository } from 'typeorm';
-import { CreateAdocaoDto } from './dto/create-adocao.dto';
-import { UpdateAdocaoDto } from './dto/update-adocao.dto';
+import { CreateAdocaoDto } from '../presenters/http/dto/create-adocao.dto';
+import { UpdateAdocaoDto } from '../presenters/http/dto/update-adocao.dto';
 
 describe('Testando AdocoesService', () => {
   let service: AdocoesService;

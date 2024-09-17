@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdocoesController } from './adocoes.controller';
-import { AdocoesService } from './adocoes.service';
+import { AdocoesService } from '../../application/adocoes.service';
 import { CreateAdocaoDto } from './dto/create-adocao.dto';
 import { UpdateAdocaoDto } from './dto/update-adocao.dto';
 
