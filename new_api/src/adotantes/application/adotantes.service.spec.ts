@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdotantesService } from './adotantes.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Adotante } from './entities/adotante.entity';
+import { Adotante } from '../domain/adotante';
 import { Repository } from 'typeorm';
-import { CreateAdotanteDto } from './dto/create-adotante.dto';
-import { UpdateAdotanteDto } from './dto/update-adotante.dto';
+import { CreateAdotanteDto } from '../presenters/http/dto/create-adotante.dto';
+import { UpdateAdotanteDto } from '../presenters/http/dto/update-adotante.dto';
 
 describe('Testando AdotantesService', () => {
   let service: AdotantesService;
@@ -21,43 +21,22 @@ describe('Testando AdotantesService', () => {
     find: jest.fn().mockResolvedValue([
       {
         id: 1,
-        renda: 3000,
+        renda: 123.45,
         condicao_entrevista: 'Aprovado',
         pessoa_id: 1,
-        pessoa: {
-          id: 1,
-          nome: 'João Silva',
-          telefone: '123456789',
-          endereco: 'Rua A, 123',
-        },
-        adocoes: [],
       },
     ]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
-      renda: 3000,
+      renda: 123.45,
       condicao_entrevista: 'Aprovado',
       pessoa_id: 1,
-      pessoa: {
-        id: 1,
-        nome: 'João Silva',
-        telefone: '123456789',
-        endereco: 'Rua A, 123',
-      },
-      adocoes: [],
     }),
     update: jest.fn().mockResolvedValue({
       id: 1,
-      renda: 5000,
-      condicao_entrevista: 'Aprovado',
+      renda: 123.45,
+      condicao_entrevista: 'Aprovado Atualizado',
       pessoa_id: 1,
-      pessoa: {
-        id: 1,
-        nome: 'João Silva',
-        telefone: '123456789',
-        endereco: 'Rua A, 123',
-      },
-      adocoes: [],
     }),
     remove: jest.fn().mockResolvedValue({ id: 1 }),
   };
@@ -68,7 +47,7 @@ describe('Testando AdotantesService', () => {
         AdotantesService,
         {
           provide: getRepositoryToken(Adotante),
-          useValue: mockAdotanteRepository, // Mockando o repositório
+          useValue: mockAdotanteRepository,
         },
       ],
     }).compile();
@@ -81,9 +60,9 @@ describe('Testando AdotantesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a new adotante', async () => {
+  it('should create a new adopter', async () => {
     const dto: CreateAdotanteDto = {
-      renda: 3000,
+      renda: 123.45,
       condicao_entrevista: 'Aprovado',
       pessoa_id: 1,
     };
@@ -97,69 +76,48 @@ describe('Testando AdotantesService', () => {
     expect(repository.save).toHaveBeenCalledWith(dto);
   });
 
-  it('should return an array of adotantes', async () => {
+  it('should return an array of adopters', async () => {
     const result = await service.findAll();
     expect(result).toEqual([
       {
         id: 1,
-        renda: 3000,
+        renda: 123.45,
         condicao_entrevista: 'Aprovado',
         pessoa_id: 1,
-        pessoa: {
-          id: 1,
-          nome: 'João Silva',
-          telefone: '123456789',
-          endereco: 'Rua A, 123',
-        },
-        adocoes: [],
       },
     ]);
     expect(repository.find).toHaveBeenCalled();
   });
 
-  it('should return a single adotante by ID', async () => {
+  it('should return a single adopter by ID', async () => {
     const id = 1;
     const result = await service.findOne(id);
     expect(result).toEqual({
       id,
-      renda: 3000,
+      renda: 123.45,
       condicao_entrevista: 'Aprovado',
       pessoa_id: 1,
-      pessoa: {
-        id: 1,
-        nome: 'João Silva',
-        telefone: '123456789',
-        endereco: 'Rua A, 123',
-      },
-      adocoes: [],
     });
     expect(repository.findOne).toHaveBeenCalledWith(id);
   });
 
-  it('should update an adotante', async () => {
+  it('should update an adopter', async () => {
     const id = 1;
     const dto: UpdateAdotanteDto = {
-      renda: 5000,
-      condicao_entrevista: 'Aprovado',
+      renda: 123.45,
+      condicao_entrevista: 'Aprovado Updated',
+      pessoa_id: 1,
     };
 
     const result = await service.update(id, dto);
     expect(result).toEqual({
       id,
       ...dto,
-      pessoa_id: 1,
-      pessoa: {
-        id: 1,
-        nome: 'João Silva',
-        telefone: '123456789',
-        endereco: 'Rua A, 123',
-      },
-      adocoes: [],
     });
     expect(repository.update).toHaveBeenCalledWith(id, dto);
   });
 
-  it('should remove an adotante', async () => {
+  it('should remove an adopter', async () => {
     const id = 1;
     const result = await service.remove(id);
     expect(result).toEqual({ id });

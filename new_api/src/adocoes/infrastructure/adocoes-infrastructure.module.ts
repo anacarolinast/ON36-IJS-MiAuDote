@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { InMemoryAdocaoPersistenceModule } from './persistence/in-memory/in-file-persistence.module'; 
+import { InMemoryAdocaoPersistenceModule } from './persistence/in-memory/in-memory-persistence.module'; 
 import { InFileAdocaoPersistenceModule } from './persistence/in-file/in-file-persistence.module';
 
 @Module({})

@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { PessoasModule } from './pessoas/pessoas.module';
 import { VeterinariosModule } from './veterinarios/veterinarios.module';
 import { DoadoresModule } from './doadores/doadores.module';
-import { AdotantesModule } from './adotantes/adotantes.module';
+import { AdotantesModule } from './adotantes/application/adotantes.module';
 import { ConsumiveisModule } from './consumiveis/consumiveis.module';
 import { AdocoesModule } from './adocoes/application/adocoes.module';
 import { CastracoesModule } from './castracoes/castracoes.module';
