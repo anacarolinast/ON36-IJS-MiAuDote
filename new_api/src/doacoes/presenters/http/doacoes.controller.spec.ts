@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DoacoesController } from './doacoes.controller';
-import { DoacoesService } from './doacoes.service';
+import { DoacoesController } from '../../presenters/http/doacoes.controller';
+import { DoacoesService } from '../../application/doacoes.service';
 import { CreateDoacaoDto } from './dto/create-doacao.dto';
 import { UpdateDoacaoDto } from './dto/update-doacao.dto';
 
-describe('Testando DoacoesController', () => {
+describe('DoacoesController', () => {
   let controller: DoacoesController;
   let service: DoacoesService;
 
@@ -13,32 +13,32 @@ describe('Testando DoacoesController', () => {
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     }]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     }),
     create: jest.fn().mockResolvedValue({
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     }),
     update: jest.fn().mockResolvedValue({
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Alimento',
-      valor_estimado: 150.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     }),
     remove: jest.fn().mockResolvedValue({ affected: 1 }),
@@ -69,8 +69,8 @@ describe('Testando DoacoesController', () => {
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     }]);
     expect(service.findAll).toHaveBeenCalled();
@@ -82,8 +82,8 @@ describe('Testando DoacoesController', () => {
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     });
     expect(service.findOne).toHaveBeenCalledWith(1);
@@ -93,8 +93,8 @@ describe('Testando DoacoesController', () => {
     const createDto: CreateDoacaoDto = {
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     };
     const result = await controller.create(createDto);
@@ -102,8 +102,8 @@ describe('Testando DoacoesController', () => {
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Dinheiro',
-      valor_estimado: 100.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     });
     expect(service.create).toHaveBeenCalledWith(createDto);
@@ -111,16 +111,19 @@ describe('Testando DoacoesController', () => {
 
   it('should update a doacao', async () => {
     const updateDto: UpdateDoacaoDto = {
-      tipo_doacao: 'Alimento',
-      valor_estimado: 150.00,
+      doador_id: 1,
+      data_doacao: new Date(),
+      tipo_doacao: 'Dinheiro',
+      valor_estimado: -123.45,
+      gasto_id: 1,
     };
     const result = await controller.update(1, updateDto);
     expect(result).toEqual({
       id: 1,
       doador_id: 1,
       data_doacao: new Date(),
-      tipo_doacao: 'Alimento',
-      valor_estimado: 150.00,
+      tipo_doacao: 'Material',
+      valor_estimado: -123.45,
       gasto_id: 1,
     });
     expect(service.update).toHaveBeenCalledWith(1, updateDto);

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DoacoesService } from './doacoes.service';
-import { DoacoesController } from './doacoes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Doacao } from './entities/doacao.entity';
+import { DoacoesService } from './doacoes.service';
+import { DoacoesController } from '../presenters/http/doacoes.controller';
+import { Doacao } from '../domain/doacoes'; 
 
 @Module({
   imports: [TypeOrmModule.forFeature([Doacao])],

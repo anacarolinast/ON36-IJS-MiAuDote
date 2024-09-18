@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
-import { DoacoesService } from './doacoes.service';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { DoacoesService } from '../../application/doacoes.service';
 import { CreateDoacaoDto } from './dto/create-doacao.dto';
 import { UpdateDoacaoDto } from './dto/update-doacao.dto';
 
