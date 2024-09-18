@@ -7,7 +7,7 @@ import { Pessoa } from '../domain/pessoas';
 export class PessoasService {
   constructor (
     private readonly pessoaRepository: PessoaRepository,
-    private readonly PessoaFactory: PessoaFactory,
+    private readonly pessoaFactory: PessoaFactory,
   ) {}
   
   async findAll(): Promise<Pessoa[]> {
@@ -23,7 +23,7 @@ export class PessoasService {
   }
 
   async create(createPessoaDto: any): Promise<Pessoa> {
-    const newPessoa = this.PessoaFactory.create(createPessoaDto);
+    const newPessoa = this.pessoaFactory.create(createPessoaDto);
     return this.pessoaRepository.save(newPessoa);
   }
 
@@ -41,7 +41,7 @@ export class PessoasService {
       // doador: updatePessoaDto.doador ?? pessoa.doador,
     };
 
-    const updatedPessoa = this.PessoaFactory.create(updatedPessoaData);
+    const updatedPessoa = this.pessoaFactory.create(updatedPessoaData);
 
     await this.pessoaRepository.update(id, updatedPessoa);
     return updatedPessoa;

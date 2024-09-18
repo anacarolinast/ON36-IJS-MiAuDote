@@ -3,7 +3,7 @@ import { CreatePessoaDto } from "src/pessoas/presenters/http/dto/create-pessoa.d
 import { v4 as uuidv4 } from 'uuid';
 import { Pessoa } from "../pessoas";
 
-Injectable()
+@Injectable()
 export class PessoaFactory {
     create(data: CreatePessoaDto): Pessoa {
         const pessoaId = uuidv4();

@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { VacinasService } from './vacinas.service';
-import { CreateVacinaDto } from './dto/create-vacina.dto';
-import { UpdateVacinaDto } from './dto/update-vacina.dto';
+import { CreateVacinaDto } from './presenters/http/dto/create-vacina.dto';
+import { UpdateVacinaDto } from './presenters/http/dto/update-vacina.dto';
 
 @Controller('vacinas')
 export class VacinasController {
@@ -23,7 +31,10 @@ export class VacinasController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() updateVacinaDto: UpdateVacinaDto) {
+  async update(
+    @Param('id') id: number,
+    @Body() updateVacinaDto: UpdateVacinaDto,
+  ) {
     return this.vacinasService.update(id, updateVacinaDto);
   }
 

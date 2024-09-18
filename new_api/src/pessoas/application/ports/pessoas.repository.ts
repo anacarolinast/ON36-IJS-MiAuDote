@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Pessoa } from "src/pessoas/domain/pessoas";
 
-Injectable()
+@Injectable()
 export abstract class PessoaRepository {
     abstract save(pessoa: Pessoa): Promise<Pessoa>;
     abstract findAll(): Promise<Pessoa[]>;

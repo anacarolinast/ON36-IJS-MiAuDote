@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { VacinasController } from './vacinas.controller';
-import { VacinasService } from './vacinas.service';
+import { VacinasService } from '../../vacinas.service';
 import { CreateVacinaDto } from './dto/create-vacina.dto';
 import { UpdateVacinaDto } from './dto/update-vacina.dto';
 
@@ -9,17 +9,19 @@ describe('VacinasController', () => {
   let service: VacinasService;
 
   const mockVacinasService = {
-    findAll: jest.fn().mockResolvedValue([{
-      id: 1,
-      animal_id: 1,
-      data_vacinacao: new Date(),
-      tipo_vacina: 'Vacina A',
-      veterinario_id: 1,
-      gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
-    }]),
+    findAll: jest.fn().mockResolvedValue([
+      {
+        id: 1,
+        animal_id: 1,
+        data_vacinacao: new Date(),
+        tipo_vacina: 'Vacina A',
+        veterinario_id: 1,
+        gasto_id: 1,
+        animal: null,
+        veterinario: null,
+        gasto: null,
+      },
+    ]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       animal_id: 1,
@@ -77,17 +79,19 @@ describe('VacinasController', () => {
 
   it('should return all vacinas', async () => {
     const result = await controller.findAll();
-    expect(result).toEqual([{
-      id: 1,
-      animal_id: 1,
-      data_vacinacao: new Date(),
-      tipo_vacina: 'Vacina A',
-      veterinario_id: 1,
-      gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
-    }]);
+    expect(result).toEqual([
+      {
+        id: 1,
+        animal_id: 1,
+        data_vacinacao: new Date(),
+        tipo_vacina: 'Vacina A',
+        veterinario_id: 1,
+        gasto_id: 1,
+        animal: null,
+        veterinario: null,
+        gasto: null,
+      },
+    ]);
     expect(service.findAll).toHaveBeenCalled();
   });
 
