@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
-import { DoadoresService } from './doadores.service';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { DoadoresService } from '../../application/doadores.service';
 import { CreateDoadorDto } from './dto/create-doador.dto';
 import { UpdateDoadorDto } from './dto/update-doador.dto';
 
@@ -9,26 +9,26 @@ export class DoadoresController {
 
   @Get()
   async findAll() {
-    return await this.doadoresService.findAll();
+    return this.doadoresService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.doadoresService.findOne(id);
+    return this.doadoresService.findOne(id);
   }
 
   @Post()
   async create(@Body() createDoadorDto: CreateDoadorDto) {
-    return await this.doadoresService.create(createDoadorDto);
+    return this.doadoresService.create(createDoadorDto);
   }
 
   @Put(':id')
   async update(@Param('id') id: number, @Body() updateDoadorDto: UpdateDoadorDto) {
-    return await this.doadoresService.update(id, updateDoadorDto);
+    return this.doadoresService.update(id, updateDoadorDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.doadoresService.remove(id);
+    return this.doadoresService.remove(id);
   }
 }

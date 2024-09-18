@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DoadoresController } from './doadores.controller';
-import { DoadoresService } from './doadores.service';
+import { DoadoresController } from '../../presenters/http/doadores.controller';
+import { DoadoresService } from '../../application/doadores.service';
 import { CreateDoadorDto } from './dto/create-doador.dto';
 import { UpdateDoadorDto } from './dto/update-doador.dto';
 
@@ -11,31 +11,27 @@ describe('DoadoresController', () => {
   const mockDoadoresService = {
     findAll: jest.fn().mockResolvedValue([{
       id: 1,
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     }]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     }),
     create: jest.fn().mockResolvedValue({
       id: 1,
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     }),
     update: jest.fn().mockResolvedValue({
       id: 1,
-      tipo_adocao: 'Apoie',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto 4-12kg',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     }),
     remove: jest.fn().mockResolvedValue({ affected: 1 }),
   };
@@ -63,10 +59,9 @@ describe('DoadoresController', () => {
     const result = await controller.findAll();
     expect(result).toEqual([{
       id: 1,
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     }]);
     expect(service.findAll).toHaveBeenCalled();
   });
@@ -75,41 +70,41 @@ describe('DoadoresController', () => {
     const result = await controller.findOne(1);
     expect(result).toEqual({
       id: 1,
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     });
     expect(service.findOne).toHaveBeenCalledWith(1);
   });
 
   it('should create a new doador', async () => {
     const createDto: CreateDoadorDto = {
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
     };
     const result = await controller.create(createDto);
     expect(result).toEqual({
       id: 1,
-      tipo_adocao: 'Adote',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     });
     expect(service.create).toHaveBeenCalledWith(createDto);
   });
 
   it('should update a doador', async () => {
     const updateDto: UpdateDoadorDto = {
-      tipo_adocao: 'Apoie',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto 4-12kg',
+      pessoa_id: 1,
     };
     const result = await controller.update(1, updateDto);
     expect(result).toEqual({
       id: 1,
-      tipo_adocao: 'Apoie',
+      tipo_doacao: 'Medicamento',
+      descricao: 'Bravecto',
       pessoa_id: 1,
-      pessoa: { id: 1, nome: 'João', endereco: 'Rua A' },
-      doacoes: [],
     });
     expect(service.update).toHaveBeenCalledWith(1, updateDto);
   });
