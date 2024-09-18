@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PessoasModule } from './pessoas/pessoas.module';
-import { VeterinariosModule } from './veterinarios/veterinarios.module';
+import { VeterinariosModule } from './veterinarios/application/veterinarios.module';
 import { DoadoresModule } from './doadores/application/doadores.module';
 import { AdotantesModule } from './adotantes/application/adotantes.module';
 import { ConsumiveisModule } from './consumiveis/application/consumiveis.module';

@@ -1,24 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VeterinariosController } from './veterinarios.controller';
-import { VeterinariosService } from './veterinarios.service';
+import { VeterinariosController } from './veterinarios.controller'; 
+import { VeterinariosService } from 'src/veterinarios/application/veterinarios.service'; 
 import { CreateVeterinarioDto } from './dto/create-veterinario.dto';
-import { UpdateVeterinarioDto } from './dto/update-veterinario.dto';
+import { UpdateVeterinarioDto } from './dto/update-veterinario.dto'; 
 
 describe('VeterinariosController', () => {
   let controller: VeterinariosController;
   let service: VeterinariosService;
 
   const mockVeterinariosService = {
-    findAll: jest.fn().mockResolvedValue([{
-      id: 1,
-      especialidade: 'Cirurgião',
-      registro_crmv: '123456',
-      pessoa_id: 1,
-      pessoa: null,
-      vacinas: [],
-      medicamentos: [],
-      castracoes: [],
-    }]),
+    findAll: jest.fn().mockResolvedValue([
+      {
+        id: 1,
+        especialidade: 'Cirurgião',
+        registro_crmv: '123456',
+        pessoa_id: 1,
+        pessoa: null,
+        vacinas: [],
+        medicamentos: [],
+        castracoes: [],
+      },
+    ]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       especialidade: 'Cirurgião',
@@ -73,16 +75,18 @@ describe('VeterinariosController', () => {
 
   it('should return all veterinarios', async () => {
     const result = await controller.findAll();
-    expect(result).toEqual([{
-      id: 1,
-      especialidade: 'Cirurgião',
-      registro_crmv: '123456',
-      pessoa_id: 1,
-      pessoa: null,
-      vacinas: [],
-      medicamentos: [],
-      castracoes: [],
-    }]);
+    expect(result).toEqual([
+      {
+        id: 1,
+        especialidade: 'Cirurgião',
+        registro_crmv: '123456',
+        pessoa_id: 1,
+        pessoa: null,
+        vacinas: [],
+        medicamentos: [],
+        castracoes: [],
+      },
+    ]);
     expect(service.findAll).toHaveBeenCalled();
   });
 

@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { VeterinariosService } from './veterinarios.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
+import { VeterinariosService } from 'src/veterinarios/application/veterinarios.service'; 
 import { CreateVeterinarioDto } from './dto/create-veterinario.dto';
-import { UpdateVeterinarioDto } from './dto/update-veterinario.dto';
+import { UpdateVeterinarioDto } from './dto/update-veterinario.dto'; 
 
 @Controller('veterinarios')
 export class VeterinariosController {
@@ -23,7 +31,10 @@ export class VeterinariosController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() updateVeterinarioDto: UpdateVeterinarioDto) {
+  async update(
+    @Param('id') id: number,
+    @Body() updateVeterinarioDto: UpdateVeterinarioDto,
+  ) {
     return this.veterinariosService.update(id, updateVeterinarioDto);
   }
 

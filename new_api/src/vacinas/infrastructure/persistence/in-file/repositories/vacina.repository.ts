@@ -3,7 +3,7 @@ import { VacinaRepository } from "src/vacinas/application/ports/vacinas.reposito
 import { Vacina } from "src/vacinas/domain/vacinas";
 import { VacinaEntity } from "../entities/vacina.entity";
 
-Injectable()
+@Injectable()
 export class InFileVacinaRepository implements VacinaRepository {
     async save(vacina: Vacina): Promise<Vacina> {
         throw new Error('Method not implemented.');
