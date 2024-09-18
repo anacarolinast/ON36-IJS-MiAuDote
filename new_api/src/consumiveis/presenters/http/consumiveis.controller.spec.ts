@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConsumiveisService } from './consumiveis.service';
-import { Consumivel } from './entities/consumivel.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ConsumiveisController } from '../../presenters/http/consumiveis.controller';
+import { ConsumiveisService } from '../../application/consumiveis.service';
+import { CreateConsumivelDto } from './dto/create-consumivel.dto';
+import { UpdateConsumivelDto } from './dto/update-consumivel.dto';
 
-describe('ConsumiveisService', () => {
+describe('ConsumiveisController', () => {
+  let controller: ConsumiveisController;
   let service: ConsumiveisService;
-  let repository: Repository<Consumivel>;
 
-  const mockConsumivelRepository = {
-    find: jest.fn().mockResolvedValue([{
+  const mockConsumiveisService = {
+    findAll: jest.fn().mockResolvedValue([{
       id: 1,
       tipo_animal: 'Cão',
       descricao: 'Ração',
@@ -21,90 +21,96 @@ describe('ConsumiveisService', () => {
       descricao: 'Ração',
       gasto_id: 1,
     }),
-    create: jest.fn().mockImplementation((dto) => ({
-      id: Date.now(),
-      ...dto,
-    })),
-    save: jest.fn().mockImplementation((consumivel) => Promise.resolve(consumivel)),
+    create: jest.fn().mockResolvedValue({
+      id: 1,
+      tipo_animal: 'Cão',
+      descricao: 'Ração',
+      gasto_id: 1,
+    }),
+    update: jest.fn().mockResolvedValue({
+      id: 1,
+      tipo_animal: 'Gato',
+      descricao: 'Areia',
+      gasto_id: 1,
+    }),
     remove: jest.fn().mockResolvedValue({ affected: 1 }),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      controllers: [ConsumiveisController],
       providers: [
-        ConsumiveisService,
         {
-          provide: getRepositoryToken(Consumivel),
-          useValue: mockConsumivelRepository,
+          provide: ConsumiveisService,
+          useValue: mockConsumiveisService,
         },
       ],
     }).compile();
 
+    controller = module.get<ConsumiveisController>(ConsumiveisController);
     service = module.get<ConsumiveisService>(ConsumiveisService);
-    repository = module.get<Repository<Consumivel>>(getRepositoryToken(Consumivel));
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(controller).toBeDefined();
   });
 
   it('should return all consumiveis', async () => {
-    const result = await service.findAll();
+    const result = await controller.findAll();
     expect(result).toEqual([{
       id: 1,
       tipo_animal: 'Cão',
       descricao: 'Ração',
       gasto_id: 1,
     }]);
-    expect(repository.find).toHaveBeenCalled();
+    expect(service.findAll).toHaveBeenCalled();
   });
 
   it('should return one consumivel by ID', async () => {
-    const result = await service.findOne(1);
+    const result = await controller.findOne(1);
     expect(result).toEqual({
       id: 1,
       tipo_animal: 'Cão',
       descricao: 'Ração',
       gasto_id: 1,
     });
-    expect(repository.findOne).toHaveBeenCalledWith(1);
+    expect(service.findOne).toHaveBeenCalledWith(1);
   });
 
   it('should create a new consumivel', async () => {
-    const createDto = {
+    const createDto: CreateConsumivelDto = {
       tipo_animal: 'Cão',
       descricao: 'Ração',
       gasto_id: 1,
     };
-    const result = await service.create(createDto);
+    const result = await controller.create(createDto);
     expect(result).toEqual({
-      id: expect.any(Number),
+      id: 1,
       tipo_animal: 'Cão',
       descricao: 'Ração',
       gasto_id: 1,
     });
-    expect(repository.create).toHaveBeenCalledWith(createDto);
-    expect(repository.save).toHaveBeenCalled();
+    expect(service.create).toHaveBeenCalledWith(createDto);
   });
 
   it('should update a consumivel', async () => {
-    const updateDto = {
+    const updateDto: UpdateConsumivelDto = {
       tipo_animal: 'Gato',
       descricao: 'Areia',
     };
-    const result = await service.update(1, updateDto);
+    const result = await controller.update(1, updateDto);
     expect(result).toEqual({
       id: 1,
       tipo_animal: 'Gato',
       descricao: 'Areia',
       gasto_id: 1,
     });
-    expect(repository.save).toHaveBeenCalled();
+    expect(service.update).toHaveBeenCalledWith(1, updateDto);
   });
 
   it('should delete a consumivel', async () => {
-    const result = await service.remove(1);
+    const result = await controller.remove(1);
     expect(result).toEqual({ affected: 1 });
-    expect(repository.remove).toHaveBeenCalledWith({ id: 1 });
+    expect(service.remove).toHaveBeenCalledWith(1);
   });
 });

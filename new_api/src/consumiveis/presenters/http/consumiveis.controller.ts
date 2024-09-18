@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { ConsumiveisService } from './consumiveis.service';
+import { ConsumiveisService } from '../../application/consumiveis.service';
 import { CreateConsumivelDto } from './dto/create-consumivel.dto';
 import { UpdateConsumivelDto } from './dto/update-consumivel.dto';
 

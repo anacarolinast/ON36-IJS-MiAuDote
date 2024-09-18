@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConsumiveisService } from './consumiveis.service';
-import { ConsumiveisController } from './consumiveis.controller';
-import { Consumivel } from './entities/consumivel.entity';
+import { ConsumiveisController } from '../presenters/http/consumiveis.controller';
+import { Consumivel } from '../domain/consumivel'; 
 
 @Module({
   imports: [TypeOrmModule.forFeature([Consumivel])],

@@ -1,8 +1,8 @@
-import { Gasto } from 'src/gastos/entities/gasto.entity';
+// import { Gasto } from 'src/gastos/entities/gasto.entity';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 
 @Entity('consumiveis')
-export class Consumivel {
+export class ConsumivelEntity {
     @PrimaryGeneratedColumn()
     id: number; 
 
@@ -15,7 +15,7 @@ export class Consumivel {
     @Column()
     gasto_id: number; 
 
-    @OneToOne(() => Gasto, (gasto) => gasto.consumivel)
-    @JoinColumn({ name: 'gasto_id' })
-    gasto: Gasto;
+    // @OneToOne(() => Gasto, (gasto) => gasto.consumivel)
+    // @JoinColumn({ name: 'gasto_id' })
+    // gasto: Gasto;
 }
