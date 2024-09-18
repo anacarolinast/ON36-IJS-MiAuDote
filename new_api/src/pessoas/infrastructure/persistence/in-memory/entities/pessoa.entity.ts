@@ -1,10 +1,10 @@
-import { Adotante } from 'src/adotantes/entities/adotante.entity';
-import { Doador } from 'src/doadores/entities/doador.entity';
+// import { Adotante } from 'src/adotantes/entities/adotante.entity';
+// import { Doador } from 'src/doadores/entities/doador.entity';
 import { Veterinario } from 'src/veterinarios/entities/veterinario.entity';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('pessoas')
-export class Pessoa {
+export class PessoaEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,12 +23,12 @@ export class Pessoa {
     @Column({ length: 255 })
     cpf: string;
 
-    @OneToOne(() => Veterinario, (veterinario) => veterinario.pessoa)
-    veterinario: Veterinario;
+    // @OneToOne(() => Veterinario, (veterinario) => veterinario.pessoa)
+    // veterinario: Veterinario;
 
-    @OneToOne(() => Adotante, (adotante) => adotante.pessoa)
-    adotante: Adotante;
+    // @OneToOne(() => Adotante, (adotante) => adotante.pessoa)
+    // adotante: Adotante;
 
-    @OneToOne(() => Doador, (doador) => doador.pessoa)
-    doador: Doador;
+    // @OneToOne(() => Doador, (doador) => doador.pessoa)
+    // doador: Doador;
 }

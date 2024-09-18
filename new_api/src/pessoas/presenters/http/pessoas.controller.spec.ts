@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PessoasController } from './pessoas.controller';
-import { PessoasService } from './pessoas.service';
+import { PessoasService } from 'src/pessoas/application/pessoas.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 
@@ -9,17 +9,19 @@ describe('PessoasController', () => {
   let service: PessoasService;
 
   const mockPessoasService = {
-    findAll: jest.fn().mockResolvedValue([{
-      id: 1,
-      nome: 'João Silva',
-      endereco: 'Rua das Flores, 123',
-      telefone: ['11987654321'],
-      email: 'joao.silva@example.com',
-      cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
-    }]),
+    findAll: jest.fn().mockResolvedValue([
+      {
+        id: 1,
+        nome: 'João Silva',
+        endereco: 'Rua das Flores, 123',
+        telefone: ['11987654321'],
+        email: 'joao.silva@example.com',
+        cpf: '123.456.789-00',
+        veterinario: null,
+        adotante: null,
+        doador: null,
+      },
+    ]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       nome: 'João Silva',
@@ -77,17 +79,19 @@ describe('PessoasController', () => {
 
   it('should return all pessoas', async () => {
     const result = await controller.findAll();
-    expect(result).toEqual([{
-      id: 1,
-      nome: 'João Silva',
-      endereco: 'Rua das Flores, 123',
-      telefone: ['11987654321'],
-      email: 'joao.silva@example.com',
-      cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
-    }]);
+    expect(result).toEqual([
+      {
+        id: 1,
+        nome: 'João Silva',
+        endereco: 'Rua das Flores, 123',
+        telefone: ['11987654321'],
+        email: 'joao.silva@example.com',
+        cpf: '123.456.789-00',
+        veterinario: null,
+        adotante: null,
+        doador: null,
+      },
+    ]);
     expect(service.findAll).toHaveBeenCalled();
   });
 
