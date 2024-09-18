@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GastosService } from './gastos.service';
-import { GastosController } from './gastos.controller';
-import { Gasto } from './entities/gasto.entity';
+import { GastosController } from '../presenters/http/gastos.controller';
+import { Gasto } from '../domain/gastos'; 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Gasto])], 
+  imports: [TypeOrmModule.forFeature([Gasto])],
   controllers: [GastosController],
   providers: [GastosService],
 })

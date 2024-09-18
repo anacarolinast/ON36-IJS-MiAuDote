@@ -11,7 +11,7 @@ import { CastracoesModule } from './castracoes/application/castracoes.module';
 import { VacinasModule } from './vacinas/vacinas.module';
 import { MedicamentosModule } from './medicamentos/medicamentos.module';
 import { DoacoesModule } from './doacoes/application/doacoes.module';
-import { GastosModule } from './gastos/gastos.module';
+import { GastosModule } from './gastos/application/gastos.module';
 import { AnimaisModule } from './animais/animais.module';
 
 @Module({

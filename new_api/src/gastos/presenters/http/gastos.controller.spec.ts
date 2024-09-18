@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GastosController } from './gastos.controller';
-import { GastosService } from './gastos.service';
+import { GastosController } from '../../presenters/http/gastos.controller';
+import { GastosService } from '../../application/gastos.service';
 import { CreateGastoDto } from './dto/create-gasto.dto';
 import { UpdateGastoDto } from './dto/update-gasto.dto';
 
@@ -12,50 +12,30 @@ describe('GastosController', () => {
     findAll: jest.fn().mockResolvedValue([{
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     }]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     }),
     create: jest.fn().mockResolvedValue({
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     }),
     update: jest.fn().mockResolvedValue({
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Medicamento',
-      quantidade: 5,
-      valor: 50.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento Updated',
+      quantidade: 1,
+      valor: 123.45,
     }),
     remove: jest.fn().mockResolvedValue({ affected: 1 }),
   };
@@ -84,14 +64,9 @@ describe('GastosController', () => {
     expect(result).toEqual([{
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     }]);
     expect(service.findAll).toHaveBeenCalled();
   });
@@ -101,14 +76,9 @@ describe('GastosController', () => {
     expect(result).toEqual({
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     });
     expect(service.findOne).toHaveBeenCalledWith(1);
   });
@@ -116,44 +86,35 @@ describe('GastosController', () => {
   it('should create a new gasto', async () => {
     const createDto: CreateGastoDto = {
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     };
     const result = await controller.create(createDto);
     expect(result).toEqual({
       id: 1,
       data_gasto: new Date(),
-      tipo: 'Alimento',
-      quantidade: 10,
-      valor: 100.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      tipo: 'Medicamento',
+      quantidade: 1,
+      valor: 123.45,
     });
     expect(service.create).toHaveBeenCalledWith(createDto);
   });
 
   it('should update a gasto', async () => {
     const updateDto: UpdateGastoDto = {
-      tipo: 'Medicamento',
-      quantidade: 5,
-      valor: 50.00,
+      data_gasto: new Date(),
+      tipo: 'Medicamento Updated',
+      quantidade: 1,
+      valor: 123.45,
     };
     const result = await controller.update(1, updateDto);
     expect(result).toEqual({
       id: 1,
       data_gasto: new Date(),
       tipo: 'Medicamento',
-      quantidade: 5,
-      valor: 50.00,
-      consumivel: null,
-      doacao: null,
-      castracao: null,
-      vacina: null,
-      medicamento: null,
+      quantidade: 1,
+      valor: 123.45,
     });
     expect(service.update).toHaveBeenCalledWith(1, updateDto);
   });
