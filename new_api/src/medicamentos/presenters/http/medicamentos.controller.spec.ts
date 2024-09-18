@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MedicamentosController } from './medicamentos.controller';
-import { MedicamentosService } from './medicamentos.service';
+import { MedicamentosController } from '../../presenters/http/medicamentos.controller';
+import { MedicamentosService } from '../../application/medicamentos.service';
 import { CreateMedicamentoDto } from './dto/create-medicamento.dto';
 import { UpdateMedicamentoDto } from './dto/update-medicamento.dto';
 
@@ -13,45 +13,33 @@ describe('MedicamentosController', () => {
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     }]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     }),
     create: jest.fn().mockResolvedValue({
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     }),
     update: jest.fn().mockResolvedValue({
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Vacina',
+      descricao: 'Bravecto Updated',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     }),
     remove: jest.fn().mockResolvedValue({ affected: 1 }),
   };
@@ -81,12 +69,9 @@ describe('MedicamentosController', () => {
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     }]);
     expect(service.findAll).toHaveBeenCalled();
   });
@@ -97,12 +82,9 @@ describe('MedicamentosController', () => {
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     });
     expect(service.findOne).toHaveBeenCalledWith(1);
   });
@@ -111,7 +93,7 @@ describe('MedicamentosController', () => {
     const createDto: CreateMedicamentoDto = {
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
     };
@@ -120,31 +102,29 @@ describe('MedicamentosController', () => {
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Antibiótico',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     });
     expect(service.create).toHaveBeenCalledWith(createDto);
   });
 
   it('should update a medicamento', async () => {
     const updateDto: UpdateMedicamentoDto = {
-      descricao: 'Vacina',
+      animal_id: 1,
+      data_compra: new Date(),
+      descricao: 'Bravecto Updated',
+      veterinario_id: 1,
+      gasto_id: 1,
     };
     const result = await controller.update(1, updateDto);
     expect(result).toEqual({
       id: 1,
       animal_id: 1,
       data_compra: new Date(),
-      descricao: 'Vacina',
+      descricao: 'Bravecto',
       veterinario_id: 1,
       gasto_id: 1,
-      animal: null,
-      veterinario: null,
-      gasto: null,
     });
     expect(service.update).toHaveBeenCalledWith(1, updateDto);
   });
