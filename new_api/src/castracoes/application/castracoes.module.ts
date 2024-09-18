@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CastracoesService } from './castracoes.service';
-import { CastracoesController } from './castracoes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Castracao } from './entities/castracao.entity';
+import { CastracoesService } from './castracoes.service';
+import { CastracoesController } from '../presenters/http/castracoes.controller';
+import { Castracao } from '../domain/castracao'; 
 
 @Module({
   imports: [TypeOrmModule.forFeature([Castracao])],

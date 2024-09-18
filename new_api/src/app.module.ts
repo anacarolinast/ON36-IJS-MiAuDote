@@ -7,7 +7,7 @@ import { DoadoresModule } from './doadores/doadores.module';
 import { AdotantesModule } from './adotantes/application/adotantes.module';
 import { ConsumiveisModule } from './consumiveis/consumiveis.module';
 import { AdocoesModule } from './adocoes/application/adocoes.module';
-import { CastracoesModule } from './castracoes/castracoes.module';
+import { CastracoesModule } from './castracoes/application/castracoes.module';
 import { VacinasModule } from './vacinas/vacinas.module';
 import { MedicamentosModule } from './medicamentos/medicamentos.module';
 import { DoacoesModule } from './doacoes/doacoes.module';
