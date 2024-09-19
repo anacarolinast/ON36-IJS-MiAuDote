@@ -24,18 +24,40 @@ export class InFilePessoaRepository implements PessoaRepository {
     }
 
     async findAll(): Promise<Pessoa[]> {
-        throw new Error('Method not implemented.');
+        console.log("Listando todas as pessoas...");
+        return Array.from(this.pessoas.values());
     }
 
     async findById(id: number): Promise<Pessoa | null> {
-        throw new Error('Method not implemented.');
+        const pessoa = this.pessoas.get(id);
+        if (pessoa) {
+            console.log(`Pessoa encontrada: ${pessoa.nome}`);
+            return pessoa;
+        } else {
+            console.log(`Pessoa com ID ${id} não encontrada.`);
+            return null;
+        }
     }
 
     async update(id: number, pessoa: Partial<Pessoa>): Promise<Pessoa | null> {
-        throw new Error('Method not implemented.');
+        const existingPessoa = this.pessoas.get(id);
+        if (existingPessoa) {
+            const updatedPessoa = { ...existingPessoa, ...pessoa };
+            this.pessoas.set(id, updatedPessoa);
+            console.log(`Pessoa com ID ${id} atualizada com sucesso!`);
+            return updatedPessoa;
+        } else {
+            console.log(`Pessoa com ID ${id} não encontrada para atualização.`);
+            return null;
+        }
     }
 
     async remove(id: number): Promise<void> {
-        throw new Error('Method not implemented.');
+        if (this.pessoas.has(id)) {
+            this.pessoas.delete(id);
+            console.log(`Pessoa com ID ${id} removida com sucesso!`);
+        } else {
+            console.log(`Pessoa com ID ${id} não encontrada para remoção.`);
+        }
     }
 }
