@@ -1,12 +1,23 @@
-import { Module } from '@nestjs/common';
-import { VeterinariosService } from './veterinarios.service';
-import { VeterinariosController } from '../presenters/http/veterinarios.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Veterinario } from '../domain/veterinarios';
+import { DynamicModule, Module, Type } from '@nestjs/common';
+import { VeterinariosService } from './veterinarios.service'; 
+import { VeterinariosController } from '../presenters/http/veterinarios.controller'; 
+import { VeterinarioFactory } from '../domain/factories/veterinarios-factory';
+import { InFileVeterinarioRepository } from '../infrastructure/persistence/in-file/repositories/veterinario.repository';
+import { VeterinarioRepository } from './ports/veterinarios.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Veterinario])],
   controllers: [VeterinariosController],
-  providers: [VeterinariosService],
+  providers: [
+    VeterinariosService, 
+    VeterinarioFactory,
+    { provide: VeterinarioRepository, useClass: InFileVeterinarioRepository },
+  ],
 })
-export class VeterinariosModule {}
+export class VeterinariosModule {
+  static comInfraestrutura(infrastructureModule: Type | DynamicModule) {
+    return {
+      module: VeterinariosModule,
+      imports: [infrastructureModule],
+    };
+  }
+}

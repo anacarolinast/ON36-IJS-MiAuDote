@@ -1,6 +1,6 @@
 // import { Adotante } from 'src/adotantes/entities/adotante.entity';
 // import { Doador } from 'src/doadores/entities/doador.entity';
-import { Veterinario } from 'src/veterinarios/infrastructure/persistence/in-memory/entities/veterinario.entity';
+// import { Veterinario } from 'src/veterinarios/infrastructure/persistence/in-memory/entities/veterinario.entity';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('pessoas')

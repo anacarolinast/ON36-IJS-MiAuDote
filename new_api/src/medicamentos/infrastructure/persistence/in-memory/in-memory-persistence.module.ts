@@ -1,13 +1,13 @@
 import { MedicamentoRepository } from 'src/medicamentos/application/ports/medicamento.repository';
 import { Module } from '@nestjs/common';
-import { InFileMedicamentoRepository } from './repositories/medicamento.repository';
+import { InMemoryMedicamentoRepository } from './repositories/medicamento.repository';
 
 @Module({
   imports: [],
   providers: [
     {
       provide: MedicamentoRepository,
-      useClass: InFileMedicamentoRepository,
+      useClass: InMemoryMedicamentoRepository,
     },
   ],
   exports: [MedicamentoRepository],

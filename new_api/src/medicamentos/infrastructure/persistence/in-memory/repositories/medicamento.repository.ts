@@ -4,7 +4,7 @@ import { Medicamento } from '../../../../domain/medicamentos';
 import { MedicamentoEntity } from '../entities/medicamento.entity';
 
 @Injectable()
-export class InFileMedicamentoRepository implements MedicamentoRepository {
+export class InMemoryMedicamentoRepository implements MedicamentoRepository {
 
   async save(medicamento: Medicamento): Promise<Medicamento> {
     throw new Error('Method not implemented.');

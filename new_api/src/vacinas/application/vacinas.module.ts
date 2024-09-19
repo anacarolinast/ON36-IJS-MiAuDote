@@ -1,12 +1,23 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { VacinasController } from './vacinas.controller';
-import { VacinasService } from '../vacinas.service';
-import { Vacina } from '../infrastructure/persistence/in-memory/entities/vacina.entity';
+import { DynamicModule, Module, Type } from '@nestjs/common';
+import { VacinasController } from '../presenters/http/vacinas.controller'; 
+import { VacinasService } from './vacinas.service'; 
+import { VacinaFactory } from '../domain/factories/vacinas-factory';
+import { VacinaRepository } from './ports/vacinas.repository';
+import { InFileVacinaRepository } from '../infrastructure/persistence/in-file/repositories/vacina.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vacina])],
   controllers: [VacinasController],
-  providers: [VacinasService],
+  providers: [
+    VacinasService, 
+    VacinaFactory,
+    { provide: VacinaRepository, useClass: InFileVacinaRepository },
+  ],
 })
-export class VacinasModule {}
+export class VacinasModule {
+  static comInfraestrutura(infrastructureModule: Type | DynamicModule) {
+    return {
+      module: VacinasModule,
+      imports: [infrastructureModule],
+    };
+  }
+}

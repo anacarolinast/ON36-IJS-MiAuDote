@@ -7,9 +7,9 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { VacinasService } from './vacinas.service';
-import { CreateVacinaDto } from './presenters/http/dto/create-vacina.dto';
-import { UpdateVacinaDto } from './presenters/http/dto/update-vacina.dto';
+import { VacinasService } from 'src/vacinas/application/vacinas.service';
+import { CreateVacinaDto } from './dto/create-vacina.dto'; 
+import { UpdateVacinaDto } from './dto/update-vacina.dto'; 
 
 @Controller('vacinas')
 export class VacinasController {
