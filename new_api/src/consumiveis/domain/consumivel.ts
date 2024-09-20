@@ -1,5 +1,4 @@
-// Ajustar conforme os refactories
-// import { Gasto } from 'src/gasto/entities/gasto.entity';
+import { Gasto } from 'src/gastos/domain/gastos';
 
 export class Consumivel {
     constructor(
@@ -7,9 +6,7 @@ export class Consumivel {
       public readonly tipo_animal: string,
       public readonly descricao: string,
       public readonly gasto_id: number,
-
-    // Ajustar conforme os refactories
-    //   public readonly gasto?: gasto,
+      public readonly gasto?: Gasto,
 
     ) {}
   }
