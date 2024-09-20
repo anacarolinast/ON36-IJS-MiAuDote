@@ -8,7 +8,7 @@ export class Doador {
       public readonly descricao: string,
       public readonly pessoa_id: number,
       public readonly pessoa?: Pessoa,
-      public readonly doacao?: Doacao,
+      public readonly doacao?: Doacao[],
     ) {}
   }
   
