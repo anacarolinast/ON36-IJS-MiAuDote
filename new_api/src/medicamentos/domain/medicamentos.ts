@@ -1,7 +1,6 @@
-// Ajustar conforme os refactories
-// import { Animal } from 'src/animais/entities/animais.entity';
-// import { Veterinario } from 'src/veterinarios/entities/veterinarios.entity';
-// import { Gasto } from 'src/gastos/entities/gastos.entity';
+import { Animal } from 'src/animais/domain/animal';
+import { Veterinario } from 'src/veterinarios/domain/veterinarios';
+import { Gasto } from 'src/gastos/domain/gastos';
 
 export class Medicamento {
     constructor(
@@ -11,11 +10,9 @@ export class Medicamento {
       public readonly descricao: string,
       public readonly veterinario_id: number,
       public readonly gasto_id: number,
-
-    // Ajustar conforme os refactories
-    //   public readonly animal?: animal,
-    //   public readonly veterinario?: veterinario,
-    //   public readonly gasto?: gasto,
+      public readonly animal?: Animal,
+      public readonly veterinario?: Veterinario,
+      public readonly gasto?: Gasto,
 
     ) {}
   }
