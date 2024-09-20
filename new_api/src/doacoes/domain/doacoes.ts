@@ -1,6 +1,5 @@
-// Ajustar conforme os refactories
-// import { Gasto } from 'src/gasto/entities/gasto.entity';
-// import { Doador } from 'src/doador/entities/doador.entity';
+import { Gasto } from 'src/gastos/domain/gastos';
+import { Doador } from 'src/doadores/domain/doadores';
 
 export class Doacao {
     constructor(
@@ -10,10 +9,8 @@ export class Doacao {
       public readonly tipo_doacao: string,
       public readonly valor_estimado: number,
       public readonly gasto_id: number,
-
-    // Ajustar conforme os refactories
-    //   public readonly gasto?: gasto,
-    //   public readonly doador?: doador,
+      public readonly gasto?: Gasto,
+      public readonly doador?: Doador,
 
     ) {}
   }
