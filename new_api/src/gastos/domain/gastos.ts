@@ -1,7 +1,6 @@
-// Ajustar conforme os refactories
-// import { Castracao } from 'src/castracao/entities/castracao.entity';
-// import { Doacao } from 'src/doacoes/entities/doacoes.entity';
-// import { Vacina } from 'src/vacinas/entities/vacinas.entity';
+import { Castracao } from 'src/castracoes/domain/castracao';
+import { Doacao } from 'src/doacoes/domain/doacoes';
+import { Vacina } from 'src/vacinas/domain/vacinas';
 
 export class Gasto {
     constructor(
@@ -10,11 +9,9 @@ export class Gasto {
       public readonly tipo: string,
       public readonly quantidade: number,
       public readonly valor: number,
-
-    // Ajustar conforme os refactories
-    //   public readonly pessoa?: pessoa,
-    //   public readonly doacao?: doacao,
-
+      public readonly castracao?: Castracao,
+      public readonly doacao?: Doacao,
+      public readonly vacina?: Vacina,
     ) {}
   }
   
