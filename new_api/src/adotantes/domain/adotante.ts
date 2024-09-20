@@ -1,7 +1,5 @@
-// Ajustar conforme os refactories
-
-// import { Pessoa } from 'src/pessoa/entities/pessoa.entity';
-// import { Adocao } from 'src/adocao/entities/adocao.entity';
+import { Pessoa } from 'src/pessoas/domain/pessoas';
+import { Adocao } from 'src/adocoes/domain/adocao';
 
 export class Adotante {
     constructor(
@@ -9,10 +7,8 @@ export class Adotante {
       public readonly renda: number,
       public readonly condicao_entrevista: string,
       public readonly pessoa_id: number,
-
-    // Ajustar conforme os refactories
-    //   public readonly pessoa?: Pessoa,
-    //   public readonly adocao?: Adocao[],
+      public readonly pessoa?: Pessoa,
+      public readonly adocao?: Adocao[],
 
     ) {}
   }
