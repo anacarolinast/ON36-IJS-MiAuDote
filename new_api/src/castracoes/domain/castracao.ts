@@ -1,8 +1,6 @@
-// Ajustar conforme os refactories
-
-// import { Veterinario } from 'src/veterinarios/entities/veterinario.entity';
-// import { Animal } from 'src/animais/entities/animal.entity';
-// import { Gasto } from 'src/gasto/entities/gasto.entity';
+import { Veterinario } from 'src/veterinarios/domain/veterinarios';
+import { Animal } from 'src/animais/domain/animal';
+import { Gasto } from 'src/gastos/domain/gastos';
 
 export class Castracao {
     constructor(
@@ -12,11 +10,9 @@ export class Castracao {
       public readonly condicao_pos: string,
       public readonly veterinario_id: number,
       public readonly gasto_id: number,
-
-    // Ajustar conforme os refactories
-    //   public readonly veterinario?: veterinario,
-    //   public readonly animal?: animal,
-    //   public readonly gasto?: gasto,
+      public readonly veterinario?: Veterinario,
+      public readonly animal?: Animal,
+      public readonly gasto?: Gasto,
 
     ) {}
   }
