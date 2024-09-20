@@ -1,7 +1,7 @@
-// import { Adocao } from 'src/adocoes/entities/adocao.entity';
-// import { Medicamento } from 'src/medicamentos/entities/medicamento.entity';
-// import { Vacina } from 'src/vacinas/entities/vacina.entity';
-// import { Castracao } from 'src/castracoes/entities/castracao.entity';
+import { Adocao } from 'src/adocoes/domain/adocao';
+import { Medicamento } from 'src/medicamentos/domain/medicamentos';
+import { Vacina } from 'src/vacinas/domain/vacinas';
+import { Castracao } from 'src/castracoes/domain/castracao';
 
 export class Animal {
     constructor(
@@ -12,10 +12,10 @@ export class Animal {
       public readonly data_nascimento: Date,
       public readonly condicao_saude: string,
       public readonly estado_adocao: string,
-      // public readonly adocao?: Adocao,
-      // public readonly medicamentos?: Medicamento[],
-      // public readonly vacinas?: Vacina[],
-      // public readonly castracao?: Castracao
+      public readonly adocao?: Adocao,
+      public readonly medicamentos?: Medicamento[],
+      public readonly vacinas?: Vacina[],
+      public readonly castracao?: Castracao
     ) {}
   }
   
