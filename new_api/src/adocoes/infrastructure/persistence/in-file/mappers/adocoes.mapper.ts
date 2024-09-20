@@ -11,8 +11,8 @@ export class AdocaoMapper {
       adocaoEntity.data_adocao,
       adocaoEntity.condicoes_especiais,
       adocaoEntity.status_aprovacao,
-      // adocaoEntity.animal,
-      // adocaoEntity.adotante
+      adocaoEntity.animal,
+      adocaoEntity.adotante
     );
     return model;
   }
@@ -25,8 +25,8 @@ export class AdocaoMapper {
     entity.data_adocao = adocao.data_adocao;
     entity.condicoes_especiais = adocao.condicoes_especiais;
     entity.status_aprovacao = adocao.status_aprovacao;
-    // entity.animal = adocao.animal;
-    // entity.adotante = adocao.adotante;
+    entity.animal = adocao.animal;
+    entity.adotante = adocao.adotante;
     return entity;
   }
 }

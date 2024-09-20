@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   NotFoundException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AdocoesService } from '../../application/adocoes.service';
 import { CreateAdocaoDto } from './dto/create-adocao.dto';
@@ -31,10 +32,27 @@ export class AdocoesController {
     return adocao;
   }
 
-  @Post()
-  async create(@Body() createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
-    return this.adocoesService.create(createAdocaoDto);
+  @Post(':adotante_id/:animal_id')
+async create(
+  @Param('adotante_id', ParseIntPipe) adotante_id: number,
+  @Param('animal_id', ParseIntPipe) animal_id: number,
+  @Body() createAdocaoDto: CreateAdocaoDto,
+): Promise<Adocao> {
+  createAdocaoDto.adotante_id = adotante_id;
+  createAdocaoDto.animal_id = animal_id;
+
+  // Verificação de existência
+  const adotante = await this.adocoesService.verificarAdotante(adotante_id);
+  const animal = await this.adocoesService.verificarAnimal(animal_id);
+
+  if (!adotante || !animal) {
+    throw new NotFoundException(
+      `Adotante ID ${adotante_id} ou Animal ID ${animal_id} não encontrado.`
+    );
   }
+
+  return this.adocoesService.create(createAdocaoDto);
+}
 
   @Put(':id')
   async update(

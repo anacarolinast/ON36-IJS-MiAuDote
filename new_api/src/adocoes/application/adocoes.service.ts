@@ -4,12 +4,16 @@ import { CreateAdocaoDto } from '../presenters/http/dto/create-adocao.dto';
 import { UpdateAdocaoDto } from '../presenters/http/dto/update-adocao.dto';
 import { AdocaoFactory } from '../domain/factories/adocoes-factory';
 import { AdocaoRepository } from './ports/adocoes.repository';
+import { AdotanteRepository } from 'src/adotantes/application/ports/adotantes.repository'; 
+import { AnimalRepository } from 'src/animais/application/ports/animais.repository'; 
 
 @Injectable()
 export class AdocoesService {
   constructor(
     private readonly adocaoFactory: AdocaoFactory,
     private readonly adocaoRepository: AdocaoRepository,
+    private readonly adotanteRepository: AdotanteRepository, // Adicione o repositório de adotantes
+    private readonly animalRepository: AnimalRepository, // Adicione o repositório de animais
   ) {}
 
   async findAll(): Promise<Adocao[]> {
@@ -24,9 +28,29 @@ export class AdocoesService {
     return adocao;
   }
 
+  async verificarAdotante(adotante_id: number): Promise<boolean> {
+    const adotante = await this.adotanteRepository.findById(adotante_id);
+    return !!adotante; // Retorna true se o adotante existir, caso contrário false
+  }
+
+  async verificarAnimal(animal_id: number): Promise<boolean> {
+    const animal = await this.animalRepository.findById(animal_id);
+    return !!animal; // Retorna true se o animal existir, caso contrário false
+  }
+
   async create(createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
+    // Verifica se o adotante e o animal existem
+    const adotanteExists = await this.verificarAdotante(createAdocaoDto.adotante_id);
+    const animalExists = await this.verificarAnimal(createAdocaoDto.animal_id);
+
+    if (!adotanteExists || !animalExists) {
+      throw new NotFoundException(
+        `Adotante ID ${createAdocaoDto.adotante_id} ou Animal ID ${createAdocaoDto.animal_id} não encontrado.`
+      );
+    }
+
     const newAdocao = this.adocaoFactory.create(createAdocaoDto);
-    return this.adocaoRepository.save(newAdocao);
+    return this.adocaoRepository.save(await newAdocao);
   }
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
@@ -40,7 +64,7 @@ export class AdocoesService {
       status_aprovacao: updateAdocaoDto.status_aprovacao ?? adocao.status_aprovacao
     };
 
-    const updatedAdocao = this.adocaoFactory.create(updatedAdocaoData);
+    const updatedAdocao = await this.adocaoFactory.create(updatedAdocaoData);
 
     await this.adocaoRepository.update(id, updatedAdocao);
     return updatedAdocao;

@@ -14,6 +14,7 @@ import { InFileAnimalRepository } from '../infrastructure/persistence/in-file/re
     AnimalFactory,
     { provide: AnimalRepository, useClass: InFileAnimalRepository },
   ],
+  exports: [AnimalRepository],
 })
 export class AnimaisModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

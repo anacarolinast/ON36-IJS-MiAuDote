@@ -6,8 +6,11 @@ import { Adocao } from '../domain/adocao';
 import { AdocaoFactory } from '../domain/factories/adocoes-factory';
 import { AdocaoRepository } from './ports/adocoes.repository';
 import { InFileAdocaoRepository } from '../infrastructure/persistence/in-file/repositories/adocoes.repository';
+import { AnimaisModule } from 'src/animais/application/animais.module';
+import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
 
 @Module({
+  imports: [AnimaisModule, AdotantesModule],
   controllers: [AdocoesController],
   providers: [
     AdocoesService,

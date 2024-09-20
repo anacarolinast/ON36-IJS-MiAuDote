@@ -11,7 +11,6 @@ export class Adocao {
       public readonly status_aprovacao: string,
       public readonly animal?: Animal,
       public readonly adotante?: Adotante,
-
     ) {}
   }
   

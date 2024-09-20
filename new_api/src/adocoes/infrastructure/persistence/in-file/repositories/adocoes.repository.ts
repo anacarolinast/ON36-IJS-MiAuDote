@@ -2,25 +2,32 @@ import { Injectable } from "@nestjs/common";
 import { AdocaoRepository } from "src/adocoes/application/ports/adocoes.repository";
 import { Adocao } from "src/adocoes/domain/adocao";
 import { AdocaoEntity } from "../entities/adocao.entity";
+import { AdocaoMapper } from "../mappers/adocoes.mapper";
 
 @Injectable()
 export class InFileAdocaoRepository implements AdocaoRepository {
     private readonly adocoes = new Map<number, AdocaoEntity>();
     private idCounter = 1;
+    animalRepository: any;
+    adotanteRepository: any;
 
     async save(adocao: Adocao): Promise<Adocao> {
-        const adocaoEntity = new AdocaoEntity();
-        adocaoEntity.id = this.idCounter++;
-        adocaoEntity.adotante_id = adocao.adotante_id;
-        adocaoEntity.animal_id = adocao.animal_id;
-        adocaoEntity.data_adocao = adocao.data_adocao;
-        adocaoEntity.condicoes_especiais = adocao.condicoes_especiais;
-        adocaoEntity.status_aprovacao = adocao.status_aprovacao;
+        // const adotanteExists = await this.adotanteRepository.findById(adocao.adotante_id);
+        // const animalExists = await this.animalRepository.findById(adocao.animal_id);
 
+        // // if (!adotanteExists || !animalExists) {
+        // //     const adotanteLog = adotanteExists ? '' : `Adotante com ID ${adocao.adotante_id} não encontrado.`;
+        // //     const animalLog = animalExists ? '' : `Animal com ID ${adocao.animal_id} não encontrado.`;
+        // //     console.log(`${adotanteLog} ${animalLog}`.trim().replace(/\s+/g, ' || '));
+        // //     throw new Error(`Erro ao criar adoção: ${adotanteLog} ${animalLog}`.trim());
+        // // }
+
+        const adocaoEntity = AdocaoMapper.paraPersistencia(adocao);
+        adocaoEntity.id = this.idCounter++;
         this.adocoes.set(adocaoEntity.id, adocaoEntity);
 
-        console.log(`Adocao criada com sucesso!`); 
-        return adocaoEntity;
+        console.log(`Adoção criada com sucesso!`); 
+        return AdocaoMapper.paraDominio(adocaoEntity);
     }
 
     async findAll(): Promise<Adocao[]> {

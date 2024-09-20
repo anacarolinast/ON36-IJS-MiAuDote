@@ -14,6 +14,7 @@ import { InFileAdotanteRepository } from '../infrastructure/persistence/in-file/
     AdotanteFactory,
     { provide: AdotanteRepository, useClass: InFileAdotanteRepository },
   ],
+  exports: [AdotanteRepository],
 })
 export class AdotantesModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

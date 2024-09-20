@@ -1,0 +1,10 @@
+POST http://localhost:3000/pessoas
+Content-Type: application/json
+
+{
+    "nome": "João Silva",
+    "endereco": "Rua das Flores, 123",
+    "telefone": ["11987654321"],
+    "email": "joao@example.com",
+    "cpf": "123.456.789-00"
+}

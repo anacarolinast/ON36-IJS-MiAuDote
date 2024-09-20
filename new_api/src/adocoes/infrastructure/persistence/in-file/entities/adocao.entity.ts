@@ -1,7 +1,5 @@
-// Ajustar as importações depois do refactor
-// import { Animais } from 'src/animais/entities/animais.entity';
-// import { Adotantes } from 'src/adotantes/entities/adotantes.entity';
-
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/in-file/entities/animais.entity'; 
+import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/in-file/entities/adotante.entity'; 
 
 export class AdocaoEntity {
   id: number;
@@ -10,8 +8,6 @@ export class AdocaoEntity {
   data_adocao: Date;
   condicoes_especiais: string;
   status_aprovacao: string;
-
-  // Ajustar as importações depois do refactor
-  // animais?: Animais[];
-  // adotantes?: Adotantes;
+  animal: AnimalEntity;
+  adotante: AdotanteEntity;
 }
