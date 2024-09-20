@@ -9,7 +9,7 @@ export class Adocao {
       public readonly data_adocao: Date,
       public readonly condicoes_especiais: string,
       public readonly status_aprovacao: string,
-      public readonly animal?: Animal[],
+      public readonly animal?: Animal,
       public readonly adotante?: Adotante,
 
     ) {}
