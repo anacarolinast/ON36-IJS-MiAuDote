@@ -8,8 +8,7 @@ export class DoadorMapper {
       doadorEntity.tipo_doacao,
       doadorEntity.descricao,
       doadorEntity.pessoa_id,
-      
-    //   doadorEntity.pessoa,
+      doadorEntity.pessoa,
     //   doadorEntity.doacao,
     );
     return model;
@@ -21,8 +20,7 @@ export class DoadorMapper {
     entity.tipo_doacao = doador.tipo_doacao;
     entity.descricao = doador.descricao;
     entity.pessoa_id = doador.pessoa_id;
-
-    // entity.pessoa = doador.pessoa;
+    entity.pessoa = doador.pessoa;
     // entity.doacao = doador.doacao;
     return entity;
   }

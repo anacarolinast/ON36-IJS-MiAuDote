@@ -8,7 +8,7 @@ export class Adotante {
       public readonly condicao_entrevista: string,
       public readonly pessoa_id: number,
       public readonly pessoa: Pessoa,
-      public readonly adocao?: Adocao[],
+      public readonly adocao: Adocao[],
     ) {}
   }
   

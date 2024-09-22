@@ -8,7 +8,7 @@ export class VeterinarioMapper {
             veterinarioEntity.especialidade,
             veterinarioEntity.registro_crmv,
             veterinarioEntity.pessoa_id,
-            // veterinarioEntity.pessoa,
+            veterinarioEntity.pessoa,
             // veterinarioEntity.vacinas,
             // veterinarioEntity.medicamentos,
             // veterinarioEntity.castracoes
@@ -22,7 +22,7 @@ export class VeterinarioMapper {
         entity.especialidade = veterinario.especialidade;
         entity.registro_crmv = veterinario.registro_crmv;
         entity.pessoa_id = veterinario.pessoa_id;
-        // entity.pessoa = veterinario.pessoa;
+        entity.pessoa = veterinario.pessoa;
         // entity.vacinas = veterinario.vacinas;
         // entity.medicamentos = veterinario.medicamentos;
         // entity.castracoes = veterinario.castracoes;

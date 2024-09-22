@@ -1,19 +1,16 @@
 import { Veterinario } from "src/veterinarios/domain/veterinarios";
 import { VeterinarioEntity } from "../entities/veterinario.entity";
+import { PessoaMapper } from "src/pessoas/infrastructure/persistence/in-file/mappers/pessoa.mapper";
 
 export class VeterinarioMapper {
     static paraDominio(veterinarioEntity: VeterinarioEntity): Veterinario {
-        const model = new Veterinario(
+        return new Veterinario(
             veterinarioEntity.id,
             veterinarioEntity.especialidade,
             veterinarioEntity.registro_crmv,
             veterinarioEntity.pessoa_id,
-            // veterinarioEntity.pessoa,
-            // veterinarioEntity.vacinas,
-            // veterinarioEntity.medicamentos,
-            // veterinarioEntity.castracoes
-        );
-        return model;
+            PessoaMapper.paraDominio(veterinarioEntity.pessoa),
+        )
     }
 
     static paraPersistencia(veterinario: Veterinario): VeterinarioEntity {
@@ -22,7 +19,7 @@ export class VeterinarioMapper {
         entity.especialidade = veterinario.especialidade;
         entity.registro_crmv = veterinario.registro_crmv;
         entity.pessoa_id = veterinario.pessoa_id;
-        // entity.pessoa = veterinario.pessoa;
+        entity.pessoa = PessoaMapper.paraPersistencia(veterinario.pessoa);
         // entity.vacinas = veterinario.vacinas;
         // entity.medicamentos = veterinario.medicamentos;
         // entity.castracoes = veterinario.castracoes;

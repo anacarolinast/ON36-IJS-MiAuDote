@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { DoadorRepository } from "src/doadores/application/ports/doador.repository";
 import { Doador } from "src/doadores/domain/doadores";
 import { DoadorEntity } from "../entities/doador.entity";
+import { DoadorMapper } from "../mappers/doador.mappers";
 
 @Injectable()
 export class InFileDoadorRepository implements DoadorRepository {
@@ -9,28 +10,25 @@ export class InFileDoadorRepository implements DoadorRepository {
     private idCounter = 1;
 
     async save(doador: Doador): Promise<Doador> {
-        const doadorEntity = new DoadorEntity();
+        const doadorEntity = DoadorMapper.paraPersistencia(doador);
         doadorEntity.id = this.idCounter++;
-        doadorEntity.tipo_doacao = doador.tipo_doacao;
-        doadorEntity.descricao = doador.descricao;
-        doadorEntity.pessoa_id = doador.pessoa_id;
-
         this.doadores.set(doadorEntity.id, doadorEntity);
-
         console.log(`Doador criada com sucesso!`); 
-        return doadorEntity;
+        return DoadorMapper.paraDominio(doadorEntity);
     }
 
     async findAll(): Promise<Doador[]> {
         console.log("Listando todas as doadores...");
-        return Array.from(this.doadores.values());
+        return Array.from(this.doadores.values()).map(doadoresEntity =>
+            DoadorMapper.paraDominio(doadoresEntity)
+        );
     }
 
     async findById(id: number): Promise<Doador | null> {
-        const doador = this.doadores.get(id);
-        if (doador) {
-            console.log(`Doador encontrada: ${doador.id}`);
-            return doador;
+        const doadorEntity = this.doadores.get(id);
+        if (doadorEntity) {
+            console.log(`Doador encontrada: ${doadorEntity.id}`);
+            return DoadorMapper.paraDominio(doadorEntity);
         } else {
             console.log(`Doador com ID ${id} não encontrada.`);
             return null;
@@ -38,10 +36,15 @@ export class InFileDoadorRepository implements DoadorRepository {
     }
 
     async update(id: number, doador: Partial<Doador>): Promise<Doador | null> {
-        const existingDoador = this.doadores.get(id);
-        if (existingDoador) {
+        const existingDoadorEntity = this.doadores.get(id);
+        if (existingDoadorEntity) {
+            const existingDoador = DoadorMapper.paraDominio(existingDoadorEntity);
+            
             const updatedDoador = { ...existingDoador, ...doador };
-            this.doadores.set(id, updatedDoador);
+            
+            const updatedDoadorEntity = DoadorMapper.paraPersistencia(updatedDoador);
+            
+            this.doadores.set(id, updatedDoadorEntity);
             console.log(`Doador com ID ${id} atualizada com sucesso!`);
             return updatedDoador;
         } else {

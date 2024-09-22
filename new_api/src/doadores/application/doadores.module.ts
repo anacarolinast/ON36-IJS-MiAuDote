@@ -6,8 +6,10 @@ import { Doador } from '../domain/doadores';
 import { DoadorFactory } from '../domain/factories/doadores-factory';
 import { DoadorRepository } from './ports/doador.repository';
 import { InFileDoadorRepository } from '../infrastructure/persistence/in-file/repositories/doador.repository';
+import { PessoasModule } from 'src/pessoas/application/pessoas.module';
 
 @Module({
+  imports: [PessoasModule],
   controllers: [DoadoresController],
   providers: [
     DoadoresService,

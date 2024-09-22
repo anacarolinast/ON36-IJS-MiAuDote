@@ -15,7 +15,7 @@ export class AdotanteFactory {
       adotanteId,
       data.renda,
       data.condicao_entrevista,
-      data.pessoa_id,
+      pessoa.id,
       pessoa,
       adocoes
     );

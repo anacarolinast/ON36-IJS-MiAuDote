@@ -21,14 +21,16 @@ export class InFileAdotanteRepository implements AdotanteRepository {
 
     async findAll(): Promise<Adotante[]> {
         console.log("Listando todas as adotantes...");
-        return Array.from(this.adotantes.values());
+        return Array.from(this.adotantes.values()).map(adotanteEntity =>
+            AdotanteMapper.paraDominio(adotanteEntity)
+        );
     }
 
     async findById(id: number): Promise<Adotante | null> {
-        const adotante = this.adotantes.get(id);
-        if (adotante) {
-            console.log(`Adotante encontrada: ${adotante.id}`);
-            return adotante;
+        const adotanteEntity = this.adotantes.get(id);
+        if (adotanteEntity) {
+            console.log(`Adotante encontrada: ${adotanteEntity.id}`);
+            return AdotanteMapper.paraDominio(adotanteEntity);
         } else {
             console.log(`Adotante com ID ${id} não encontrada.`);
             return null;
@@ -56,9 +58,6 @@ export class InFileAdotanteRepository implements AdotanteRepository {
             return null;
         }
     }
-     
-    
-      
 
     async remove(id: number): Promise<void> {
         if (this.adotantes.has(id)) {

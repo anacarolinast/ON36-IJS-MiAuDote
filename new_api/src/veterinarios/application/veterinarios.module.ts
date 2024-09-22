@@ -1,11 +1,13 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { VeterinariosService } from './veterinarios.service'; 
 import { VeterinariosController } from '../presenters/http/veterinarios.controller'; 
 import { VeterinarioFactory } from '../domain/factories/veterinarios-factory';
 import { InFileVeterinarioRepository } from '../infrastructure/persistence/in-file/repositories/veterinario.repository';
 import { VeterinarioRepository } from './ports/veterinarios.repository';
+import { PessoasModule } from 'src/pessoas/application/pessoas.module'
 
 @Module({
+  imports: [PessoasModule],
   controllers: [VeterinariosController],
   providers: [
     VeterinariosService, 

@@ -10,9 +10,6 @@ export class PessoaMapper {
             pessoaEntity.telefone,
             pessoaEntity.email,
             pessoaEntity.cpf,
-            // pessoaEntity.veterinario,
-            // pessoaEntity.adotante,
-            // pessoaEntity.doador
         );
         return model;
     }
@@ -25,9 +22,6 @@ export class PessoaMapper {
         entity.telefone = pessoa.telefone;
         entity.email = pessoa.email;
         entity.cpf = pessoa.cpf;
-        // entity.veterinario = pessoa.veterinario;
-        // entity.adotante = pessoa.adotante;
-        // entity.doador = pessoa.doador;
         return entity;
     }
 }

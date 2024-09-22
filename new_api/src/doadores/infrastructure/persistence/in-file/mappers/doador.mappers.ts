@@ -1,18 +1,18 @@
 import { Doador } from "src/doadores/domain/doadores";
 import { DoadorEntity } from "../entities/doador.entity";
-
+import { PessoaMapper } from "src/pessoas/infrastructure/persistence/in-file/mappers/pessoa.mapper"; 
+import { DoacaoMapper } from "src/doacoes/infrastructure/persistence/in-file/mappers/doacao.mappers"; 
 
 export class DoadorMapper {
   static paraDominio(doadorEntity: DoadorEntity): Doador {
-    const model = new Doador(
+    return new Doador(
       doadorEntity.id,
       doadorEntity.tipo_doacao,
       doadorEntity.descricao,
       doadorEntity.pessoa_id,
-      // doadorEntity.pessoa
-      // doadorEntity.doacao
-    );
-    return model;
+      PessoaMapper.paraDominio(doadorEntity.pessoa),
+      // doadorEntity.doacao?.map(doacaoEntity => DoacaoMapper.paraDominio(doacaoEntity)) || []
+    )
   }
 
   static paraPersistencia(doador: Doador): DoadorEntity {
@@ -21,8 +21,8 @@ export class DoadorMapper {
     entity.tipo_doacao = doador.tipo_doacao;
     entity.descricao = doador.descricao;
     entity.pessoa_id = doador.pessoa_id;
-    // entity.gasto = doador.pessoa;
-    // entity.doador = doador.doacao;
+    entity.pessoa = PessoaMapper.paraPersistencia(doador.pessoa);
+    // entity.doacao = doador.doacao?.map(doacao => DoacaoMapper.paraPersistencia(doacao)) || [];
     return entity;
   }
 }
