@@ -1,16 +1,12 @@
-// Ajustar as importações depois do refactor
-// import { Pessoa } from 'src/pessoa/entities/pessoa.entity';
-// import { Adocao } from 'src/adocao/entities/adocao.entity';
-
+import { AdocaoEntity } from "src/adocoes/infrastructure/persistence/in-file/entities/adocao.entity";
+import { PessoaEntity } from "src/pessoas/infrastructure/persistence/in-file/entities/pessoa.entity";
 
 export class AdotanteEntity {
     id: number;
     renda: number;
     condicao_entrevista: string;
     pessoa_id: number;
-  
-    // Ajustar as importações depois do refactor
-    // pessoa?: pessoa;
-    // adocao?: Adocao[];
+    pessoa: PessoaEntity;
+    adocao?: AdocaoEntity[];
   }
   

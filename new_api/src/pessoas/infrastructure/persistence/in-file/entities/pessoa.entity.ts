@@ -5,7 +5,4 @@ export class PessoaEntity {
     telefone: string[];
     email: string;
     cpf: string;
-    veterinario: any;
-    adotante: any;
-    doador: any;
 }

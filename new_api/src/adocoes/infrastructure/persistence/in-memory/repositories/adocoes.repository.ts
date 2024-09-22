@@ -8,47 +8,55 @@ import { AdocaoMapper } from '../mappers/adocoes.mapper';
 
 @Injectable()
 export class InMemoryAdocaoRepository implements AdocaoRepository {
-  constructor(
-    @InjectRepository(AdocaoEntity)
-    private readonly adocaoRepository: Repository<AdocaoEntity>,
-  ) {}
+    private readonly adocoes = new Map<number, AdocaoEntity>();
+    private idCounter = 1;
+    animalRepository: any;
+    adotanteRepository: any;
 
-  async save(adocao: Adocao): Promise<Adocao> {
-    const persistenceModel = AdocaoMapper.paraPersistencia(adocao);
-    const savedEntity = await this.adocaoRepository.save(persistenceModel);
-    return AdocaoMapper.paraDominio(savedEntity);
-  }
+    async save(adocao: Adocao): Promise<Adocao> {
+        const adocaoEntity = AdocaoMapper.paraPersistencia(adocao);
+        adocaoEntity.id = this.idCounter++;
+        this.adocoes.set(adocaoEntity.id, adocaoEntity);
 
-  async findAll(): Promise<Adocao[]> {
-    const entities = await this.adocaoRepository.find();
-    return entities.map((item) => AdocaoMapper.paraDominio(item));
-  }
-
-  async findById(id: number): Promise<Adocao | null> {
-    const entity = await this.adocaoRepository.findOneBy({ id });
-    return entity ? AdocaoMapper.paraDominio(entity) : null;
-  }
-
-  async update(id: number, adocao: Partial<Adocao>): Promise<Adocao | null> {
-    const existingEntity = await this.adocaoRepository.findOneBy({ id });
-    if (!existingEntity) {
-      return null;
+        console.log(`Adoção criada com sucesso!`); 
+        return AdocaoMapper.paraDominio(adocaoEntity);
     }
 
-    const updatedEntity: AdocaoEntity = {
-      ...existingEntity,
-      ...AdocaoMapper.paraPersistencia({
-        ...existingEntity,
-        ...adocao,
-        id
-      })
-    };
+    async findAll(): Promise<Adocao[]> {
+        console.log("Listando todas as adocoes...");
+        return Array.from(this.adocoes.values());
+    }
 
-    await this.adocaoRepository.save(updatedEntity);
-    return AdocaoMapper.paraDominio(updatedEntity);
-  }
+    async findById(id: number): Promise<Adocao | null> {
+        const adocao = this.adocoes.get(id);
+        if (adocao) {
+            console.log(`Adocao encontrada: ${adocao.animal_id}`);
+            return adocao;
+        } else {
+            console.log(`Adocao com ID ${id} não encontrada.`);
+            return null;
+        }
+    }
 
-  async remove(id: number): Promise<void> {
-    await this.adocaoRepository.delete(id);
-  }
+    async update(id: number, adocao: Partial<Adocao>): Promise<Adocao | null> {
+        const existingAdocao = this.adocoes.get(id);
+        if (existingAdocao) {
+            const updatedAdocao = AdocaoMapper.paraPersistencia({ ...existingAdocao, ...adocao });
+            this.adocoes.set(id, updatedAdocao);
+            console.log(`Adocao com ID ${id} atualizada com sucesso!`);
+            return updatedAdocao;
+        } else {
+            console.log(`Adocao com ID ${id} não encontrada para atualização.`);
+            return null;
+        }
+    }
+
+    async remove(id: number): Promise<void> {
+        if (this.adocoes.has(id)) {
+            this.adocoes.delete(id);
+            console.log(`Adocao com ID ${id} removida com sucesso!`);
+        } else {
+            console.log(`Adocao com ID ${id} não encontrada para remoção.`);
+        }
+    }
 }

@@ -8,31 +8,18 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
 } from 'typeorm';
+import { Adotante } from '../../../../../adotantes/domain/adotante';
+import { Animal } from 'src/animais/domain/animal';
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/in-memory/entities/animais.entity';
+import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/in-memory/entities/adotante.entity';
 
-@Entity('adocoes')
 export class AdocaoEntity {
-  @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
   adotante_id: number;
-
-  @Column()
   animal_id: number;
-
-  @Column()
   data_adocao: Date;
-
-  @Column()
   condicoes_especiais: string;
-
-  @Column()
   status_aprovacao: string;
-
-  // @ManyToOne(() => Adotante, (adotante) => adotante.adocoes)
-  // adotante: Adotante;
-
-  // @OneToOne(() => Animal, (animal) => animal.adocao)
-  // @JoinColumn({ name: 'animal_id' })
-  // animal: Animal;
+  animal: AnimalEntity;
+  adotante: AdotanteEntity;
 }

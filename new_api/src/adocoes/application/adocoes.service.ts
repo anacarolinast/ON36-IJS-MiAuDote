@@ -4,16 +4,18 @@ import { CreateAdocaoDto } from '../presenters/http/dto/create-adocao.dto';
 import { UpdateAdocaoDto } from '../presenters/http/dto/update-adocao.dto';
 import { AdocaoFactory } from '../domain/factories/adocoes-factory';
 import { AdocaoRepository } from './ports/adocoes.repository';
-import { AdotanteRepository } from 'src/adotantes/application/ports/adotantes.repository'; 
-import { AnimalRepository } from 'src/animais/application/ports/animais.repository'; 
+import { AnimalRepository } from '../../animais/application/ports/animais.repository';
+import { AdotanteRepository } from '../../adotantes/application/ports/adotantes.repository';
+import { Animal } from 'src/animais/domain/animal';
+import { Adotante } from 'src/adotantes/domain/adotante';
 
 @Injectable()
 export class AdocoesService {
   constructor(
     private readonly adocaoFactory: AdocaoFactory,
     private readonly adocaoRepository: AdocaoRepository,
-    private readonly adotanteRepository: AdotanteRepository, // Adicione o repositório de adotantes
-    private readonly animalRepository: AnimalRepository, // Adicione o repositório de animais
+    private readonly animalRepository: AnimalRepository,
+    private readonly adotanteRepository: AdotanteRepository,
   ) {}
 
   async findAll(): Promise<Adocao[]> {
@@ -28,43 +30,62 @@ export class AdocoesService {
     return adocao;
   }
 
-  async verificarAdotante(adotante_id: number): Promise<boolean> {
-    const adotante = await this.adotanteRepository.findById(adotante_id);
-    return !!adotante; // Retorna true se o adotante existir, caso contrário false
+  private async findAnimal(animalId: number): Promise<Animal> {
+    const animal = await this.animalRepository.findById(animalId);
+    if (!animal) {
+      throw new NotFoundException(`Animal with ID ${animalId} not found`);
+    }
+    return animal;
   }
 
-  async verificarAnimal(animal_id: number): Promise<boolean> {
-    const animal = await this.animalRepository.findById(animal_id);
-    return !!animal; // Retorna true se o animal existir, caso contrário false
+  private async findAdotante(adotanteId: number): Promise<Adotante> {
+    const adotante = await this.adotanteRepository.findById(adotanteId);
+    if (!adotante) {
+      throw new NotFoundException(`Adotante with ID ${adotanteId} not found`);
+    }
+    return adotante;
   }
 
   async create(createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
-    // Verifica se o adotante e o animal existem
-    const adotanteExists = await this.verificarAdotante(createAdocaoDto.adotante_id);
-    const animalExists = await this.verificarAnimal(createAdocaoDto.animal_id);
+    const animal = await this.findAnimal(createAdocaoDto.animal_id);
+    const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
+  
+    const newAdocao = this.adocaoFactory.create(createAdocaoDto, animal, adotante);
+    const savedAdocao = await this.adocaoRepository.save(newAdocao);
 
-    if (!adotanteExists || !animalExists) {
-      throw new NotFoundException(
-        `Adotante ID ${createAdocaoDto.adotante_id} ou Animal ID ${createAdocaoDto.animal_id} não encontrado.`
-      );
-    }
+    console.log('Antes da atualização:', adotante);
+    
+    adotante.adocao.push(savedAdocao);
+    await this.adotanteRepository.update(adotante.id, adotante);
+    console.log('Depois da atualização do adotante:', adotante);
 
-    const newAdocao = this.adocaoFactory.create(createAdocaoDto);
-    return this.adocaoRepository.save(await newAdocao);
-  }
+    await this.animalRepository.update(animal.id, animal);
+    console.log('Depois da atualização do animal:', animal);
+
+    return savedAdocao;
+}
+
+
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);
+    const animal = updateAdocaoDto.animal_id
+      ? await this.animalRepository.findById(updateAdocaoDto.animal_id)
+      : adocao.animal;
 
-    const updatedAdocaoData = {
-      adotante_id: updateAdocaoDto.adotante_id ?? adocao.adotante_id,
-      animal_id: updateAdocaoDto.animal_id ?? adocao.animal_id,
-      data_adocao: updateAdocaoDto.data_adocao ?? adocao.data_adocao,
-      condicoes_especiais: updateAdocaoDto.condicoes_especiais ?? adocao.condicoes_especiais,
-      status_aprovacao: updateAdocaoDto.status_aprovacao ?? adocao.status_aprovacao
-    };
+    const adotante = updateAdocaoDto.adotante_id
+      ? await this.adotanteRepository.findById(updateAdocaoDto.adotante_id)
+      : adocao.adotante;
 
-    const updatedAdocao = await this.adocaoFactory.create(updatedAdocaoData);
+    if (!animal || !adotante) {
+      throw new NotFoundException('Animal ou Adotante não encontrado.');
+    }
+
+    const updatedAdocao = this.adocaoFactory.create(
+      { ...adocao, ...updateAdocaoDto },
+      animal,
+      adotante
+    );
 
     await this.adocaoRepository.update(id, updatedAdocao);
     return updatedAdocao;

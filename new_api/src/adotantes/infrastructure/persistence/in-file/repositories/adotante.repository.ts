@@ -1,7 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { AdotanteRepository } from "src/adotantes/application/ports/adotantes.repository";
 import { Adotante } from "src/adotantes/domain/adotante";
 import { AdotanteEntity } from "../entities/adotante.entity";
+import { AdotanteMapper } from "../mappers/adotante.mappers";
+import { Adocao } from "src/adocoes/domain/adocao";
+import { AdocaoMapper } from "src/adocoes/infrastructure/persistence/in-file/mappers/adocoes.mapper";
 
 @Injectable()
 export class InFileAdotanteRepository implements AdotanteRepository {
@@ -9,16 +12,11 @@ export class InFileAdotanteRepository implements AdotanteRepository {
     private idCounter = 1;
 
     async save(adotante: Adotante): Promise<Adotante> {
-        const adotanteEntity = new AdotanteEntity();
+        const adotanteEntity = AdotanteMapper.paraPersistencia(adotante);
         adotanteEntity.id = this.idCounter++;
-        adotanteEntity.renda = adotante.renda;
-        adotanteEntity.condicao_entrevista = adotante.condicao_entrevista;
-        adotanteEntity.pessoa_id = adotante.pessoa_id;
-
         this.adotantes.set(adotanteEntity.id, adotanteEntity);
-
-        console.log(`Adotante criada com sucesso!`); 
-        return adotanteEntity;
+        console.log(`Adotante ${adotanteEntity.id} criado com sucesso!`);
+        return AdotanteMapper.paraDominio(adotanteEntity);
     }
 
     async findAll(): Promise<Adotante[]> {
@@ -38,10 +36,19 @@ export class InFileAdotanteRepository implements AdotanteRepository {
     }
 
     async update(id: number, adotante: Partial<Adotante>): Promise<Adotante | null> {
-        const existingAdotante = this.adotantes.get(id);
-        if (existingAdotante) {
-            const updatedAdotante = { ...existingAdotante, ...adotante };
-            this.adotantes.set(id, updatedAdotante);
+        const existingAdotanteEntity = this.adotantes.get(id);
+        if (existingAdotanteEntity) {
+            const existingAdotante = AdotanteMapper.paraDominio(existingAdotanteEntity);
+    
+            const updatedAdotante = {
+                ...existingAdotante,
+                ...adotante,
+                adocao: existingAdotante.adocao
+            };
+    
+            const updatedAdotanteEntity = AdotanteMapper.paraPersistencia(updatedAdotante);
+            
+            this.adotantes.set(id, updatedAdotanteEntity);
             console.log(`Adotante com ID ${id} atualizada com sucesso!`);
             return updatedAdotante;
         } else {
@@ -49,6 +56,9 @@ export class InFileAdotanteRepository implements AdotanteRepository {
             return null;
         }
     }
+     
+    
+      
 
     async remove(id: number): Promise<void> {
         if (this.adotantes.has(id)) {

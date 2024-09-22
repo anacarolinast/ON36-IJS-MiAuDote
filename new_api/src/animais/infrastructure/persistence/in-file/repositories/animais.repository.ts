@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { AnimalRepository } from "src/animais/application/ports/animais.repository";
 import { Animal } from "src/animais/domain/animal";
 import { AnimalEntity } from "../entities/animais.entity";
+import { AnimalMapper } from "../mappers/animais.mapper";
 
 @Injectable()
 export class InFileAnimalRepository implements AnimalRepository {
@@ -9,19 +10,11 @@ export class InFileAnimalRepository implements AnimalRepository {
     private idCounter = 1;
 
     async save(animal: Animal): Promise<Animal> {
-        const animalEntity = new AnimalEntity();
+        const animalEntity = AnimalMapper.paraPersistencia(animal);
         animalEntity.id = this.idCounter++;
-        animalEntity.nome = animal.nome;
-        animalEntity.especie = animal.especie;
-        animalEntity.sexo = animal.sexo;
-        animalEntity.data_nascimento = animal.data_nascimento;
-        animalEntity.condicao_saude = animal.condicao_saude;
-        animalEntity.estado_adocao = animal.estado_adocao;
-
         this.animais.set(animalEntity.id, animalEntity);
-
-        console.log(`Animal criado com sucesso!`); 
-        return animalEntity;
+        console.log(`Animal ${animalEntity.id} criado com sucesso!`);
+        return AnimalMapper.paraDominio(animalEntity);
     }
 
     async findAll(): Promise<Animal[]> {
@@ -41,17 +34,31 @@ export class InFileAnimalRepository implements AnimalRepository {
     }
 
     async update(id: number, animal: Partial<Animal>): Promise<Animal | null> {
-        const existingAnimal = this.animais.get(id);
-        if (existingAnimal) {
-            const updatedAnimal = { ...existingAnimal, ...animal };
-            this.animais.set(id, updatedAnimal);
+        const existingAnimalEntity = this.animais.get(id);
+        if (existingAnimalEntity) {
+            const existingAnimal = AnimalMapper.paraDominio(existingAnimalEntity);
+            const updatedAnimal = {
+                ...existingAnimal,
+                ...animal,
+                adocao: animal.adocao !== undefined ? animal.adocao : existingAnimal.adocao
+            };
+    
+            const updatedAnimalEntity = AnimalMapper.paraPersistencia(updatedAnimal);
+            
+            this.animais.set(id, updatedAnimalEntity);
             console.log(`Animal com ID ${id} atualizado com sucesso!`);
-            return updatedAnimal;
+    
+            return AnimalMapper.paraDominio(updatedAnimalEntity);
         } else {
             console.log(`Animal com ID ${id} não encontrado para atualização.`);
             return null;
         }
     }
+    
+    
+     
+    
+    
 
     async remove(id: number): Promise<void> {
         if (this.animais.has(id)) {

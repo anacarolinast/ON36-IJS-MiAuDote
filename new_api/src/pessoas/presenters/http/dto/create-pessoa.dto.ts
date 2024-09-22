@@ -12,7 +12,7 @@ export class CreatePessoaDto {
     endereco: string;
 
     @IsArray()
-    @ArrayNotEmpty() 
+    @IsNotEmpty({ each: true })
     @IsString({ each: true })  
     telefone: string[];
 

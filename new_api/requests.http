@@ -1,10 +1,13 @@
-POST http://localhost:3000/pessoas
+POST http://localhost:3000/animais
 Content-Type: application/json
 
 {
-    "nome": "João Silva",
-    "endereco": "Rua das Flores, 123",
-    "telefone": ["11987654321"],
-    "email": "joao@example.com",
-    "cpf": "123.456.789-00"
+  "nome": "Rex",
+  "especie": "Cachorro",
+  "sexo": "Macho",
+  "data_nascimento": "2023-09-20",
+  "condicao_saude": "Saudável",
+  "estado_adocao": "Disponível"
 }
+
+

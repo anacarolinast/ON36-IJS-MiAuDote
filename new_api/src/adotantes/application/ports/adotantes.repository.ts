@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Adocao } from 'src/adocoes/domain/adocao';
 import { Adotante } from 'src/adotantes/domain/adotante';
 
 @Injectable()

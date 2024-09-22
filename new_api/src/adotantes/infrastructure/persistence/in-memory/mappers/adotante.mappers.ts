@@ -1,17 +1,18 @@
 import { Adotante } from 'src/adotantes/domain/adotante';
 import { AdotanteEntity } from '../entities/adotante.entity';
+import { PessoaMapper } from 'src/pessoas/infrastructure/persistence/in-memory/mappers/pessoa.mapper';
+import { AdocaoMapper } from 'src/adocoes/infrastructure/persistence/in-memory/mappers/adocoes.mapper';
 
 export class AdotanteMapper {
   static paraDominio(adotanteEntity: AdotanteEntity): Adotante {
-    const model = new Adotante(
+    return new Adotante(
       adotanteEntity.id,
       adotanteEntity.renda,
       adotanteEntity.condicao_entrevista,
       adotanteEntity.pessoa_id,
-    //   adotanteEntity.pessoa,
-    //   adotanteEntity.adocao
+      PessoaMapper.paraDominio(adotanteEntity.pessoa),
+      adotanteEntity.adocao?.map(adocaoEntity => AdocaoMapper.paraDominio(adocaoEntity)) || []
     );
-    return model;
   }
 
   static paraPersistencia(adotante: Adotante): AdotanteEntity {
@@ -20,8 +21,8 @@ export class AdotanteMapper {
     entity.renda = adotante.renda;
     entity.condicao_entrevista = adotante.condicao_entrevista;
     entity.pessoa_id = adotante.pessoa_id;
-    // entity.pessoa = adotante.pessoa;
-    // entity.adocao = adotante.adocao;
+    entity.pessoa = PessoaMapper.paraPersistencia(adotante.pessoa);
+    entity.adocao = adotante.adocao?.map(adocao => AdocaoMapper.paraPersistencia(adocao)) || [];
     return entity;
   }
 }

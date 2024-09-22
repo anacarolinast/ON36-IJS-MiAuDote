@@ -1,54 +1,59 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { AdotanteRepository } from 'src/adotantes/application/ports/adotantes.repository';
 import { Adotante } from 'src/adotantes/domain/adotante';
 import { AdotanteEntity } from '../entities/adotante.entity';
 import { AdotanteMapper } from '../mappers/adotante.mappers';
+import { AdocaoMapper } from 'src/adocoes/infrastructure/persistence/in-memory/mappers/adocoes.mapper';
+import { Adocao } from 'src/adocoes/domain/adocao';
 
 @Injectable()
 export class InMemoryAdotanteRepository implements AdotanteRepository {
-  constructor(
-    @InjectRepository(AdotanteEntity)
-    private readonly adotanteRepository: Repository<AdotanteEntity>,
-  ) {}
+    private readonly adotantes = new Map<number, AdotanteEntity>();
+    private idCounter = 1;
 
-  async save(adotante: Adotante): Promise<Adotante> {
-    const persistenceModel = AdotanteMapper.paraPersistencia(adotante);
-    const savedEntity = await this.adotanteRepository.save(persistenceModel);
-    return AdotanteMapper.paraDominio(savedEntity);
-  }
-
-  async findAll(): Promise<Adotante[]> {
-    const entities = await this.adotanteRepository.find();
-    return entities.map((item) => AdotanteMapper.paraDominio(item));
-  }
-
-  async findById(id: number): Promise<Adotante | null> {
-    const entity = await this.adotanteRepository.findOneBy({ id });
-    return entity ? AdotanteMapper.paraDominio(entity) : null;
-  }
-
-  async update(id: number, adotante: Partial<Adotante>): Promise<Adotante | null> {
-    const existingEntity = await this.adotanteRepository.findOneBy({ id });
-    if (!existingEntity) {
-      return null;
+    async save(adotante: Adotante): Promise<Adotante> {
+        const adotanteEntity = AdotanteMapper.paraPersistencia(adotante);
+        adotanteEntity.id = this.idCounter++;
+        this.adotantes.set(adotanteEntity.id, adotanteEntity);
+        console.log(`Adotante ${adotanteEntity.id} criado com sucesso!`);
+        return AdotanteMapper.paraDominio(adotanteEntity);
     }
 
-    const updatedEntity: AdotanteEntity = {
-      ...existingEntity,
-      ...AdotanteMapper.paraPersistencia({
-        ...existingEntity,
-        ...adotante,
-        id
-      })
-    };
+    async findAll(): Promise<Adotante[]> {
+        console.log("Listando todas as adotantes...");
+        return Array.from(this.adotantes.values());
+    }
 
-    await this.adotanteRepository.save(updatedEntity);
-    return AdotanteMapper.paraDominio(updatedEntity);
-  }
+    async findById(id: number): Promise<Adotante | null> {
+        const adotante = this.adotantes.get(id);
+        if (adotante) {
+            console.log(`Adotante encontrada: ${adotante.id}`);
+            return adotante;
+        } else {
+            console.log(`Adotante com ID ${id} não encontrada.`);
+            return null;
+        }
+    }
 
-  async remove(id: number): Promise<void> {
-    await this.adotanteRepository.delete(id);
-  }
+    async update(id: number, adotante: Partial<Adotante>): Promise<Adotante | null> {
+        const existingAdotante = this.adotantes.get(id);
+        if (existingAdotante) {
+            const updatedAdotante = { ...existingAdotante, ...adotante } as AdotanteEntity;
+            this.adotantes.set(id, updatedAdotante);
+            console.log(`Adotante com ID ${id} atualizada com sucesso!`);
+            return updatedAdotante;
+        } else {
+            console.log(`Adotante com ID ${id} não encontrada para atualização.`);
+            return null;
+        }
+    }
+
+    async remove(id: number): Promise<void> {
+        if (this.adotantes.has(id)) {
+            this.adotantes.delete(id);
+            console.log(`Adotante com ID ${id} removida com sucesso!`);
+        } else {
+            console.log(`Adotante com ID ${id} não encontrada para remoção.`);
+        }
+    }
 }

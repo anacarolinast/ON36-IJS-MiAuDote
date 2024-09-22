@@ -12,16 +12,6 @@ export class InFileAdocaoRepository implements AdocaoRepository {
     adotanteRepository: any;
 
     async save(adocao: Adocao): Promise<Adocao> {
-        // const adotanteExists = await this.adotanteRepository.findById(adocao.adotante_id);
-        // const animalExists = await this.animalRepository.findById(adocao.animal_id);
-
-        // // if (!adotanteExists || !animalExists) {
-        // //     const adotanteLog = adotanteExists ? '' : `Adotante com ID ${adocao.adotante_id} não encontrado.`;
-        // //     const animalLog = animalExists ? '' : `Animal com ID ${adocao.animal_id} não encontrado.`;
-        // //     console.log(`${adotanteLog} ${animalLog}`.trim().replace(/\s+/g, ' || '));
-        // //     throw new Error(`Erro ao criar adoção: ${adotanteLog} ${animalLog}`.trim());
-        // // }
-
         const adocaoEntity = AdocaoMapper.paraPersistencia(adocao);
         adocaoEntity.id = this.idCounter++;
         this.adocoes.set(adocaoEntity.id, adocaoEntity);
@@ -49,7 +39,7 @@ export class InFileAdocaoRepository implements AdocaoRepository {
     async update(id: number, adocao: Partial<Adocao>): Promise<Adocao | null> {
         const existingAdocao = this.adocoes.get(id);
         if (existingAdocao) {
-            const updatedAdocao = { ...existingAdocao, ...adocao };
+            const updatedAdocao = AdocaoMapper.paraPersistencia({ ...existingAdocao, ...adocao });
             this.adocoes.set(id, updatedAdocao);
             console.log(`Adocao com ID ${id} atualizada com sucesso!`);
             return updatedAdocao;

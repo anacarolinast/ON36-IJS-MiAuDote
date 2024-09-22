@@ -15,9 +15,6 @@ export class PessoaFactory {
             data.telefone,
             data.email,
             data.cpf,
-            null,
-            null,
-            null
         )
     }
 }

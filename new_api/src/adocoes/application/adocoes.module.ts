@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdocoesService } from './adocoes.service';
 import { AdocoesController } from '../presenters/http/adocoes.controller';
@@ -10,13 +10,14 @@ import { AnimaisModule } from 'src/animais/application/animais.module';
 import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
 
 @Module({
-  imports: [AnimaisModule, AdotantesModule],
+  imports: [AnimaisModule, forwardRef(() => AdotantesModule)],
   controllers: [AdocoesController],
   providers: [
     AdocoesService,
     AdocaoFactory,
     { provide: AdocaoRepository, useClass: InFileAdocaoRepository },
   ],
+  exports: [AdocoesService, AdocaoRepository],
 })
 export class AdocoesModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

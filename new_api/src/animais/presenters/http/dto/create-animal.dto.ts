@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsDate, IsString, Length } from 'class-validator';
 
 export class CreateAnimalDto {
@@ -13,7 +14,8 @@ export class CreateAnimalDto {
     @Length(1)   
     sexo: string;
 
-    @IsDate() 
+    @IsDate()
+    @Type(() => Date)
     data_nascimento: Date;
 
     @IsString()

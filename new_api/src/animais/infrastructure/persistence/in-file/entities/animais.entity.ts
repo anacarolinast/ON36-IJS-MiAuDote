@@ -1,7 +1,7 @@
-// import { Adocao } from 'src/adocoes/entities/adocao.entity';
-// import { Castracao } from 'src/castracoes/entities/castracao.entity';
-// import { Medicamento } from 'src/medicamentos/entities/medicamento.entity';
-// import { Vacina } from 'src/vacinas/entities/vacina.entity';
+import { AdocaoEntity } from "src/adocoes/infrastructure/persistence/in-file/entities/adocao.entity";
+import { CastracaoEntity } from "src/castracoes/infrastructure/persistence/in-file/entities/castracao.entity";
+import { MedicamentoEntity } from "src/medicamentos/infrastructure/persistence/in-file/entities/medicamento.entity";
+import { VacinaEntity } from "src/vacinas/infrastructure/persistence/in-file/entities/vacina.entity";
 
 export class AnimalEntity {
   id: number;
@@ -11,8 +11,8 @@ export class AnimalEntity {
   data_nascimento: Date;
   condicao_saude: string;
   estado_adocao: string;
-  // adocao?: Adocao;
-  // medicamentos?: Medicamento[];
-  // vacinas?: Vacina[];
-  // castracao?: Castracao;
+  adocao?: AdocaoEntity;
+  medicamentos?: MedicamentoEntity[];
+  vacinas?: VacinaEntity[];
+  castracao?: CastracaoEntity;
 }
