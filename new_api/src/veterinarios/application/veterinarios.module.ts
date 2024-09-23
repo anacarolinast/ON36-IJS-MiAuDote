@@ -7,13 +7,14 @@ import { VeterinarioRepository } from './ports/veterinarios.repository';
 import { PessoasModule } from 'src/pessoas/application/pessoas.module'
 
 @Module({
-  imports: [PessoasModule],
+  imports: [forwardRef(() => PessoasModule)],
   controllers: [VeterinariosController],
   providers: [
     VeterinariosService, 
     VeterinarioFactory,
     { provide: VeterinarioRepository, useClass: InFileVeterinarioRepository },
   ],
+  exports: [VeterinarioRepository],
 })
 export class VeterinariosModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

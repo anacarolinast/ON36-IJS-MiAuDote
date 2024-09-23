@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DoadoresService } from './doadores.service';
 import { DoadoresController } from '../presenters/http/doadores.controller';
@@ -9,13 +9,14 @@ import { InFileDoadorRepository } from '../infrastructure/persistence/in-file/re
 import { PessoasModule } from 'src/pessoas/application/pessoas.module';
 
 @Module({
-  imports: [PessoasModule],
+  imports: [forwardRef(() => PessoasModule)],
   controllers: [DoadoresController],
   providers: [
     DoadoresService,
     DoadorFactory,
     { provide: DoadorRepository, useClass: InFileDoadorRepository },
   ],
+  exports: [DoadorRepository],
 })
 export class DoadoresModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

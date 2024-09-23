@@ -8,6 +8,6 @@ export class AdotanteEntity {
     condicao_entrevista: string;
     pessoa_id: number;
     pessoa: PessoaEntity;
-    adocao?: AdocaoEntity[];
+    adocao: AdocaoEntity[];
   }
   

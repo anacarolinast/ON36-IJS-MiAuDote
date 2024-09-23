@@ -65,8 +65,6 @@ export class AdocoesService {
     return savedAdocao;
 }
 
-
-
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);
     const animal = updateAdocaoDto.animal_id

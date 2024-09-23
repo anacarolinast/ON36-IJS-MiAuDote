@@ -58,7 +58,7 @@ export class InFileAdotanteRepository implements AdotanteRepository {
             return null;
         }
     }
-
+    
     async remove(id: number): Promise<void> {
         if (this.adotantes.has(id)) {
             this.adotantes.delete(id);

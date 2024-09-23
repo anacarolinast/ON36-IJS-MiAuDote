@@ -1,6 +1,7 @@
 import { Adocao } from "src/adocoes/domain/adocao";
 import { AdocaoEntity } from "../entities/adocao.entity";
 import { AdotanteMapper } from "src/adotantes/infrastructure/persistence/in-file/mappers/adotante.mappers";
+import { AnimalMapper } from "src/animais/infrastructure/persistence/in-file/mappers/animais.mapper";
 
 
 export class AdocaoMapper {
@@ -12,7 +13,7 @@ export class AdocaoMapper {
       adocaoEntity.data_adocao,
       adocaoEntity.condicoes_especiais,
       adocaoEntity.status_aprovacao,
-      adocaoEntity.animal,
+      AnimalMapper.paraDominio(adocaoEntity.animal),
       AdotanteMapper.paraDominio(adocaoEntity.adotante)
     );
     return model;
@@ -26,7 +27,7 @@ export class AdocaoMapper {
     entity.data_adocao = adocao.data_adocao;
     entity.condicoes_especiais = adocao.condicoes_especiais;
     entity.status_aprovacao = adocao.status_aprovacao;
-    entity.animal = adocao.animal;
+    entity.animal = AnimalMapper.paraPersistencia(adocao.animal);
     entity.adotante = AdotanteMapper.paraPersistencia(adocao.adotante);
     return entity;
   }

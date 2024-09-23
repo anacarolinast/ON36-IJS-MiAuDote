@@ -10,7 +10,7 @@ import { PessoasModule } from 'src/pessoas/application/pessoas.module';
 import { AdocoesModule } from 'src/adocoes/application/adocoes.module';
 
 @Module({
-  imports: [forwardRef(() => AdocoesModule), PessoasModule],
+  imports: [forwardRef(() => AdocoesModule), forwardRef(() => PessoasModule)],
   controllers: [AdotantesController],
   providers: [
     AdotantesService,
