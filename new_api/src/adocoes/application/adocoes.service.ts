@@ -51,12 +51,15 @@ export class AdocoesService {
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
   
     const newAdocao = this.adocaoFactory.create(createAdocaoDto, animal, adotante);
+
+
     const savedAdocao = await this.adocaoRepository.save(newAdocao);
 
-    console.log('Antes da atualização:', adotante);
-    
+    console.log('Antes da atualização do adotante:', adotante);
+  
+    const { adotante: _, ...adocaoData } = savedAdocao; 
     adotante.adocao.push(savedAdocao);
-    await this.adotanteRepository.update(adotante.id, adotante);
+    await this.adotanteRepository.adopt(adotante.id, adocaoData); 
     console.log('Depois da atualização do adotante:', adotante);
 
     await this.animalRepository.update(animal.id, animal);
@@ -64,6 +67,8 @@ export class AdocoesService {
 
     return savedAdocao;
 }
+
+
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);

@@ -7,19 +7,19 @@ import { AnimalMapper } from "src/animais/infrastructure/persistence/in-file/map
 export class AdocaoMapper {
   static paraDominio(adocaoEntity: AdocaoEntity): Adocao {
     const model = new Adocao(
-      adocaoEntity.id,
-      adocaoEntity.adotante_id,
-      adocaoEntity.animal_id,
-      adocaoEntity.data_adocao,
-      adocaoEntity.condicoes_especiais,
-      adocaoEntity.status_aprovacao,
-      AnimalMapper.paraDominio(adocaoEntity.animal),
-      AdotanteMapper.paraDominio(adocaoEntity.adotante)
+        adocaoEntity.id,
+        adocaoEntity.adotante_id,
+        adocaoEntity.animal_id,
+        adocaoEntity.data_adocao,
+        adocaoEntity.condicoes_especiais,
+        adocaoEntity.status_aprovacao,
+        AnimalMapper.paraDominio(adocaoEntity.animal),
+        adocaoEntity.adotante ? AdotanteMapper.paraDominio(adocaoEntity.adotante) : undefined
     );
     return model;
-  }
+}
 
-  static paraPersistencia(adocao: Adocao): AdocaoEntity {
+static paraPersistencia(adocao: Adocao): AdocaoEntity {
     const entity = new AdocaoEntity();
     entity.id = adocao.id;
     entity.adotante_id = adocao.adotante_id;
@@ -28,7 +28,9 @@ export class AdocaoMapper {
     entity.condicoes_especiais = adocao.condicoes_especiais;
     entity.status_aprovacao = adocao.status_aprovacao;
     entity.animal = AnimalMapper.paraPersistencia(adocao.animal);
-    entity.adotante = AdotanteMapper.paraPersistencia(adocao.adotante);
+    if (adocao.adotante) {
+        entity.adotante = AdotanteMapper.paraPersistencia(adocao.adotante);
+    }
     return entity;
   }
 }

@@ -21,33 +21,38 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
 
     async findAll(): Promise<Adotante[]> {
         console.log("Listando todas as adotantes...");
-        return Array.from(this.adotantes.values());
+        return Array.from(this.adotantes.values()).map(adotanteEntity =>
+            AdotanteMapper.paraDominio(adotanteEntity)
+        );
     }
 
     async findById(id: number): Promise<Adotante | null> {
-        const adotante = this.adotantes.get(id);
-        if (adotante) {
-            console.log(`Adotante encontrada: ${adotante.id}`);
-            return adotante;
+        const adotanteEntity = this.adotantes.get(id);
+        if (adotanteEntity) {
+            console.log(`Adotante encontrada: ${adotanteEntity.id}`);
+            return AdotanteMapper.paraDominio(adotanteEntity);
         } else {
             console.log(`Adotante com ID ${id} não encontrada.`);
             return null;
         }
     }
 
-    async update(id: number, adotante: Partial<Adotante>): Promise<Adotante | null> {
-        const existingAdotante = this.adotantes.get(id);
-        if (existingAdotante) {
-            const updatedAdotante = { ...existingAdotante, ...adotante } as AdotanteEntity;
-            this.adotantes.set(id, updatedAdotante);
-            console.log(`Adotante com ID ${id} atualizada com sucesso!`);
-            return updatedAdotante;
+    async update(id: number, dadosAtualizados: Partial<Adotante>): Promise<Adotante | null> {
+        const adotanteEntity = this.adotantes.get(id);
+        
+        if (adotanteEntity) {
+            Object.assign(adotanteEntity, dadosAtualizados);
+
+            this.adotantes.set(id, adotanteEntity);
+            console.log(`Adotante com ID ${id} atualizado com sucesso!`);
+            
+            return AdotanteMapper.paraDominio(adotanteEntity);
         } else {
-            console.log(`Adotante com ID ${id} não encontrada para atualização.`);
+            console.log(`Adotante com ID ${id} não encontrada.`);
             return null;
         }
     }
-
+       
     async remove(id: number): Promise<void> {
         if (this.adotantes.has(id)) {
             this.adotantes.delete(id);
@@ -56,4 +61,38 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
             console.log(`Adotante com ID ${id} não encontrada para remoção.`);
         }
     }
+
+    async adopt(adotanteId: number, novaAdocao: Adocao): Promise<Adotante | null> {
+        const adotanteEntity = this.adotantes.get(adotanteId);
+      
+        if (adotanteEntity) {
+          const adotante = AdotanteMapper.paraDominio(adotanteEntity);
+          console.log('Adotante antes de adicionar a nova adoção:', adotante);
+      
+          // Adiciona a nova adoção ao adotante sem a referência ao adotante
+          adotante.adocao.push({
+            id: novaAdocao.id,
+            adotante_id: novaAdocao.adotante_id,
+            animal_id: novaAdocao.animal_id,
+            data_adocao: novaAdocao.data_adocao,
+            condicoes_especiais: novaAdocao.condicoes_especiais,
+            status_aprovacao: novaAdocao.status_aprovacao,
+            animal: novaAdocao.animal,
+            adotante: undefined // Removendo referência ao adotante
+          });
+      
+          console.log('Adotante após adicionar nova adoção:', adotante);
+      
+          const updatedAdotanteEntity = AdotanteMapper.paraPersistencia(adotante);
+          this.adotantes.set(adotanteId, updatedAdotanteEntity);
+          console.log(`Adotante com ID ${adotanteId} atualizado com nova adoção no repositório.`);
+      
+          return adotante;
+        } else {
+          console.log(`Adotante com ID ${adotanteId} não encontrado para adicionar adoção.`);
+          return null;
+        }
+      }      
+      
+    
 }

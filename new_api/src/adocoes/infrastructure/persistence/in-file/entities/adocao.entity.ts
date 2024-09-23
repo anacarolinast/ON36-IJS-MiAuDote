@@ -8,6 +8,6 @@ export class AdocaoEntity {
   data_adocao: Date;
   condicoes_especiais: string;
   status_aprovacao: string;
-  animal: AnimalEntity;
-  adotante: AdotanteEntity;
+  animal?: AnimalEntity;
+  adotante?: AdotanteEntity;
 }
