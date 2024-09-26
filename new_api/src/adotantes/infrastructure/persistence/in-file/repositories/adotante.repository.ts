@@ -20,7 +20,7 @@ export class InFileAdotanteRepository implements AdotanteRepository {
     }
 
     async findAll(): Promise<Adotante[]> {
-        console.log("Listando todas as adotantes...");
+        console.log("Listando todos os adotantes...");
         return Array.from(this.adotantes.values()).map(adotanteEntity =>
             AdotanteMapper.paraDominio(adotanteEntity)
         );
@@ -29,10 +29,10 @@ export class InFileAdotanteRepository implements AdotanteRepository {
     async findById(id: number): Promise<Adotante | null> {
         const adotanteEntity = this.adotantes.get(id);
         if (adotanteEntity) {
-            console.log(`Adotante encontrada: ${adotanteEntity.id}`);
+            console.log(`Adotante encontrado: ${adotanteEntity.id}`);
             return AdotanteMapper.paraDominio(adotanteEntity);
         } else {
-            console.log(`Adotante com ID ${id} não encontrada.`);
+            console.log(`Adotante com ID ${id} não encontrado.`);
             return null;
         }
     }

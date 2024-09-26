@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, NotFoundException } from '@nestjs/common';
 import { DoadoresService } from '../../application/doadores.service';
 import { CreateDoadorDto } from './dto/create-doador.dto';
 import { UpdateDoadorDto } from './dto/update-doador.dto';
+import { Doador } from 'src/doadores/domain/doadores';
 
 @Controller('doadores')
 export class DoadoresController {
@@ -13,8 +14,12 @@ export class DoadoresController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return this.doadoresService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<Doador> {
+    const doador = await this.doadoresService.findOne(+id);
+    if(!doador) {
+      throw new NotFoundException(`Doador with ID ${id} not found`)
+    }
+    return doador;
   }
 
   @Post()
@@ -23,12 +28,23 @@ export class DoadoresController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() updateDoadorDto: UpdateDoadorDto) {
-    return this.doadoresService.update(id, updateDoadorDto);
+  async update(
+    @Param('id') id: number, 
+    @Body() updateDoadorDto: UpdateDoadorDto,
+  ): Promise<Doador> {
+    const doador = await this.doadoresService.findOne(+id);
+    if(!doador){
+      throw new NotFoundException(`Doador with ID ${id} not found`);
+    }
+    return this.doadoresService.update(+id, updateDoadorDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: number) {
-    return this.doadoresService.remove(id);
+  async remove(@Param('id') id: number) : Promise<{deleted: boolean}> {
+    const doador = await this.doadoresService.findOne(+id);
+    if (!doador) {
+      throw new NotFoundException(`Doador with ID ${id} not found`)
+    }
+    return this.doadoresService.remove(+id);
   }
 }

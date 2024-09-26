@@ -1,25 +1,13 @@
-// import { Doacao } from 'src/doacoes/entities/doacao.entity';
-import { Pessoa } from 'src/pessoas/domain/pessoas';
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import { PessoaEntity } from "src/pessoas/infrastructure/persistence/in-memory/entities/pessoa.entity";
+import { DoacaoEntity } from "src/doacoes/infrastructure/persistence/in-memory/entities/doacao.entity";
 
-@Entity('doadores')
 export class DoadorEntity {
-    @PrimaryGeneratedColumn()
     id: number;
-
-    @Column({ length: 255 })
     tipo_doacao: string;
-
-    @Column({ length: 255 })
     descricao: string;
-
-    @Column()
     pessoa_id: number;
-
-    @OneToOne(() => Pessoa, { eager: true })
-    @JoinColumn({ name: 'pessoa_id' })
-    pessoa: Pessoa;
-
-    // @OneToMany(() => Doacao, (doacao) => doacao.doador)
-    // doacoes: Doacao[];
-}
+    pessoa: PessoaEntity;
+    doacao: DoacaoEntity[]
+  }
+  
+  

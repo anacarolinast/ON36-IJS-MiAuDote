@@ -11,7 +11,7 @@ export class DoadorMapper {
       doadorEntity.descricao,
       doadorEntity.pessoa_id,
       PessoaMapper.paraDominio(doadorEntity.pessoa),
-      // doadorEntity.doacao?.map(doacaoEntity => DoacaoMapper.paraDominio(doacaoEntity)) || []
+      doadorEntity.doacao?.map(doacaoEntity => DoacaoMapper.paraDominio(doacaoEntity)) || []
     )
   }
 
@@ -22,7 +22,7 @@ export class DoadorMapper {
     entity.descricao = doador.descricao;
     entity.pessoa_id = doador.pessoa_id;
     entity.pessoa = PessoaMapper.paraPersistencia(doador.pessoa);
-    // entity.doacao = doador.doacao?.map(doacao => DoacaoMapper.paraPersistencia(doacao)) || [];
+    entity.doacao = doador.doacao?.map(doacao => DoacaoMapper.paraPersistencia(doacao)) || [];
     return entity;
   }
 }

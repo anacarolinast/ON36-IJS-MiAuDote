@@ -29,10 +29,10 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
     async findById(id: number): Promise<Adotante | null> {
         const adotanteEntity = this.adotantes.get(id);
         if (adotanteEntity) {
-            console.log(`Adotante encontrada: ${adotanteEntity.id}`);
+            console.log(`Adotante encontrado: ${adotanteEntity.id}`);
             return AdotanteMapper.paraDominio(adotanteEntity);
         } else {
-            console.log(`Adotante com ID ${id} não encontrada.`);
+            console.log(`Adotante com ID ${id} não encontrado.`);
             return null;
         }
     }
@@ -48,7 +48,7 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
             
             return AdotanteMapper.paraDominio(adotanteEntity);
         } else {
-            console.log(`Adotante com ID ${id} não encontrada.`);
+            console.log(`Adotante com ID ${id} não encontrado.`);
             return null;
         }
     }
@@ -69,7 +69,6 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
           const adotante = AdotanteMapper.paraDominio(adotanteEntity);
           console.log('Adotante antes de adicionar a nova adoção:', adotante);
       
-          // Adiciona a nova adoção ao adotante sem a referência ao adotante
           adotante.adocao.push({
             id: novaAdocao.id,
             adotante_id: novaAdocao.adotante_id,
@@ -78,7 +77,7 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
             condicoes_especiais: novaAdocao.condicoes_especiais,
             status_aprovacao: novaAdocao.status_aprovacao,
             animal: novaAdocao.animal,
-            adotante: undefined // Removendo referência ao adotante
+            adotante: undefined
           });
       
           console.log('Adotante após adicionar nova adoção:', adotante);

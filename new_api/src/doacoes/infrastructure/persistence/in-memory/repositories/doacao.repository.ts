@@ -8,47 +8,56 @@ import { DoacaoMapper } from '../mappers/doacao.mappers';
 
 @Injectable()
 export class InMemoryDoacaoRepository implements DoacaoRepository {
-  constructor(
-    @InjectRepository(DoacaoEntity)
-    private readonly doacaoRepository: Repository<DoacaoEntity>,
-  ) {}
+  private readonly doacao = new Map<number, DoacaoEntity>();
+  private idCounter = 1;
+  gastoRepository: any;
+  doadorRepository: any;
 
   async save(doacao: Doacao): Promise<Doacao> {
-    const persistenceModel = DoacaoMapper.paraPersistencia(doacao);
-    const savedEntity = await this.doacaoRepository.save(persistenceModel);
-    return DoacaoMapper.paraDominio(savedEntity);
+    const doacaoEntity = DoacaoMapper.paraPersistencia(doacao);
+    doacaoEntity.id = this.idCounter++;
+    this.doacao.set(doacaoEntity.id, doacaoEntity);
+
+    console.log(`Doação criada com sucesso!`); 
+    return DoacaoMapper.paraDominio(doacaoEntity);
   }
 
   async findAll(): Promise<Doacao[]> {
-    const entities = await this.doacaoRepository.find();
-    return entities.map((item) => DoacaoMapper.paraDominio(item));
+    console.log("Listando todas as doacoes...");
+    return Array.from(this.doacao.values());
   }
 
   async findById(id: number): Promise<Doacao | null> {
-    const entity = await this.doacaoRepository.findOneBy({ id });
-    return entity ? DoacaoMapper.paraDominio(entity) : null;
+    const doacao = this.doacao.get(id);
+    if (doacao) {
+        console.log(`Doacao encontrada: ${doacao.id}`);
+        return doacao;
+    } else {
+        console.log(`Doacao com ID ${id} não encontrada.`);
+        return null;
+    }
   }
 
   async update(id: number, doacao: Partial<Doacao>): Promise<Doacao | null> {
-    const existingEntity = await this.doacaoRepository.findOneBy({ id });
-    if (!existingEntity) {
-      return null;
+    const existingDoacao = this.doacao.get(id);
+    if (existingDoacao) {
+        const updatedDoacao = DoacaoMapper.paraPersistencia({ ...existingDoacao, ...doacao });
+        this.doacao.set(id, updatedDoacao);
+        console.log(`Doacao com ID ${id} atualizada com sucesso!`);
+        return updatedDoacao;
+    } else {
+        console.log(`Doacao com ID ${id} não encontrada para atualização.`);
+        return null;
     }
-
-    const updatedEntity: DoacaoEntity = {
-      ...existingEntity,
-      ...DoacaoMapper.paraPersistencia({
-        ...existingEntity,
-        ...doacao,
-        id
-      })
-    };
-
-    await this.doacaoRepository.save(updatedEntity);
-    return DoacaoMapper.paraDominio(updatedEntity);
   }
 
   async remove(id: number): Promise<void> {
-    await this.doacaoRepository.delete(id);
+    if (this.doacao.has(id)) {
+        this.doacao.delete(id);
+        console.log(`Doacao com ID ${id} removida com sucesso!`);
+    } else {
+        console.log(`Doacao com ID ${id} não encontrada para remoção.`);
+    }
   }
 }
+

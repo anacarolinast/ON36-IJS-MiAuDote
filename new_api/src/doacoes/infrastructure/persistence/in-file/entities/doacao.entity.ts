@@ -1,6 +1,5 @@
-// Ajustar as importações depois do refactor
-// import { Gastos } from 'src/gastos/entities/gastos.entity';
-// import { Doador } from 'src/doador/entities/doador.entity';
+import { GastoEntity } from 'src/gastos/infrastructure/persistence/in-file/entities/gasto.entity'; 
+import { DoadorEntity } from 'src/doadores/infrastructure/persistence/in-file/entities/doador.entity'; 
 
 export class DoacaoEntity {
     id: number;
@@ -9,10 +8,8 @@ export class DoacaoEntity {
     tipo_doacao: string;
     valor_estimado: number;
     gasto_id: number;
-  
-    // Ajustar as importações depois do refactor
-    // gastos?: Gastos;
-    // doador?: doador;
+    gastos?: GastoEntity;
+    doador?: DoadorEntity;
   }
   
   

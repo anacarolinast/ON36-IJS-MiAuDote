@@ -2,25 +2,22 @@ import { Injectable } from "@nestjs/common";
 import { DoacaoRepository } from "src/doacoes/application/ports/doacao.repository";
 import { Doacao } from "src/doacoes/domain/doacoes";
 import { DoacaoEntity } from "../entities/doacao.entity";
+import { DoacaoMapper } from "../mappers/doacao.mappers";
 
 @Injectable()
 export class InFileDoacaoRepository implements DoacaoRepository {
     private readonly doacoes = new Map<number, DoacaoEntity>();
     private idCounter = 1;
+    gastoRepository: any;
+    doadorRepository: any;
 
     async save(doacao: Doacao): Promise<Doacao> {
-        const doacaoEntity = new DoacaoEntity();
+        const doacaoEntity = DoacaoMapper.paraPersistencia(doacao);
         doacaoEntity.id = this.idCounter++;
-        doacaoEntity.doador_id = doacao.doador_id;
-        doacaoEntity.data_doacao = doacao.data_doacao;
-        doacaoEntity.tipo_doacao = doacao.tipo_doacao;
-        doacaoEntity.valor_estimado = doacao.valor_estimado;
-        doacaoEntity.gasto_id = doacao.gasto_id;
-
         this.doacoes.set(doacaoEntity.id, doacaoEntity);
 
         console.log(`Doacao criada com sucesso!`); 
-        return doacaoEntity;
+        return  DoacaoMapper.paraDominio(doacaoEntity);
     }
 
     async findAll(): Promise<Doacao[]> {

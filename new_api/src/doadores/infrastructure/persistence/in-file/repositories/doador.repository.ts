@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { DoadorRepository } from "src/doadores/application/ports/doador.repository";
 import { Doador } from "src/doadores/domain/doadores";
 import { DoadorEntity } from "../entities/doador.entity";
 import { DoadorMapper } from "../mappers/doador.mappers";
+import { Doacao } from "src/doacoes/domain/doacoes";
 
 @Injectable()
 export class InFileDoadorRepository implements DoadorRepository {
@@ -13,12 +14,12 @@ export class InFileDoadorRepository implements DoadorRepository {
         const doadorEntity = DoadorMapper.paraPersistencia(doador);
         doadorEntity.id = this.idCounter++;
         this.doadores.set(doadorEntity.id, doadorEntity);
-        console.log(`Doador criada com sucesso!`); 
+        console.log(`Doador ${doadorEntity.id} criado com sucesso!`); 
         return DoadorMapper.paraDominio(doadorEntity);
     }
 
     async findAll(): Promise<Doador[]> {
-        console.log("Listando todas as doadores...");
+        console.log("Listando todos os doadores...");
         return Array.from(this.doadores.values()).map(doadoresEntity =>
             DoadorMapper.paraDominio(doadoresEntity)
         );
@@ -27,7 +28,7 @@ export class InFileDoadorRepository implements DoadorRepository {
     async findById(id: number): Promise<Doador | null> {
         const doadorEntity = this.doadores.get(id);
         if (doadorEntity) {
-            console.log(`Doador encontrada: ${doadorEntity.id}`);
+            console.log(`Doador encontrado: ${doadorEntity.id}`);
             return DoadorMapper.paraDominio(doadorEntity);
         } else {
             console.log(`Doador com ID ${id} não encontrada.`);
@@ -35,18 +36,16 @@ export class InFileDoadorRepository implements DoadorRepository {
         }
     }
 
-    async update(id: number, doador: Partial<Doador>): Promise<Doador | null> {
-        const existingDoadorEntity = this.doadores.get(id);
-        if (existingDoadorEntity) {
-            const existingDoador = DoadorMapper.paraDominio(existingDoadorEntity);
-            
-            const updatedDoador = { ...existingDoador, ...doador };
-            
-            const updatedDoadorEntity = DoadorMapper.paraPersistencia(updatedDoador);
-            
-            this.doadores.set(id, updatedDoadorEntity);
-            console.log(`Doador com ID ${id} atualizada com sucesso!`);
-            return updatedDoador;
+    async update(id: number, dadosAtualizados: Partial<Doador>): Promise<Doador | null> {
+        const doadorEntity = this.doadores.get(id);
+        
+        if (doadorEntity) {
+            Object.assign(doadorEntity, dadosAtualizados);
+                        
+            this.doadores.set(id, doadorEntity);
+            console.log(`Doador com ID ${id} atualizado com sucesso!`);
+
+            return DoadorMapper.paraDominio(doadorEntity);;
         } else {
             console.log(`Doador com ID ${id} não encontrada para atualização.`);
             return null;
@@ -59,6 +58,25 @@ export class InFileDoadorRepository implements DoadorRepository {
             console.log(`Doador com ID ${id} removida com sucesso!`);
         } else {
             console.log(`Doador com ID ${id} não encontrada para remoção.`);
+        }
+    }
+
+    async donate(doadorId: number, novaDoacao: Doacao): Promise<Doador | null> {
+        const doadorEntity = this.doadores.get(doadorId);
+    
+        if (doadorEntity) {
+            const doador = DoadorMapper.paraDominio(doadorEntity);
+            console.log('Doador antes de adicionar a nova doação:', doador);
+            doador.doacao.push(novaDoacao);
+            console.log('Doador após adicionar nova doação:', doador);
+
+            const updatedDoadorEntity = DoadorMapper.paraPersistencia(doador);
+            this.doadores.set(doadorId, updatedDoadorEntity);
+            console.log(`Doador com ID ${doadorId} atualizado com nova doação no repositório.`);
+    
+            return doador;
+        } else {
+            console.log(`Doador com ID ${doadorId} não encontrado para adicionar doação.`);
         }
     }
 }
