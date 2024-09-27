@@ -23,37 +23,25 @@ export class AnimaisController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Animal> {
-    const animal = await this.animaisService.findOne(+id);
-    if (!animal) {
-      throw new NotFoundException(`Animal with ID ${id} not found`);
-    }
-    return animal;
+  async findOne(@Param('id') id: number) {
+    return this.animaisService.findOne(id);
   }
 
   @Post()
-  async create(@Body() createAnimalDto: CreateAnimalDto): Promise<Animal> {
+  async create(@Body() createAnimalDto: CreateAnimalDto) {
     return this.animaisService.create(createAnimalDto);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateAnimalDto: UpdateAnimalDto,
-  ): Promise<Animal> {
-    const animal = await this.animaisService.findOne(+id);
-    if (!animal) {
-      throw new NotFoundException(`Animal with ID ${id} not found`);
-    }
-    return this.animaisService.update(+id, updateAnimalDto);
+  ) {
+    return this.animaisService.update(id, updateAnimalDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<{ deleted: boolean }> {
-    const animal = await this.animaisService.findOne(+id);
-    if (!animal) {
-      throw new NotFoundException(`Animal with ID ${id} not found`);
-    }
-    return this.animaisService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return this.animaisService.remove(id);
   }
 }

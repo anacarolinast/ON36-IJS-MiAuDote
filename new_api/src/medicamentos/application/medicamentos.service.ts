@@ -5,6 +5,7 @@ import { UpdateMedicamentoDto } from '../presenters/http/dto/update-medicamento.
 import { MedicamentoFactory } from '../domain/factories/medicamentos-factory';
 import { MedicamentoRepository } from './ports/medicamento.repository';
 import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
+import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
 
 @Injectable()
 export class MedicamentosService {
@@ -12,6 +13,7 @@ export class MedicamentosService {
     private readonly medicamentoFactory: MedicamentoFactory,
     private readonly medicamentoRepository: MedicamentoRepository,
     private readonly veterinarioRepository: VeterinarioRepository,
+    private readonly animalRepository: AnimalRepository,
   ) {}
 
   async findAll(): Promise<Medicamento[]> {
@@ -30,12 +32,23 @@ export class MedicamentosService {
     const veterinario = await this.veterinarioRepository.findById(
       createMedicamentoDto.veterinario_id,
     );
+
+    const animal = await this.animalRepository.findById(
+      createMedicamentoDto.animal_id,
+    );
+
     if (!veterinario) {
       throw new NotFoundException(
         `Veterinario with ID ${createMedicamentoDto.veterinario_id} not found`,
       );
     }
-    const newMedicamento = this.medicamentoFactory.create(createMedicamentoDto, veterinario);
+
+    if (!animal) {
+      throw new NotFoundException(
+        `Animal with ID ${createMedicamentoDto.animal_id} not found`,
+      );
+    }
+    const newMedicamento = this.medicamentoFactory.create(createMedicamentoDto, veterinario, animal);
     return this.medicamentoRepository.save(newMedicamento);
   }
 
@@ -57,7 +70,12 @@ export class MedicamentosService {
       throw new NotFoundException(`Veterinario with ID ${updatedMedicamentoData.veterinario_id} not found`)
     }
 
-    const updatedMedicamento = this.medicamentoFactory.create(updatedMedicamentoData, veterinario);
+    const animal = await this.animalRepository.findById(updatedMedicamentoData.animal_id);
+    if (!animal){
+      throw new NotFoundException(`Animal with ID ${updatedMedicamentoData.animal_id} not found`)
+    }
+
+    const updatedMedicamento = this.medicamentoFactory.create(updatedMedicamentoData, veterinario, animal);
     const result = await this.medicamentoRepository.update(id, updatedMedicamento);
     
     if(!result){

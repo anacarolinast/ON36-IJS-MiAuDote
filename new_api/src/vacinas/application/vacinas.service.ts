@@ -5,6 +5,7 @@ import { UpdateVacinaDto } from '../presenters/http/dto/update-vacina.dto';
 import { VacinaFactory } from '../domain/factories/vacinas-factory';
 import { VacinaRepository } from './ports/vacinas.repository';
 import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
+import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
 
 @Injectable()
 export class VacinasService {
@@ -12,6 +13,7 @@ export class VacinasService {
     private readonly vacinaRepository: VacinaRepository,
     private readonly vacinaFactory: VacinaFactory,
     private readonly veterinarioRepository: VeterinarioRepository,
+    private readonly animalRepository: AnimalRepository,
   ) {}
 
   async findAll(): Promise<Vacina[]> {
@@ -30,12 +32,23 @@ export class VacinasService {
     const veterinario = await this.veterinarioRepository.findById(
       createVacinaDto.veterinario_id,
     );
+
+    const animal = await this.animalRepository.findById(
+      createVacinaDto.animal_id,
+    );
+
     if (!veterinario) {
       throw new NotFoundException(
         `Veterinario with ID ${createVacinaDto.veterinario_id} not found`,
       );
     }
-    const newVacina = this.vacinaFactory.create(createVacinaDto, veterinario);
+
+    if (!animal) {
+      throw new NotFoundException(
+        `Animal with ID ${createVacinaDto.animal_id} not found`,
+      );
+    }
+    const newVacina = this.vacinaFactory.create(createVacinaDto, veterinario, animal);
     return this.vacinaRepository.save(newVacina);
   }
 
@@ -57,7 +70,12 @@ export class VacinasService {
       throw new NotFoundException(`Veterinario with ID ${updatedVacinaData.veterinario_id} not found`)
     }
 
-    const updatedVacina = this.vacinaFactory.create(updatedVacinaData, veterinario);
+    const animal = await this.animalRepository.findById(updatedVacinaData.animal_id);
+    if (!animal){
+      throw new NotFoundException(`Animal with ID ${updatedVacinaData.animal_id} not found`)
+    }
+
+    const updatedVacina = this.vacinaFactory.create(updatedVacinaData, veterinario, animal);
 
     const result = await this.vacinaRepository.update(id, updatedVacina);
     

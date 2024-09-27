@@ -13,9 +13,9 @@ export class CastracaoMapper {
       castracaoEntity.condicao_pos,
       castracaoEntity.veterinario_id,
       castracaoEntity.gasto_id,
-      // AnimalMapper.paraDominio(castracaoEntity.animais),
       VeterinarioMapper.paraDominio(castracaoEntity.veterinarios),
-      // GastoMapper.paraDominio(castracaoEntity.gastos),
+      AnimalMapper.paraDominio(castracaoEntity.animais),
+      GastoMapper.paraDominio(castracaoEntity.gastos),
     );
     return model;
   }
@@ -28,9 +28,9 @@ export class CastracaoMapper {
     entity.condicao_pos = castracao.condicao_pos;
     entity.veterinario_id = castracao.veterinario_id;
     entity.gasto_id = castracao.gasto_id;
-    // entity.animais = AnimalMapper.paraPersistencia(castracao.animal);
     entity.veterinarios = VeterinarioMapper.paraPersistencia(castracao.veterinario);
-    // entity.gastos = GastoMapper.paraPersistencia(castracao.gasto);
+    entity.animais = AnimalMapper.paraPersistencia(castracao.animal);
+    entity.gastos = GastoMapper.paraPersistencia(castracao.gasto);
     return entity;
   }
 }

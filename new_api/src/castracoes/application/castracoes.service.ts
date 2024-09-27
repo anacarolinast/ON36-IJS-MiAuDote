@@ -5,6 +5,7 @@ import { UpdateCastracaoDto } from '../presenters/http/dto/update-castracao.dto'
 import { CastracaoFactory } from '../domain/factories/castracoes-factory';
 import { CastracaoRepository } from './ports/castracoes.repository';
 import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
+import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
 
 @Injectable()
 export class CastracoesService {
@@ -12,6 +13,7 @@ export class CastracoesService {
     private readonly castracaoFactory: CastracaoFactory,
     private readonly castracaoRepository: CastracaoRepository,
     private readonly veterinarioRepository: VeterinarioRepository,
+    private readonly animalRepository: AnimalRepository,
   ) {}
 
   async findAll(): Promise<Castracao[]> {
@@ -30,12 +32,23 @@ export class CastracoesService {
     const veterinario = await this.veterinarioRepository.findById(
       createCastracaoDto.veterinario_id,
     );
+
+    const animal = await this.animalRepository.findById(
+      createCastracaoDto.animal_id,
+    );
+
     if (!veterinario) {
       throw new NotFoundException(
         `Veterinario with ID ${createCastracaoDto.veterinario_id} not found`,
       );
     }
-    const newCastracao = this.castracaoFactory.create(createCastracaoDto, veterinario);
+
+    if (!animal) {
+      throw new NotFoundException(
+        `Animal with ID ${createCastracaoDto.animal_id} not found`,
+      );
+    }
+    const newCastracao = this.castracaoFactory.create(createCastracaoDto, veterinario, animal);
     return this.castracaoRepository.save(newCastracao);
   }
 
@@ -57,7 +70,12 @@ export class CastracoesService {
       throw new NotFoundException(`Veterinario with ID ${updatedCastracaoData.veterinario_id} not found`)
     }
 
-    const updatedCastracao = this.castracaoFactory.create(updatedCastracaoData, veterinario);
+    const animal = await this.animalRepository.findById(updatedCastracaoData.animal_id);
+    if (!veterinario){
+      throw new NotFoundException(`Animal with ID ${updatedCastracaoData.animal_id} not found`)
+    }
+
+    const updatedCastracao = this.castracaoFactory.create(updatedCastracaoData, veterinario, animal);
 
     const result = await this.castracaoRepository.update(id, updatedCastracao);
     

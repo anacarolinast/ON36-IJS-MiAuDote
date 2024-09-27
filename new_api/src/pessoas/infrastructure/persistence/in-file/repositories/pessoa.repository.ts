@@ -22,6 +22,10 @@ export class InFilePessoaRepository implements PessoaRepository {
         console.log(`Pessoa ${pessoaEntity.nome} criada com sucesso!`); 
         return pessoaEntity;
     }
+    async findPessoa(id: number): Promise <Pessoa | null> {
+        console.log("Listando todas as pessoas...");
+        return null;
+    }
 
     async findAll(): Promise<Pessoa[]> {
         console.log("Listando todas as pessoas...");
