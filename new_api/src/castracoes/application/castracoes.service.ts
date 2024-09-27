@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Castracao } from '../domain/castracao';
 import { CreateCastracaoDto } from '../presenters/http/dto/create-castracao.dto';
 import { UpdateCastracaoDto } from '../presenters/http/dto/update-castracao.dto';
@@ -42,6 +42,10 @@ export class CastracoesService {
     const gasto = await this.gastoRepository.findById(
       createCastracaoDto.gasto_id,
     );
+
+    if (animal.castracao) {
+      throw new ConflictException(`Animal with ID ${animal.id} already has a castration procedure.`);
+    }
 
     if (!veterinario) {
       throw new NotFoundException(

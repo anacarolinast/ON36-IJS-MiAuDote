@@ -32,7 +32,7 @@ export class AdocoesController {
     return adocao;
   }
 
-  @Post(':adotante_id/:animal_id')
+  @Post()
   async create(@Body() createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
     return this.adocoesService.create(createAdocaoDto);
   }

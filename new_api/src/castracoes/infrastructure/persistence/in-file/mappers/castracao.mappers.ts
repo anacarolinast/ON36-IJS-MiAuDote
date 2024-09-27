@@ -31,7 +31,7 @@ export class CastracaoMapper {
     if (castracao.veterinario) {
       entity.veterinarios = VeterinarioMapper.paraPersistencia(castracao.veterinario);
   }
-    entity.animais = AnimalMapper.paraPersistencia(castracao.animal);
+  entity.animais = AnimalMapper.paraPersistencia(castracao.animal);
     if (castracao.gasto) {
       entity.gastos = GastoMapper.paraPersistencia(castracao.gasto);
   }

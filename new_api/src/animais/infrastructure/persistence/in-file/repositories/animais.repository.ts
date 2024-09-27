@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { AnimalRepository } from "src/animais/application/ports/animais.repository";
 import { Animal } from "src/animais/domain/animal";
 import { AnimalEntity } from "../entities/animais.entity";
@@ -68,6 +68,9 @@ export class InFileAnimalRepository implements AnimalRepository {
     async adopt(animalId: number, adocaoData: any): Promise<void> {
         const existingAnimalEntity = this.animais.get(animalId);
         if (existingAnimalEntity) {
+            if (existingAnimalEntity.estado_adocao === 'Adotado') {
+                throw new BadRequestException(`O animal com ID ${animalId} já foi adotado.`);
+            }
             existingAnimalEntity.estado_adocao = 'Adotado';
             existingAnimalEntity.adocao = adocaoData;
 
@@ -117,12 +120,16 @@ export class InFileAnimalRepository implements AnimalRepository {
     async castrate(animalId: number, castracaoData: any): Promise<void> {
         const existingAnimalEntity = this.animais.get(animalId);
         if (existingAnimalEntity) {
+            if (existingAnimalEntity.castracao) {
+                throw new BadRequestException(`O animal com ID ${animalId} já foi castrado.`);
+            }
+
             existingAnimalEntity.castracao = castracaoData;
 
             this.animais.set(animalId, existingAnimalEntity);
-            console.log(`Animal com ID ${animalId} adotado com sucesso!`);
+            console.log(`Animal com ID ${animalId} castrado com sucesso!`);
         } else {
-            console.log(`Animal com ID ${animalId} não encontrado para adoção.`);
+            console.log(`Animal com ID ${animalId} não encontrado para castração.`);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Adocao } from '../domain/adocao';
 import { CreateAdocaoDto } from '../presenters/http/dto/create-adocao.dto';
 import { UpdateAdocaoDto } from '../presenters/http/dto/update-adocao.dto';
@@ -49,6 +49,10 @@ export class AdocoesService {
   async create(createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
     const animal = await this.findAnimal(createAdocaoDto.animal_id);
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
+
+    if (animal.estado_adocao === 'Adotado') {
+      throw new ConflictException(`Animal with ID ${animal.id} is already adopted.`);
+  }
 
     const newAdocao = this.adocaoFactory.create(
       createAdocaoDto,

@@ -80,5 +80,4 @@ export class InFileAdotanteRepository implements AdotanteRepository {
             console.log(`Adotante com ID ${adotanteId} não encontrado para adicionar adoção.`);
         }
     }
-    
 }
