@@ -8,47 +8,57 @@ import { CastracaoMapper } from '../mappers/castracao.mappers';
 
 @Injectable()
 export class InMemoryCastracaoRepository implements CastracaoRepository {
-  constructor(
-    @InjectRepository(CastracaoEntity)
-    private readonly castracaoRepository: Repository<CastracaoEntity>,
-  ) {}
+  private readonly castracao = new Map<number, CastracaoEntity>();
+  private idCounter = 1;
 
   async save(castracao: Castracao): Promise<Castracao> {
-    const persistenceModel = CastracaoMapper.paraPersistencia(castracao);
-    const savedEntity = await this.castracaoRepository.save(persistenceModel);
-    return CastracaoMapper.paraDominio(savedEntity);
+    const castracaoEntity = CastracaoMapper.paraPersistencia(castracao);
+    castracaoEntity.id = this.idCounter++;
+    this.castracao.set(castracaoEntity.id, castracaoEntity);
+    console.log(`Castracao ${castracaoEntity.id} criado com sucesso!`);
+    return CastracaoMapper.paraDominio(castracaoEntity);
   }
 
   async findAll(): Promise<Castracao[]> {
-    const entities = await this.castracaoRepository.find();
-    return entities.map((item) => CastracaoMapper.paraDominio(item));
+    console.log("Listando todos as castrações...");
+    return Array.from(this.castracao.values()).map(castracaoEntity =>
+        CastracaoMapper.paraDominio(castracaoEntity)
+    );
   }
 
   async findById(id: number): Promise<Castracao | null> {
-    const entity = await this.castracaoRepository.findOneBy({ id });
-    return entity ? CastracaoMapper.paraDominio(entity) : null;
+    const castracaoEntity = this.castracao.get(id);
+    if (castracaoEntity) {
+        console.log(`Castracao encontrado: ${castracaoEntity.id}`);
+        return CastracaoMapper.paraDominio(castracaoEntity);
+    } else {
+        console.log(`Castracao com ID ${id} não encontrado.`);
+        return null;
+    }
   }
 
-  async update(id: number, castracao: Partial<Castracao>): Promise<Castracao | null> {
-    const existingEntity = await this.castracaoRepository.findOneBy({ id });
-    if (!existingEntity) {
-      return null;
+  async update(id: number, dadosAtualizados: Partial<Castracao>): Promise<Castracao | null> {
+    const castracaoEntity = this.castracao.get(id);
+        
+    if (castracaoEntity) {
+        Object.assign(castracaoEntity, dadosAtualizados);
+
+        this.castracao.set(id, castracaoEntity);
+        console.log(`Castracao com ID ${id} atualizada com sucesso!`);
+        
+        return CastracaoMapper.paraDominio(castracaoEntity);
+    } else {
+        console.log(`Castracao com ID ${id} não encontrado.`);
+        return null;
     }
-
-    const updatedEntity: CastracaoEntity = {
-      ...existingEntity,
-      ...CastracaoMapper.paraPersistencia({
-        ...existingEntity,
-        ...castracao,
-        id
-      })
-    };
-
-    await this.castracaoRepository.save(updatedEntity);
-    return CastracaoMapper.paraDominio(updatedEntity);
   }
 
   async remove(id: number): Promise<void> {
-    await this.castracaoRepository.delete(id);
+    if (this.castracao.has(id)) {
+      this.castracao.delete(id);
+      console.log(`Castracao com ID ${id} removida com sucesso!`);
+  } else {
+      console.log(`Castracao com ID ${id} não encontrada para remoção.`);
+  }
   }
 }

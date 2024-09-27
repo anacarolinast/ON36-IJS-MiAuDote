@@ -20,7 +20,7 @@ export class InMemoryAdotanteRepository implements AdotanteRepository {
     }
 
     async findAll(): Promise<Adotante[]> {
-        console.log("Listando todas as adotantes...");
+        console.log("Listando todos os adotantes...");
         return Array.from(this.adotantes.values()).map(adotanteEntity =>
             AdotanteMapper.paraDominio(adotanteEntity)
         );

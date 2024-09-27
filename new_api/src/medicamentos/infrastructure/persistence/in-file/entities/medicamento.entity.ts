@@ -1,7 +1,6 @@
-// Ajustar as importações depois do refactor
-// import { Animal } from 'src/animais/entities/animais.entity';
-// import { Veterinario } from 'src/veterinarios/entities/veterinarios.entity';
-// import { Gasto } from 'src/gastos/entities/gastos.entity';
+import { AnimalEntity } from "src/animais/infrastructure/persistence/in-file/entities/animais.entity";
+import { VeterinarioEntity } from "src/veterinarios/infrastructure/persistence/in-file/entities/veterinario.entity";
+import { GastoEntity } from "src/gastos/infrastructure/persistence/in-file/entities/gasto.entity";
 
 export class MedicamentoEntity {
     id: number;
@@ -10,11 +9,9 @@ export class MedicamentoEntity {
     descricao: string;
     veterinario_id: number;
     gasto_id: number;
-  
-    // Ajustar as importações depois do refactor
-    // animal?: animal;
-    // veterinario?: veterinario;
-    // gasto?: gasto;
+    animais?: AnimalEntity;
+    veterinarios?: VeterinarioEntity;
+    gastos?: GastoEntity;
   }
   
   

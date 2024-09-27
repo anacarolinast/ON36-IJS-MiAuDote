@@ -1,6 +1,4 @@
-import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
 import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdotantesService } from './adotantes.service';
 import { AdotantesController } from '../presenters/http/adotantes.controller';
 import { AdotanteFactory } from '../domain/factories/adotante-factory';

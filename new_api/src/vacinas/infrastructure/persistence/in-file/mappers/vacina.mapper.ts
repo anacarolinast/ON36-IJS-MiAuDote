@@ -1,5 +1,8 @@
 import { Vacina } from "src/vacinas/domain/vacinas";
 import { VacinaEntity } from "../entities/vacina.entity";
+import { AnimalMapper } from "src/animais/infrastructure/persistence/in-file/mappers/animais.mapper"; 
+import { VeterinarioMapper } from "src/veterinarios/infrastructure/persistence/in-file/mappers/veterinario.mapper";
+import { GastoMapper } from "src/gastos/infrastructure/persistence/in-file/mappers/gasto.mapper"; 
 
 export class VacinaMapper {
     static paraDominio(vacinaEntity: VacinaEntity): Vacina {
@@ -10,9 +13,9 @@ export class VacinaMapper {
             vacinaEntity.tipo_vacina,
             vacinaEntity.veterinario_id,
             vacinaEntity.gasto_id,
-            // vacinaEntity.animal,
-            // vacinaEntity.veterinario,
-            // vacinaEntity.gasto
+            AnimalMapper.paraDominio(vacinaEntity.animais),
+            VeterinarioMapper.paraDominio(vacinaEntity.veterinarios),
+            GastoMapper.paraDominio(vacinaEntity.gastos),
         );
         return model;
     }
@@ -25,9 +28,9 @@ export class VacinaMapper {
         entity.tipo_vacina = vacina.tipo_vacina;
         entity.veterinario_id = vacina.veterinario_id;
         entity.gasto_id = vacina.gasto_id;
-        // entity.animal = vacina.animal;
-        // entity.veterinario = vacina.veterinario;
-        // entity.gasto = vacina.gasto;
+        entity.animais = AnimalMapper.paraPersistencia(vacina.animal);
+        entity.veterinarios = VeterinarioMapper.paraPersistencia(vacina.veterinario);
+        entity.gastos = GastoMapper.paraPersistencia(vacina.gasto);
         return entity;
     }
 }

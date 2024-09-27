@@ -1,6 +1,8 @@
 import { Medicamento } from "src/medicamentos/domain/medicamentos";
 import { MedicamentoEntity } from "../entities/medicamento.entity";
-
+import { AnimalMapper } from "src/animais/infrastructure/persistence/in-memory/mappers/animais.mapper"; 
+import { VeterinarioMapper } from "src/veterinarios/infrastructure/persistence/in-memory/mappers/veterinario.mapper";
+import { GastoMapper } from "src/gastos/infrastructure/persistence/in-memory/mappers/gasto.mapper"; 
 
 export class MedicamentoMapper {
   static paraDominio(medicamentoEntity: MedicamentoEntity): Medicamento {
@@ -11,9 +13,9 @@ export class MedicamentoMapper {
       medicamentoEntity.descricao,
       medicamentoEntity.veterinario_id,
       medicamentoEntity.gasto_id,
-      // medicamentoEntity.animal
-      // medicamentoEntity.veterinario
-      // medicamentoEntity.gasto
+      AnimalMapper.paraDominio(medicamentoEntity.animais),
+      VeterinarioMapper.paraDominio(medicamentoEntity.veterinarios),
+      GastoMapper.paraDominio(medicamentoEntity.gastos),
     );
     return model;
   }
@@ -26,9 +28,9 @@ export class MedicamentoMapper {
     entity.descricao = medicamento.descricao;
     entity.veterinario_id = medicamento.veterinario_id;
     entity.gasto_id = medicamento.gasto_id;
-    // entity.animal = medicamento.animal;
-    // entity.veterinario = medicamento.veterinario;
-    // entity.gasto = medicamento.gasto;
+    entity.animais = AnimalMapper.paraPersistencia(medicamento.animal);
+    entity.veterinarios = VeterinarioMapper.paraPersistencia(medicamento.veterinario);
+    entity.gastos = GastoMapper.paraPersistencia(medicamento.gasto);
     return entity;
   }
 }

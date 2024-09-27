@@ -1,44 +1,17 @@
-// import { Gasto } from 'src/gastos/entities/gasto.entity';
-// import { Veterinario } from 'src/veterinarios/entities/veterinario.entity';
-// import { Animal } from 'src/animais/domain/factories/animal.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { AnimalEntity } from "src/animais/infrastructure/persistence/in-memory/entities/animais.entity";
+import { VeterinarioEntity } from "src/veterinarios/infrastructure/persistence/in-memory/entities/veterinario.entity";
+import { GastoEntity } from "src/gastos/infrastructure/persistence/in-memory/entities/gasto.entity";
 
-@Entity('medicamentos')
 export class MedicamentoEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  animal_id: number;
-
-  @Column()
-  data_compra: Date;
-
-  @Column({ length: 255 })
-  descricao: string;
-
-  @Column()
-  veterinario_id: number;
-
-  @Column()
-  gasto_id: number;
-
-//   @ManyToOne(() => Animal, (animal) => animal.medicamentos)
-//   @JoinColumn({ name: 'animal_id' })
-//   animal: Animal;
-
-//   @ManyToOne(() => Veterinario, (veterinario) => veterinario.medicamentos)
-//   @JoinColumn({ name: 'veterinario_id' })
-//   veterinario: Veterinario;
-
-//   @OneToOne(() => Gasto, (gasto) => gasto.medicamento)
-//   @JoinColumn({ name: 'gasto_id' })
-//   gasto: Gasto;
-}
+    id: number;
+    animal_id: number;
+    data_compra: Date;
+    descricao: string;
+    veterinario_id: number;
+    gasto_id: number;
+    animais?: AnimalEntity;
+    veterinarios?: VeterinarioEntity;
+    gastos?: GastoEntity;
+  }
+  
+  

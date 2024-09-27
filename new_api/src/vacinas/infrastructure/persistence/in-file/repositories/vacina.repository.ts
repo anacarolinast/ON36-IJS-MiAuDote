@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { VacinaRepository } from "src/vacinas/application/ports/vacinas.repository";
 import { Vacina } from "src/vacinas/domain/vacinas";
 import { VacinaEntity } from "../entities/vacina.entity";
+import { VacinaMapper } from "../mappers/vacina.mapper";
+import { Veterinario } from "src/veterinarios/domain/veterinarios";
 
 @Injectable()
 export class InFileVacinaRepository implements VacinaRepository {
@@ -11,41 +13,39 @@ export class InFileVacinaRepository implements VacinaRepository {
     async save(vacina: Vacina): Promise<Vacina> {
         const vacinaEntity = new VacinaEntity();
         vacinaEntity.id = this.idCounter++;
-        vacinaEntity.animal_id = vacina.animal_id;
-        vacinaEntity.data_vacinacao = vacina.data_vacinacao;
-        vacinaEntity.tipo_vacina = vacina.tipo_vacina;
-        vacinaEntity.veterinario_id = vacina.veterinario_id;
-        vacinaEntity.gasto_id = vacina.gasto_id;
-
         this.vacinas.set(vacinaEntity.id, vacinaEntity);
-
         console.log(`Vacina criada com sucesso!`); 
-        return vacinaEntity;
+        return VacinaMapper.paraDominio(vacinaEntity);
     }
 
     async findAll(): Promise<Vacina[]> {
         console.log("Listando todas as vacinas...");
-        return Array.from(this.vacinas.values());
+        return Array.from(this.vacinas.values()).map(vacinaEntity =>
+            VacinaMapper.paraDominio(vacinaEntity)
+        );
     }
 
     async findById(id: number): Promise<Vacina | null> {
-        const vacina = this.vacinas.get(id);
-        if (vacina) {
-            console.log(`Vacina encontrada: ${vacina.id}`);
-            return vacina;
+        const vacinaEntity = this.vacinas.get(id);
+        if (vacinaEntity) {
+            console.log(`Vacina encontrada: ${vacinaEntity.id}`);
+            return VacinaMapper.paraDominio(vacinaEntity);
         } else {
             console.log(`Vacina com ID ${id} não encontrado.`);
             return null;
         }
     }
 
-    async update(id: number, vacina: Partial<Vacina>): Promise<Vacina | null> {
-        const existingVacina = this.vacinas.get(id);
-        if (existingVacina) {
-            const updatedVacina = { ...existingVacina, ...vacina };
-            this.vacinas.set(id, updatedVacina);
+    async update(id: number, dadosAtualizados: Partial<Vacina>): Promise<Vacina | null> {
+        const vacinaEntity = this.vacinas.get(id);
+
+        if (vacinaEntity) {
+            Object.assign(vacinaEntity, dadosAtualizados);
+
+            this.vacinas.set(id, vacinaEntity);
             console.log(`Vacina com ID ${id} atualizada com sucesso!`);
-            return updatedVacina;
+            
+            return VacinaMapper.paraDominio(vacinaEntity);
         } else {
             console.log(`Vacina com ID ${id} não encontrada para atualização.`);
             return null;

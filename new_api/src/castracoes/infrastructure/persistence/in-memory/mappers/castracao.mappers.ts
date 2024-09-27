@@ -1,5 +1,8 @@
-import { Castracao } from 'src/castracoes/domain/castracao';
-import { CastracaoEntity } from '../entities/castracao.entity';
+import { Castracao } from "src/castracoes/domain/castracao";
+import { CastracaoEntity } from "../entities/castracao.entity";
+import { AnimalMapper } from "src/animais/infrastructure/persistence/in-memory/mappers/animais.mapper"; 
+import { VeterinarioMapper } from "src/veterinarios/infrastructure/persistence/in-memory/mappers/veterinario.mapper";
+import { GastoMapper } from "src/gastos/infrastructure/persistence/in-memory/mappers/gasto.mapper"; 
 
 export class CastracaoMapper {
   static paraDominio(castracaoEntity: CastracaoEntity): Castracao {
@@ -10,9 +13,9 @@ export class CastracaoMapper {
       castracaoEntity.condicao_pos,
       castracaoEntity.veterinario_id,
       castracaoEntity.gasto_id,
-    //   castracaoEntity.animais,
-    //   castracaoEntity.veterinarios,
-    //   castracaoEntity.gastos,
+      // AnimalMapper.paraDominio(castracaoEntity.animais),
+      VeterinarioMapper.paraDominio(castracaoEntity.veterinarios),
+      // GastoMapper.paraDominio(castracaoEntity.gastos),
     );
     return model;
   }
@@ -25,9 +28,9 @@ export class CastracaoMapper {
     entity.condicao_pos = castracao.condicao_pos;
     entity.veterinario_id = castracao.veterinario_id;
     entity.gasto_id = castracao.gasto_id;
-    // entity.animais = castracao.animais;
-    // entity.veterinarios = castracao.veterinarios;
-    // entity.gastos = castracao.gastos;
+    // entity.animais = AnimalMapper.paraPersistencia(castracao.animal);
+    entity.veterinarios = VeterinarioMapper.paraPersistencia(castracao.veterinario);
+    // entity.gastos = GastoMapper.paraPersistencia(castracao.gasto);
     return entity;
   }
 }

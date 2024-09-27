@@ -4,14 +4,18 @@ import { VacinasService } from './vacinas.service';
 import { VacinaFactory } from '../domain/factories/vacinas-factory';
 import { VacinaRepository } from './ports/vacinas.repository';
 import { InFileVacinaRepository } from '../infrastructure/persistence/in-file/repositories/vacina.repository';
+import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
+import { AnimaisModule } from 'src/animais/application/animais.module';
 
 @Module({
+  imports: [VeterinariosModule, AnimaisModule],
   controllers: [VacinasController],
   providers: [
     VacinasService, 
     VacinaFactory,
     { provide: VacinaRepository, useClass: InFileVacinaRepository },
   ],
+  exports: [VacinaRepository]
 })
 export class VacinasModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

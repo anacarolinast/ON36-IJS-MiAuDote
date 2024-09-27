@@ -3,7 +3,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { VeterinarioRepository } from './ports/veterinarios.repository';
 import { Veterinario } from '../domain/veterinarios';
 import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
+import { VacinaRepository } from 'src/vacinas/application/ports/vacinas.repository';
+import { MedicamentoRepository } from 'src/medicamentos/application/ports/medicamento.repository';
+import { CastracaoRepository } from 'src/castracoes/application/ports/castracoes.repository';
 import { UpdateVeterinarioDto } from '../presenters/http/dto/update-veterinario.dto';
+import { CreateVeterinarioDto } from '../presenters/http/dto/create-veterinario.dto';
+import { Pessoa } from 'src/pessoas/domain/pessoas';
+import { Vacina } from 'src/vacinas/domain/vacinas';
+import { Medicamento } from 'src/medicamentos/domain/medicamentos';
+import { Castracao } from 'src/castracoes/domain/castracao';
 
 @Injectable()
 export class VeterinariosService {
@@ -11,6 +19,9 @@ export class VeterinariosService {
     private readonly veterinariosRepository: VeterinarioRepository,
     private readonly veterinarioFactory: VeterinarioFactory,
     private readonly pessoaRepository: PessoaRepository,
+    private readonly vacinaRepository: VacinaRepository,
+    private readonly medicamentoRepository: MedicamentoRepository,
+    private readonly castracaoRepository: CastracaoRepository,
   ) {}
 
   async findAll(): Promise<Veterinario[]> {
@@ -25,8 +36,17 @@ export class VeterinariosService {
     return veterinario;
   }
 
+
+  private async findPessoa(pessoaId: number): Promise<Pessoa> {
+    const pessoa = await this.pessoaRepository.findById(pessoaId);
+    if (!pessoa) {
+      throw new NotFoundException(`Pessoa with ID ${pessoaId} not found`);
+    }
+    return pessoa;
+  }
+
   async create(createVeterinarioDto: any): Promise<Veterinario> {
-    const pessoa = await this.pessoaRepository.findById(
+    const pessoa = await this.pessoaRepository.findPessoa(
       createVeterinarioDto.pessoa_id,
     );
     if (!pessoa) {
