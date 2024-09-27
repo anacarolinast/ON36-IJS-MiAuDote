@@ -49,26 +49,28 @@ export class AdocoesService {
   async create(createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
     const animal = await this.findAnimal(createAdocaoDto.animal_id);
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
-  
-    const newAdocao = this.adocaoFactory.create(createAdocaoDto, animal, adotante);
 
+    const newAdocao = this.adocaoFactory.create(
+      createAdocaoDto,
+      animal,
+      adotante,
+    );
 
     const savedAdocao = await this.adocaoRepository.save(newAdocao);
 
     console.log('Antes da atualização do adotante:', adotante);
-  
-    const { adotante: _, ...adocaoData } = savedAdocao; 
+
+    const { adotante: _, ...adotanteData } = savedAdocao;
     adotante.adocao.push(savedAdocao);
-    await this.adotanteRepository.adopt(adotante.id, adocaoData); 
+    await this.adotanteRepository.adopt(adotante.id, adotanteData);
     console.log('Depois da atualização do adotante:', adotante);
 
-    await this.animalRepository.update(animal.id, animal);
+    const { animal: __, ...animalData } = savedAdocao;
+    await this.animalRepository.adopt(animal.id, animalData);
     console.log('Depois da atualização do animal:', animal);
 
     return savedAdocao;
-}
-
-
+  }
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);
@@ -87,7 +89,7 @@ export class AdocoesService {
     const updatedAdocao = this.adocaoFactory.create(
       { ...adocao, ...updateAdocaoDto },
       animal,
-      adotante
+      adotante,
     );
 
     await this.adocaoRepository.update(id, updatedAdocao);

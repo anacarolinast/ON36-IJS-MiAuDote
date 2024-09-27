@@ -1,7 +1,9 @@
+import { Type } from 'class-transformer';
 import { IsDate, IsNumber, IsString, Length, Min } from 'class-validator';
 
 export class CreateGastoDto {
     @IsDate()  
+    @Type(() => Date)
     data_gasto: Date;
 
     @IsString()

@@ -8,7 +8,10 @@ import { DoadoresModule } from 'src/doadores/application/doadores.module';
 import { GastosModule } from 'src/gastos/application/gastos.module';
 
 @Module({
-  imports: [DoadoresModule, GastosModule],
+  imports: [
+    forwardRef(() => DoadoresModule),
+    forwardRef(() => GastosModule),
+  ],
   controllers: [DoacoesController],
   providers: [
     DoacoesService,

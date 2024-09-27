@@ -13,9 +13,9 @@ export class MedicamentoMapper {
       medicamentoEntity.descricao,
       medicamentoEntity.veterinario_id,
       medicamentoEntity.gasto_id,
-      AnimalMapper.paraDominio(medicamentoEntity.animais),
-      VeterinarioMapper.paraDominio(medicamentoEntity.veterinarios),
-      GastoMapper.paraDominio(medicamentoEntity.gastos),
+      medicamentoEntity.animais ? AnimalMapper.paraDominio(medicamentoEntity.animais) : undefined,
+      medicamentoEntity.veterinarios ? VeterinarioMapper.paraDominio(medicamentoEntity.veterinarios) : undefined,
+      medicamentoEntity.gastos ? GastoMapper.paraDominio(medicamentoEntity.gastos) : undefined,
     );
     return model;
   }
@@ -28,9 +28,15 @@ export class MedicamentoMapper {
     entity.descricao = medicamento.descricao;
     entity.veterinario_id = medicamento.veterinario_id;
     entity.gasto_id = medicamento.gasto_id;
-    entity.animais = AnimalMapper.paraPersistencia(medicamento.animal);
-    entity.veterinarios = VeterinarioMapper.paraPersistencia(medicamento.veterinario);
+    if (medicamento.animal) {
+      entity.animais = AnimalMapper.paraPersistencia(medicamento.animal);
+  }
+    if (medicamento.veterinario) {
+      entity.veterinarios = VeterinarioMapper.paraPersistencia(medicamento.veterinario);
+  }
+  if (medicamento.gasto) {
     entity.gastos = GastoMapper.paraPersistencia(medicamento.gasto);
+}
     return entity;
   }
 }

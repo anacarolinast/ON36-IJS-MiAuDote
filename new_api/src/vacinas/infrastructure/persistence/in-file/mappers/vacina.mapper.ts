@@ -13,9 +13,9 @@ export class VacinaMapper {
             vacinaEntity.tipo_vacina,
             vacinaEntity.veterinario_id,
             vacinaEntity.gasto_id,
-            AnimalMapper.paraDominio(vacinaEntity.animais),
-            VeterinarioMapper.paraDominio(vacinaEntity.veterinarios),
-            GastoMapper.paraDominio(vacinaEntity.gastos),
+            vacinaEntity.animais ? AnimalMapper.paraDominio(vacinaEntity.animais) : undefined,
+            vacinaEntity.veterinarios ? VeterinarioMapper.paraDominio(vacinaEntity.veterinarios) : undefined,
+            vacinaEntity.gastos ? GastoMapper.paraDominio(vacinaEntity.gastos) : undefined,
         );
         return model;
     }
@@ -28,9 +28,15 @@ export class VacinaMapper {
         entity.tipo_vacina = vacina.tipo_vacina;
         entity.veterinario_id = vacina.veterinario_id;
         entity.gasto_id = vacina.gasto_id;
-        entity.animais = AnimalMapper.paraPersistencia(vacina.animal);
-        entity.veterinarios = VeterinarioMapper.paraPersistencia(vacina.veterinario);
-        entity.gastos = GastoMapper.paraPersistencia(vacina.gasto);
+        if (vacina.animal) {
+            entity.animais = AnimalMapper.paraPersistencia(vacina.animal);
+        }
+        if (vacina.veterinario) {
+            entity.veterinarios = VeterinarioMapper.paraPersistencia(vacina.veterinario);
+        }
+        if (vacina.gasto) {
+            entity.gastos = GastoMapper.paraPersistencia(vacina.gasto);
+        }
         return entity;
     }
 }

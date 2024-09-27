@@ -3,6 +3,7 @@ import { VeterinarioRepository } from "src/veterinarios/application/ports/veteri
 import { Veterinario } from "src/veterinarios/domain/veterinarios";
 import { VeterinarioEntity } from "../entities/veterinario.entity";
 import { VeterinarioMapper } from "../mappers/veterinario.mapper";
+import { Vacina } from "src/vacinas/domain/vacinas";
 
 
 @Injectable()
@@ -53,6 +54,57 @@ export class InMemoryVeterinarioRepository implements VeterinarioRepository {
             console.log(`Veterinario com ID ${id} removido com sucesso!`);
         } else {
             console.log(`Veterinario com ID ${id} não encontrado para remoção.`);
+        }
+    }
+
+    async vaccinate(id: number, vacina: Vacina): Promise<Veterinario | null> {
+        const existingVeterinarioEntity = this.veterinarios.get(id);
+        if (existingVeterinarioEntity) {
+            const existingVeterinario = VeterinarioMapper.paraDominio(existingVeterinarioEntity);
+
+            existingVeterinario.vacinas.push(vacina);
+
+            const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia(existingVeterinario);
+
+            this.veterinarios.set(id, updatedVeterinarioEntity);
+            return existingVeterinario;
+        } else {
+            console.log(`Veterinario com ID ${id} não encontrado para vacinação.`);
+            return null;
+        }
+    }
+
+    async medicate(id: number, medicamento: any): Promise<Veterinario | null> {
+        const existingVeterinarioEntity = this.veterinarios.get(id);
+        if (existingVeterinarioEntity) {
+            const existingVeterinario = VeterinarioMapper.paraDominio(existingVeterinarioEntity);
+
+            existingVeterinario.medicamentos.push(medicamento);
+
+            const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia(existingVeterinario);
+
+            this.veterinarios.set(id, updatedVeterinarioEntity);
+            return existingVeterinario;
+        } else {
+            console.log(`Veterinario com ID ${id} não encontrado para medicação.`);
+            return null;
+        }
+    }
+
+    async castrate(id: number, castracao: any): Promise<Veterinario | null> {
+        const existingVeterinarioEntity = this.veterinarios.get(id);
+        if (existingVeterinarioEntity) {
+            const existingVeterinario = VeterinarioMapper.paraDominio(existingVeterinarioEntity);
+
+            existingVeterinario.castracoes.push(castracao);
+
+            const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia(existingVeterinario);
+
+            this.veterinarios.set(id, updatedVeterinarioEntity);
+            return existingVeterinario;
+        } else {
+            console.log(`Veterinario com ID ${id} não encontrado para castração.`);
+            return null;
         }
     }
 

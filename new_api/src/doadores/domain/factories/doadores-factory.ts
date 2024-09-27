@@ -7,8 +7,9 @@ import { Doacao } from 'src/doacoes/domain/doacoes';
 
 @Injectable()
 export class DoadorFactory {
-  create(data: CreateDoadorDto, pessoa: Pessoa, doador: Doacao[]): Doador {
+  create(data: CreateDoadorDto, pessoa: Pessoa): Doador {
     const castracaoId = uuidv4();
+    const doacao: Doacao[] = []; 
 
     return new Doador(
       castracaoId,
@@ -16,7 +17,7 @@ export class DoadorFactory {
       data.descricao,
       pessoa.id,
       pessoa,
-      doador
+      doacao
     );
   }
 }

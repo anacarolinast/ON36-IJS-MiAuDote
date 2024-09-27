@@ -16,7 +16,9 @@ export class DoacaoFactory {
       data.data_doacao,
       data.tipo_doacao,
       data.valor_estimado,
-      gasto.id
+      gasto.id,
+      gasto,
+      doador
     );
   }
 }

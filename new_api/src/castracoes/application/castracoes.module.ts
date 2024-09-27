@@ -9,7 +9,11 @@ import { AnimaisModule } from 'src/animais/application/animais.module';
 import { GastosModule } from 'src/gastos/application/gastos.module';
 
 @Module({
-  imports: [VeterinariosModule, AnimaisModule, GastosModule],
+  imports: [
+    forwardRef(() => VeterinariosModule), 
+    forwardRef(() => AnimaisModule), 
+    forwardRef(() => GastosModule),
+  ],
   controllers: [CastracoesController],
   providers: [
     CastracoesService,

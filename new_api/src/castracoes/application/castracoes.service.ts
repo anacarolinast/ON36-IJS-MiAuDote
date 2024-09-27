@@ -62,7 +62,14 @@ export class CastracoesService {
     }
 
     const newCastracao = this.castracaoFactory.create(createCastracaoDto, veterinario, animal, gasto);
-    return this.castracaoRepository.save(newCastracao);
+    console.log(newCastracao);
+    const savedCastracao = await this.castracaoRepository.save(newCastracao);
+    const {veterinario: _, ...veterinarioData} = savedCastracao;
+    veterinario.castracoes.push(savedCastracao);
+    await this.veterinarioRepository.castrate(veterinario.id, veterinarioData);
+    const { animal: __, ...animalData} = savedCastracao;
+    await this.animalRepository.castrate(animal.id, animalData);
+    return savedCastracao;
   }
 
   async update(

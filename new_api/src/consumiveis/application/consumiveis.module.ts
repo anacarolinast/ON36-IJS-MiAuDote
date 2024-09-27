@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, Module, Type, forwardRef } from '@nestjs/common';
 import { ConsumiveisService } from './consumiveis.service';
 import { ConsumiveisController } from '../presenters/http/consumiveis.controller'; 
 import { ConsumivelFactory } from '../domain/factories/consumivel-factory';
@@ -7,7 +7,9 @@ import { InFileConsumivelRepository } from '../infrastructure/persistence/in-fil
 import { GastosModule } from 'src/gastos/application/gastos.module';
 
 @Module({
-  imports: [GastosModule],
+  imports: [
+    forwardRef(() => GastosModule),
+  ],
   controllers: [ConsumiveisController],
   providers: [
     ConsumiveisService,

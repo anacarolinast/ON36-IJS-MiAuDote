@@ -13,9 +13,9 @@ export class VeterinarioMapper {
             veterinarioEntity.registro_crmv,
             veterinarioEntity.pessoa_id,
             PessoaMapper.paraDominio(veterinarioEntity.pessoa),
-            veterinarioEntity.vacina ? veterinarioEntity.vacina.map(vacina => VacinaMapper.paraDominio(vacina)) : [],
-            veterinarioEntity.medicamento ? veterinarioEntity.medicamento.map(medicamento => MedicamentoMapper.paraDominio(medicamento)) : [],
-            veterinarioEntity.castracao ? veterinarioEntity.castracao.map(castracao => CastracaoMapper.paraDominio(castracao)) : []
+            veterinarioEntity.vacina?.map(veterinarioEntity => VacinaMapper.paraDominio(veterinarioEntity)) || [],
+            veterinarioEntity.medicamento?.map(veterinarioEntity => MedicamentoMapper.paraDominio(veterinarioEntity)) || [],
+            veterinarioEntity.castracao?.map(veterinarioEntity => CastracaoMapper.paraDominio(veterinarioEntity)) || [],
         );
     }
 
@@ -26,7 +26,7 @@ export class VeterinarioMapper {
         entity.registro_crmv = veterinario.registro_crmv;
         entity.pessoa_id = veterinario.pessoa_id;
         entity.pessoa = PessoaMapper.paraPersistencia(veterinario.pessoa);
-        entity.vacina = veterinario.vacinas?.map(vacina => VacinaMapper.paraPersistencia(vacina)) || [];
+        entity.vacina = veterinario.vacinas?.map(vacinas => VacinaMapper.paraPersistencia(vacinas)) || []
         entity.medicamento = veterinario.medicamentos?.map(medicamento => MedicamentoMapper.paraPersistencia(medicamento)) || [];
         entity.castracao = veterinario.castracoes?.map(castracao => CastracaoMapper.paraPersistencia(castracao)) || [];
         return entity;

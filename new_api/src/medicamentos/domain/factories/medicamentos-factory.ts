@@ -17,7 +17,10 @@ export class MedicamentoFactory {
       data.data_compra,
       data.descricao,
       gasto.id,
-      veterinario.id
+      veterinario.id,
+      animal,
+      veterinario,
+      gasto
     );
   }
 }

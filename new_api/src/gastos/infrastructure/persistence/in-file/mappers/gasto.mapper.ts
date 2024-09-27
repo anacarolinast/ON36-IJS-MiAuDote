@@ -11,6 +11,7 @@ export class GastoMapper {
       gastoEntity.quantidade,
       gastoEntity.valor,
     );
+    console.log('Mapping GastoEntity to Gasto:', gastoEntity);
     return model;
   }
 

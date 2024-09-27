@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsNumber, IsDate, IsString, Length, Min } from 'class-validator';
 
 export class CreateCastracaoDto {
@@ -5,7 +6,8 @@ export class CreateCastracaoDto {
     @Min(1)
     animal_id: number;
 
-    @IsDate()  
+    @IsDate()
+    @Type(() => Date)  
     data_castracao: Date;
 
     @IsString()

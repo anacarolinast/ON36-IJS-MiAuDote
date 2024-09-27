@@ -17,7 +17,10 @@ export class CastracaoFactory {
       data.data_castracao,
       data.condicao_pos,
       veterinario.id,
-      gasto.id
+      gasto.id,
+      veterinario,
+      animal,
+      gasto
     );
   }
 }

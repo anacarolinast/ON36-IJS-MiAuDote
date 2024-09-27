@@ -61,7 +61,13 @@ export class MedicamentosService {
       );
     }
     const newMedicamento = this.medicamentoFactory.create(createMedicamentoDto, veterinario, animal, gasto);
-    return this.medicamentoRepository.save(newMedicamento);
+    const savedMedicamento = await this.medicamentoRepository.save(newMedicamento);
+    const { veterinario: _, ...veterinarioData} = savedMedicamento;
+    veterinario.medicamentos.push(savedMedicamento);
+    await this.veterinarioRepository.medicate(veterinario.id, veterinarioData);
+    const { animal: __, ...animalData} = savedMedicamento;
+    await this.animalRepository.medicate(animal.id, animalData);
+    return savedMedicamento;
   }
 
   async update(

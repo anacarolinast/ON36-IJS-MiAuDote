@@ -36,17 +36,8 @@ export class VeterinariosService {
     return veterinario;
   }
 
-
-  private async findPessoa(pessoaId: number): Promise<Pessoa> {
-    const pessoa = await this.pessoaRepository.findById(pessoaId);
-    if (!pessoa) {
-      throw new NotFoundException(`Pessoa with ID ${pessoaId} not found`);
-    }
-    return pessoa;
-  }
-
-  async create(createVeterinarioDto: any): Promise<Veterinario> {
-    const pessoa = await this.pessoaRepository.findPessoa(
+  async create(createVeterinarioDto: CreateVeterinarioDto): Promise<Veterinario> {
+    const pessoa = await this.pessoaRepository.findById(
       createVeterinarioDto.pessoa_id,
     );
     if (!pessoa) {

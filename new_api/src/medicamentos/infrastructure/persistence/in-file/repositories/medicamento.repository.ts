@@ -3,8 +3,6 @@ import { MedicamentoRepository } from "src/medicamentos/application/ports/medica
 import { Medicamento } from "src/medicamentos/domain/medicamentos";
 import { MedicamentoEntity } from "../entities/medicamento.entity";
 import { MedicamentoMapper } from "../mappers/medicamento.mapper";
-import { Veterinario } from "src/veterinarios/domain/veterinarios";
-import { Gasto } from "src/gastos/domain/gastos";
 
 @Injectable()
 export class InFileMedicamentoRepository implements MedicamentoRepository {
@@ -12,10 +10,14 @@ export class InFileMedicamentoRepository implements MedicamentoRepository {
     private idCounter = 1;
 
     async save(medicamento: Medicamento): Promise<Medicamento> {
-        const medicamentoEntity = new MedicamentoEntity();
+        const medicamentoEntity = MedicamentoMapper.paraPersistencia(medicamento);
+    
         medicamentoEntity.id = this.idCounter++;
+    
         this.medicamentos.set(medicamentoEntity.id, medicamentoEntity);
-        console.log(`Medicamento ${medicamentoEntity.id} criado com sucesso!`); 
+    
+        console.log(`Vacina criada com sucesso!`);
+    
         return MedicamentoMapper.paraDominio(medicamentoEntity);
     }
 

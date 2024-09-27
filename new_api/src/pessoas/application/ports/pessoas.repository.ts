@@ -6,7 +6,6 @@ export abstract class PessoaRepository {
     abstract save(pessoa: Pessoa): Promise<Pessoa>;
     abstract findAll(): Promise<Pessoa[]>;
     abstract findById(id: number): Promise<Pessoa | null>;
-    abstract findPessoa(id: number) : Promise <Pessoa | null>;
     abstract update(id: number, pessoa: Partial<Pessoa>): Promise<Pessoa | null>;
     abstract remove(id: number): Promise<void>;
 }

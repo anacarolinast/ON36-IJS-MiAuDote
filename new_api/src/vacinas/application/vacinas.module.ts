@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { VacinasController } from '../presenters/http/vacinas.controller'; 
 import { VacinasService } from './vacinas.service'; 
 import { VacinaFactory } from '../domain/factories/vacinas-factory';
@@ -9,7 +9,11 @@ import { AnimaisModule } from 'src/animais/application/animais.module';
 import { GastosModule } from 'src/gastos/application/gastos.module';
 
 @Module({
-  imports: [VeterinariosModule, AnimaisModule, GastosModule],
+  imports: [
+    forwardRef(() => VeterinariosModule), 
+    forwardRef(() => AnimaisModule), 
+    forwardRef(() => GastosModule),
+  ],
   controllers: [VacinasController],
   providers: [
     VacinasService, 
