@@ -4,10 +4,11 @@ import { Vacina } from "../vacinas";
 import { v4 as uuidv4 } from 'uuid';
 import { Veterinario } from "src/veterinarios/domain/veterinarios";
 import { Animal } from "src/animais/domain/animal";
+import { Gasto } from "src/gastos/domain/gastos";
 
 @Injectable()
 export class VacinaFactory {
-    create(data: CreateVacinaDto, veterinario: Veterinario, animal: Animal): Vacina {
+    create(data: CreateVacinaDto, veterinario: Veterinario, animal: Animal, gasto: Gasto): Vacina {
         const vacinaId = uuidv4();
 
         return new Vacina(
@@ -16,10 +17,10 @@ export class VacinaFactory {
             data.data_vacinacao,
             data.tipo_vacina,
             veterinario.id,
-            data.gasto_id,
-            null,
+            gasto.id,
+            animal,
             veterinario,
-            null
+            gasto
         )
     }
 }

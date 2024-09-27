@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { GastoFactory } from './../domain/factories/gastos-factory';
+import { Injectable } from "@nestjs/common";
+import { GastoRepository } from "./ports/gasto.repository";
 import { Gasto } from '../domain/gastos';
 import { CreateGastoDto } from '../presenters/http/dto/create-gasto.dto';
-import { UpdateGastoDto } from '../presenters/http/dto/update-gasto.dto';
-import { GastoFactory } from '../domain/factories/gastos-factory';
-import { GastoRepository } from './ports/gasto.repository';
+
 
 @Injectable()
 export class GastosService {
@@ -19,7 +19,7 @@ export class GastosService {
   async findOne(id: number): Promise<Gasto> {
     const gasto = await this.gastoRepository.findById(id);
     if (!gasto) {
-      throw new NotFoundException(`Gasto with ID ${id} not found`);
+      throw new Error(`Gasto with ID ${id} not found`);
     }
     return gasto;
   }
@@ -29,7 +29,7 @@ export class GastosService {
     return this.gastoRepository.save(newGasto);
   }
 
-  async update(id: number, updateGastoDto: UpdateGastoDto): Promise<Gasto> {
+  async update(id: number, updateGastoDto: any): Promise<Gasto> {
     const gasto = await this.findOne(id);
 
     const updatedGastoData = {

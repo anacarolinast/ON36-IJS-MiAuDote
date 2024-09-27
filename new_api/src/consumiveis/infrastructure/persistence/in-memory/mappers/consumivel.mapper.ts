@@ -1,5 +1,7 @@
-import { Consumivel } from 'src/consumiveis/domain/consumivel';
-import { ConsumivelEntity } from '../entities/consumivel.entity';
+import { Consumivel } from "src/consumiveis/domain/consumivel";
+import { ConsumivelEntity } from "../entities/consumivel.entity";
+import { GastoMapper } from "src/gastos/infrastructure/persistence/in-memory/mappers/gasto.mapper";
+
 
 export class ConsumivelMapper {
   static paraDominio(consumivelEntity: ConsumivelEntity): Consumivel {
@@ -8,7 +10,7 @@ export class ConsumivelMapper {
       consumivelEntity.tipo_animal,
       consumivelEntity.descricao,
       consumivelEntity.gasto_id,
-    //   consumivelEntity.gastos,
+      GastoMapper.paraDominio(consumivelEntity.gastos),
     );
     return model;
   }
@@ -19,7 +21,7 @@ export class ConsumivelMapper {
     entity.tipo_animal = consumivel.tipo_animal;
     entity.descricao = consumivel.descricao;
     entity.gasto_id = consumivel.gasto_id;
-    // entity.gastos = consumivel.gastos;
+    entity.gastos = GastoMapper.paraPersistencia(consumivel.gasto);
     return entity;
   }
 }

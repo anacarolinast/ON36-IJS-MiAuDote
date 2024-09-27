@@ -4,12 +4,14 @@ import { CreateConsumivelDto } from '../presenters/http/dto/create-consumivel.dt
 import { UpdateConsumivelDto } from '../presenters/http/dto/update-consumivel.dto';
 import { ConsumivelFactory } from '../domain/factories/consumivel-factory';
 import { ConsumivelRepository } from './ports/consumiveis.repository';
+import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
 
 @Injectable()
 export class ConsumiveisService {
   constructor(
     private readonly consumivelFactory: ConsumivelFactory,
     private readonly consumivelRepository: ConsumivelRepository,
+    private readonly gastoRepository: GastoRepository,
   ) {}
 
   async findAll(): Promise<Consumivel[]> {
@@ -25,7 +27,17 @@ export class ConsumiveisService {
   }
 
   async create(createConsumivelDto: CreateConsumivelDto): Promise<Consumivel> {
-    const newConsumivel = this.consumivelFactory.create(createConsumivelDto);
+    const gasto = await this.gastoRepository.findById(
+      createConsumivelDto.gasto_id,
+    );
+
+    if (!gasto) {
+      throw new NotFoundException(
+        `Gasto with ID ${createConsumivelDto.gasto_id} not found`,
+      );
+    }
+    
+    const newConsumivel = this.consumivelFactory.create(createConsumivelDto, gasto);
     return this.consumivelRepository.save(newConsumivel);
   }
 
@@ -38,9 +50,19 @@ export class ConsumiveisService {
       gasto_id: updateConsumivelDto.gasto_id ?? consumivel.gasto_id
     };
 
-    const updatedConsumivel = this.consumivelFactory.create(updatedConsumivelData);
+    const gasto = await this.gastoRepository.findById(updatedConsumivelData.gasto_id);
+    if (!gasto){
+      throw new NotFoundException(`Gasto with ID ${updatedConsumivelData.gasto_id} not found`)
+    }
 
-    await this.consumivelRepository.update(id, updatedConsumivel);
+    const updatedConsumivel = this.consumivelFactory.create(updatedConsumivelData, gasto);
+
+    const result = await this.consumivelRepository.update(id, updatedConsumivel);
+    
+    if(!result){
+      throw new NotFoundException(`Consumivel with ID ${id} not found for update.`)
+    }
+
     return updatedConsumivel;
   }
 

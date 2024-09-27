@@ -8,47 +8,52 @@ import { GastoMapper } from '../mappers/gasto.mapper';
 
 @Injectable()
 export class InMemoryGastoRepository implements GastoRepository {
-  constructor(
-    @InjectRepository(GastoEntity)
-    private readonly gastoRepository: Repository<GastoEntity>,
-  ) {}
+  private readonly gastos = new Map<number, GastoEntity>();
+  private idCounter = 1;
 
   async save(gasto: Gasto): Promise<Gasto> {
-    const persistenceModel = GastoMapper.paraPersistencia(gasto);
-    const savedEntity = await this.gastoRepository.save(persistenceModel);
-    return GastoMapper.paraDominio(savedEntity);
+    const gastoEntity = GastoMapper.paraPersistencia(gasto);
+    gastoEntity.id = this.idCounter++;
+    this.gastos.set(gastoEntity.id, gastoEntity);
+    console.log(`Gasto ${gastoEntity.id} criada com sucesso!`);
+    return GastoMapper.paraDominio(gastoEntity);
   }
 
   async findAll(): Promise<Gasto[]> {
-    const entities = await this.gastoRepository.find();
-    return entities.map((item) => GastoMapper.paraDominio(item));
+    console.log("Listando todas as gastos...");
+    return Array.from(this.gastos.values());
   }
 
   async findById(id: number): Promise<Gasto | null> {
-    const entity = await this.gastoRepository.findOneBy({ id });
-    return entity ? GastoMapper.paraDominio(entity) : null;
+    const gasto = this.gastos.get(id);
+    if (gasto) {
+        console.log(`Gasto encontrado: ${gasto.id}`);
+        return gasto;
+    } else {
+        console.log(`Gasto com ID ${id} não encontrado.`);
+        return null;
+    }
   }
 
   async update(id: number, gasto: Partial<Gasto>): Promise<Gasto | null> {
-    const existingEntity = await this.gastoRepository.findOneBy({ id });
-    if (!existingEntity) {
-      return null;
+    const existingGasto = this.gastos.get(id);
+    if (existingGasto) {
+        const updatedAdotante = { ...existingGasto, ...gasto } as GastoEntity;
+        this.gastos.set(id, updatedAdotante);
+        console.log(`Gasto com ID ${id} atualizado com sucesso!`);
+        return updatedAdotante;
+    } else {
+        console.log(`Gasto com ID ${id} não encontrado para atualização.`);
+        return null;
     }
-
-    const updatedEntity: GastoEntity = {
-      ...existingEntity,
-      ...GastoMapper.paraPersistencia({
-        ...existingEntity,
-        ...gasto,
-        id
-      })
-    };
-
-    await this.gastoRepository.save(updatedEntity);
-    return GastoMapper.paraDominio(updatedEntity);
   }
 
   async remove(id: number): Promise<void> {
-    await this.gastoRepository.delete(id);
+    if (this.gastos.has(id)) {
+      this.gastos.delete(id);
+      console.log(`Gasto com ID ${id} removido com sucesso!`);
+  } else {
+      console.log(`Gasto com ID ${id} não encontrado para remoção.`);
+  }
   }
 }

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConsumivelRepository } from 'src/consumiveis/application/ports/consumiveis.repository';
 import { Consumivel } from 'src/consumiveis/domain/consumivel';
 import { ConsumivelEntity } from '../entities/consumivel.entity';
-import { ConsumivelMapper } from '../mappers/consumivel.mappers';
+import { ConsumivelMapper } from '../mappers/consumivel.mapper';
 
 @Injectable()
 export class InMemoryConsumivelRepository implements ConsumivelRepository {

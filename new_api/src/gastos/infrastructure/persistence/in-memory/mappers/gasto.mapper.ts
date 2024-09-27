@@ -1,5 +1,6 @@
-import { Gasto } from 'src/gastos/domain/gastos';
-import { GastoEntity } from '../entities/gasto.entity';
+import { Gasto } from "src/gastos/domain/gastos";
+import { GastoEntity } from "../entities/gasto.entity";
+
 
 export class GastoMapper {
   static paraDominio(gastoEntity: GastoEntity): Gasto {
@@ -9,10 +10,6 @@ export class GastoMapper {
       gastoEntity.tipo,
       gastoEntity.quantidade,
       gastoEntity.valor,
-      
-    //   gastoEntity.medicamento,
-    //   gastoEntity.doacao,
-    //   gastoEntity.vacina,
     );
     return model;
   }
@@ -24,10 +21,6 @@ export class GastoMapper {
     entity.tipo = gasto.tipo;
     entity.quantidade = gasto.quantidade;
     entity.valor = gasto.valor;
-
-    // entity.medicamento = gasto.medicamento;
-    // entity.doacao = gasto.doacao;
-    // entity.vacina = gasto.vacina;
     return entity;
   }
 }

@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { GastosService } from '../../application/gastos.service';
-import { CreateGastoDto } from './dto/create-gasto.dto';
-import { UpdateGastoDto } from './dto/update-gasto.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
+import { GastosService } from 'src/gastos/application/gastos.service'; 
+import { CreateGastoDto } from './dto/create-gasto.dto'; 
+import { UpdateGastoDto } from './dto/update-gasto.dto'; 
 
 @Controller('gastos')
 export class GastosController {
@@ -23,7 +31,10 @@ export class GastosController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() updateGastoDto: UpdateGastoDto) {
+  async update(
+    @Param('id') id: number,
+    @Body() updateGastoDto: UpdateGastoDto,
+  ) {
     return this.gastosService.update(id, updateGastoDto);
   }
 

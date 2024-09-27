@@ -1,8 +1,6 @@
 import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { DoacoesService } from './doacoes.service';
 import { DoacoesController } from '../presenters/http/doacoes.controller';
-import { Doacao } from '../domain/doacoes'; 
 import { DoacaoFactory } from '../domain/factories/doacoes-factory';
 import { DoacaoRepository } from './ports/doacao.repository';
 import { InFileDoacaoRepository } from '../infrastructure/persistence/in-file/repositories/doacao.repository';

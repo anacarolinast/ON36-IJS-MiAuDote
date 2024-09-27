@@ -4,6 +4,7 @@ import { Medicamento } from "src/medicamentos/domain/medicamentos";
 import { MedicamentoEntity } from "../entities/medicamento.entity";
 import { MedicamentoMapper } from "../mappers/medicamento.mapper";
 import { Veterinario } from "src/veterinarios/domain/veterinarios";
+import { Gasto } from "src/gastos/domain/gastos";
 
 @Injectable()
 export class InFileMedicamentoRepository implements MedicamentoRepository {

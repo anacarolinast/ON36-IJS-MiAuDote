@@ -17,6 +17,11 @@ export class InMemoryPessoaRepository implements PessoaRepository {
         return PessoaMapper.paraDominio(pessoaEntity);
     }
 
+    async findPessoa(id: number): Promise <Pessoa | null> {
+        console.log("Listando todas as pessoas...");
+        return null;
+    }
+
     async findAll(): Promise<Pessoa[]> {
         console.log("Listando todas as pessoas...");
         return Array.from(this.pessoas.values());

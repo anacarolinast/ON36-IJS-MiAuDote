@@ -2,6 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { ConsumivelRepository } from "src/consumiveis/application/ports/consumiveis.repository";
 import { Consumivel } from "src/consumiveis/domain/consumivel";
 import { ConsumivelEntity } from "../entities/consumivel.entity";
+import { ConsumivelMapper } from "../mappers/consumivel.mapper";
+import { Gasto } from "src/gastos/domain/gastos";
+
 
 @Injectable()
 export class InFileConsumivelRepository implements ConsumivelRepository {
@@ -11,39 +14,38 @@ export class InFileConsumivelRepository implements ConsumivelRepository {
     async save(consumivel: Consumivel): Promise<Consumivel> {
         const consumivelEntity = new ConsumivelEntity();
         consumivelEntity.id = this.idCounter++;
-        consumivelEntity.tipo_animal = consumivel.tipo_animal;
-        consumivelEntity.descricao = consumivel.descricao;
-        consumivelEntity.gasto_id = consumivel.gasto_id;
-
         this.consumiveis.set(consumivelEntity.id, consumivelEntity);
-
         console.log(`Consumivel criado com sucesso!`); 
-        return consumivelEntity;
+        return ConsumivelMapper.paraDominio(consumivelEntity);
     }
 
     async findAll(): Promise<Consumivel[]> {
-        console.log("Listando todas os consumiveis...");
-        return Array.from(this.consumiveis.values());
+        console.log("Listando todos os consumiveis...");
+        return Array.from(this.consumiveis.values()).map(consumivelEntity =>
+            ConsumivelMapper.paraDominio(consumivelEntity)
+        );
     }
 
     async findById(id: number): Promise<Consumivel | null> {
-        const consumivel = this.consumiveis.get(id);
-        if (consumivel) {
-            console.log(`Consumivel encontrada: ${consumivel.id}`);
-            return consumivel;
+        const consumivelEntity = this.consumiveis.get(id);
+        if (consumivelEntity) {
+            console.log(`Consumivel encontrada: ${consumivelEntity.id}`);
+            return ConsumivelMapper.paraDominio(consumivelEntity);
         } else {
             console.log(`Consumivel com ID ${id} não encontrado.`);
             return null;
         }
     }
 
-    async update(id: number, consumivel: Partial<Consumivel>): Promise<Consumivel | null> {
-        const existingConsumivel = this.consumiveis.get(id);
-        if (existingConsumivel) {
-            const updatedConsumivel = { ...existingConsumivel, ...consumivel };
-            this.consumiveis.set(id, updatedConsumivel);
+    async update(id: number, dadosAtualizados: Partial<Consumivel>): Promise<Consumivel | null> {
+        const consumivelEntity = this.consumiveis.get(id);
+        if (consumivelEntity) {
+            Object.assign(consumivelEntity, dadosAtualizados);
+
+            this.consumiveis.set(id, consumivelEntity);
             console.log(`Consumivel com ID ${id} atualizado com sucesso!`);
-            return updatedConsumivel;
+            
+            return ConsumivelMapper.paraDominio(consumivelEntity);
         } else {
             console.log(`Consumivel com ID ${id} não encontrado para atualização.`);
             return null;

@@ -18,7 +18,7 @@ export class InFileGastoRepository implements GastoRepository {
 
         this.gastos.set(gastoEntity.id, gastoEntity);
 
-        console.log(`Gasto criado com sucesso!`); 
+        console.log(`Gasto do tipo ${gastoEntity.tipo} criado com sucesso!`); 
         return gastoEntity;
     }
 

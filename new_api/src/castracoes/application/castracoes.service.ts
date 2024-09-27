@@ -6,6 +6,7 @@ import { CastracaoFactory } from '../domain/factories/castracoes-factory';
 import { CastracaoRepository } from './ports/castracoes.repository';
 import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
 import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
+import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
 
 @Injectable()
 export class CastracoesService {
@@ -14,6 +15,7 @@ export class CastracoesService {
     private readonly castracaoRepository: CastracaoRepository,
     private readonly veterinarioRepository: VeterinarioRepository,
     private readonly animalRepository: AnimalRepository,
+    private readonly gastoRepository: GastoRepository,
   ) {}
 
   async findAll(): Promise<Castracao[]> {
@@ -37,6 +39,10 @@ export class CastracoesService {
       createCastracaoDto.animal_id,
     );
 
+    const gasto = await this.gastoRepository.findById(
+      createCastracaoDto.gasto_id,
+    );
+
     if (!veterinario) {
       throw new NotFoundException(
         `Veterinario with ID ${createCastracaoDto.veterinario_id} not found`,
@@ -48,7 +54,14 @@ export class CastracoesService {
         `Animal with ID ${createCastracaoDto.animal_id} not found`,
       );
     }
-    const newCastracao = this.castracaoFactory.create(createCastracaoDto, veterinario, animal);
+
+    if (!gasto) {
+      throw new NotFoundException(
+        `Gasto with ID ${createCastracaoDto.gasto_id} not found`,
+      );
+    }
+
+    const newCastracao = this.castracaoFactory.create(createCastracaoDto, veterinario, animal, gasto);
     return this.castracaoRepository.save(newCastracao);
   }
 
@@ -75,7 +88,12 @@ export class CastracoesService {
       throw new NotFoundException(`Animal with ID ${updatedCastracaoData.animal_id} not found`)
     }
 
-    const updatedCastracao = this.castracaoFactory.create(updatedCastracaoData, veterinario, animal);
+    const gasto = await this.gastoRepository.findById(updatedCastracaoData.gasto_id);
+    if (!gasto){
+      throw new NotFoundException(`Gasto with ID ${updatedCastracaoData.gasto_id} not found`)
+    }
+
+    const updatedCastracao = this.castracaoFactory.create(updatedCastracaoData, veterinario, animal, gasto);
 
     const result = await this.castracaoRepository.update(id, updatedCastracao);
     
