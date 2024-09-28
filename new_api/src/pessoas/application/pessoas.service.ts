@@ -5,7 +5,6 @@ import { Pessoa } from '../domain/pessoas';
 import { CreatePessoaDto } from '../presenters/http/dto/create-pessoa.dto';
 import { UpdatePessoaDto } from '../presenters/http/dto/update-pessoa.dto';
 import { CepService } from '../infrastructure/adapters/cep-adapter.service';
-import { CpfService } from '../infrastructure/adapters/cpf-adapter.service';
 
 @Injectable()
 export class PessoasService {
@@ -13,7 +12,6 @@ export class PessoasService {
     private readonly pessoaRepository: PessoaRepository,
     private readonly pessoaFactory: PessoaFactory,
     private readonly cepService: CepService,
-    private readonly cpfService: CpfService,
   ) {}
 
   async findAll(): Promise<Pessoa[]> {
@@ -47,17 +45,6 @@ export class PessoasService {
     const endereco = await this.cepService.consultaCep(createOrUpdateDto.cep);
     if (!endereco) {
       throw new BadRequestException('Invalid CEP or address not found');
-    }
-
-    const cpfValidationResult = await this.cpfService.validaCpf(createOrUpdateDto.cpf);
-    if (!cpfValidationResult) {
-      throw new BadRequestException('Invalid CPF');
-    }
-
-    const nomeRetornado = cpfValidationResult.nome;
-
-    if (nomeRetornado.trim().toLowerCase() !== createOrUpdateDto.nome.trim().toLowerCase()) {
-      throw new BadRequestException(`CPF does not match the name provided. Expected: ${nomeRetornado}`);
     }
   }
 
