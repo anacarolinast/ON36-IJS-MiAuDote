@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { AdocaoRepository } from 'src/adocoes/application/ports/adocoes.repository';
 import { Adocao } from 'src/adocoes/domain/adocao';
 import { AdocaoEntity } from '../entities/adocao.entity';

@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { VacinaRepository } from 'src/vacinas/application/ports/vacinas.repository';
 import { Vacina } from 'src/vacinas/domain/vacinas';
 import { VacinaEntity } from '../entities/vacina.entity';

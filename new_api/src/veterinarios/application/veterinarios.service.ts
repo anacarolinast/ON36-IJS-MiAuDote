@@ -8,10 +8,10 @@ import { MedicamentoRepository } from 'src/medicamentos/application/ports/medica
 import { CastracaoRepository } from 'src/castracoes/application/ports/castracoes.repository';
 import { UpdateVeterinarioDto } from '../presenters/http/dto/update-veterinario.dto';
 import { CreateVeterinarioDto } from '../presenters/http/dto/create-veterinario.dto';
-import { Pessoa } from 'src/pessoas/domain/pessoas';
-import { Vacina } from 'src/vacinas/domain/vacinas';
-import { Medicamento } from 'src/medicamentos/domain/medicamentos';
-import { Castracao } from 'src/castracoes/domain/castracao';
+// import { Pessoa } from 'src/pessoas/domain/pessoas';
+// import { Vacina } from 'src/vacinas/domain/vacinas';
+// import { Medicamento } from 'src/medicamentos/domain/medicamentos';
+// import { Castracao } from 'src/castracoes/domain/castracao';
 
 @Injectable()
 export class VeterinariosService {
@@ -19,9 +19,9 @@ export class VeterinariosService {
     private readonly veterinariosRepository: VeterinarioRepository,
     private readonly veterinarioFactory: VeterinarioFactory,
     private readonly pessoaRepository: PessoaRepository,
-    private readonly vacinaRepository: VacinaRepository,
-    private readonly medicamentoRepository: MedicamentoRepository,
-    private readonly castracaoRepository: CastracaoRepository,
+    // private readonly vacinaRepository: VacinaRepository,
+    // private readonly medicamentoRepository: MedicamentoRepository,
+    // private readonly castracaoRepository: CastracaoRepository,
   ) {}
 
   async findAll(): Promise<Veterinario[]> {

@@ -86,7 +86,7 @@ describe('AnimaisController', () => {
   });
 
   it('should return one animal by ID', async () => {
-    const result = await controller.findOne('1');
+    const result = await controller.findOne(1);
     expect(result).toEqual({
       id: 1,
       nome: 'Rex',
@@ -117,7 +117,7 @@ describe('AnimaisController', () => {
     const dto: UpdateAnimalDto = {
       condicao_saude: 'Em tratamento',
     };
-    const result = await controller.update('1', dto);
+    const result = await controller.update(1, dto);
     expect(result).toEqual({
       id: 1,
       nome: 'Rex',
@@ -131,7 +131,7 @@ describe('AnimaisController', () => {
   });
 
   it('should remove an animal', async () => {
-    const result = await controller.remove('1');
+    const result = await controller.remove(1);
     expect(result).toEqual({ deleted: true });
     expect(service.remove).toHaveBeenCalledWith(1);
   });

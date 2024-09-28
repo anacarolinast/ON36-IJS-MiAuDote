@@ -7,7 +7,6 @@ import {
   Put,
   Delete,
   NotFoundException,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { AdocoesService } from '../../application/adocoes.service';
 import { CreateAdocaoDto } from './dto/create-adocao.dto';

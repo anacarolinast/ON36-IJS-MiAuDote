@@ -6,7 +6,6 @@ import {
   Param,
   Put,
   Delete,
-  NotFoundException,
 } from '@nestjs/common';
 import { AnimaisService } from '../../application/animais.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';

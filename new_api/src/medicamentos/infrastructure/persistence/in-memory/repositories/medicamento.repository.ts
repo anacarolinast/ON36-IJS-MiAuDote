@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { MedicamentoRepository } from 'src/medicamentos/application/ports/medicamento.repository';
 import { Medicamento } from 'src/medicamentos/domain/medicamentos';
 import { MedicamentoEntity } from '../entities/medicamento.entity';

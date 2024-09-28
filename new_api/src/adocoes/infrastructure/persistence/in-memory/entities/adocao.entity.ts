@@ -1,15 +1,3 @@
-// import { Adotante } from 'src/adotantes/entities/adotante.entity';
-// import { Animal } from 'src/animais/domain/factories/animal.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-} from 'typeorm';
-import { Adotante } from '../../../../../adotantes/domain/adotante';
-import { Animal } from 'src/animais/domain/animal';
 import { AnimalEntity } from 'src/animais/infrastructure/persistence/in-memory/entities/animais.entity';
 import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/in-memory/entities/adotante.entity';
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { VacinasController } from './vacinas.controller';
-import { VacinasService } from '../../vacinas.service';
+import { VacinasService } from '../../application/vacinas.service';
 import { CreateVacinaDto } from './dto/create-vacina.dto';
 import { UpdateVacinaDto } from './dto/update-vacina.dto';
 
