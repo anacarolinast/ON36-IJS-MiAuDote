@@ -13,6 +13,7 @@ describe('Pessoas', () => {
 
   const createPessoaDto: CreatePessoaDto = {
     nome: 'João Silva',
+    cep: '12345-678',
     endereco: 'Rua das Flores, 123',
     telefone: ['11987654321'],
     email: 'joao@example.com',
@@ -21,6 +22,7 @@ describe('Pessoas', () => {
 
   const updatePessoaDto: UpdatePessoaDto = {
     nome: 'Maria Silva',
+    cep: '12345-678',
     endereco: 'Rua das Flores, 123',
     telefone: ['11987654321'],
     email: 'maria@example.com',
@@ -31,9 +33,10 @@ describe('Pessoas', () => {
     1,
     'João Silva',
     'Rua das Flores, 123',
+    '12345-678' ,
     ['11987654321'],
     'joao@example.com',
-    '123.456.789-00'
+    '123.456.789-00',
   );
 
   beforeEach(async () => {
@@ -42,6 +45,7 @@ describe('Pessoas', () => {
         return new Pessoa(
           1,
           data.nome,
+          data.cep,
           data.endereco,
           data.telefone,
           data.email,

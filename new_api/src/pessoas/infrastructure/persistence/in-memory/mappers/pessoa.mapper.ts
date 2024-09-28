@@ -6,6 +6,7 @@ export class PessoaMapper {
         const model = new Pessoa(
             pessoaEntity.id,
             pessoaEntity.nome,
+            pessoaEntity.cep,
             pessoaEntity.endereco,
             pessoaEntity.telefone,
             pessoaEntity.email,
@@ -18,6 +19,7 @@ export class PessoaMapper {
         const entity = new PessoaEntity();
         entity.id = pessoa.id;
         entity.nome = pessoa.nome;
+        entity.cep = pessoa.cep;
         entity.endereco = pessoa.endereco;
         entity.telefone = pessoa.telefone;
         entity.email = pessoa.email;

@@ -13,47 +13,39 @@ describe('PessoasController', () => {
       {
         id: 1,
         nome: 'João Silva',
+        cep: '12345-678',
         endereco: 'Rua das Flores, 123',
         telefone: ['11987654321'],
         email: 'joao.silva@example.com',
         cpf: '123.456.789-00',
-        veterinario: null,
-        adotante: null,
-        doador: null,
       },
     ]),
     findOne: jest.fn().mockResolvedValue({
       id: 1,
       nome: 'João Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
       cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
     }),
     create: jest.fn().mockResolvedValue({
       id: 1,
       nome: 'João Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
       cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
     }),
     update: jest.fn().mockResolvedValue({
       id: 1,
       nome: 'Maria Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
       cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
     }),
     remove: jest.fn().mockResolvedValue({ affected: 1 }),
   };
@@ -83,13 +75,11 @@ describe('PessoasController', () => {
       {
         id: 1,
         nome: 'João Silva',
+        cep: '12345-678',
         endereco: 'Rua das Flores, 123',
         telefone: ['11987654321'],
         email: 'joao.silva@example.com',
         cpf: '123.456.789-00',
-        veterinario: null,
-        adotante: null,
-        doador: null,
       },
     ]);
     expect(service.findAll).toHaveBeenCalled();
@@ -100,13 +90,11 @@ describe('PessoasController', () => {
     expect(result).toEqual({
       id: 1,
       nome: 'João Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
       cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
     });
     expect(service.findOne).toHaveBeenCalledWith(1);
   });
@@ -114,6 +102,7 @@ describe('PessoasController', () => {
   it('should create a new pessoa', async () => {
     const createDto: CreatePessoaDto = {
       nome: 'João Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
@@ -123,13 +112,11 @@ describe('PessoasController', () => {
     expect(result).toEqual({
       id: 1,
       nome: 'João Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
       cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
     });
     expect(service.create).toHaveBeenCalledWith(createDto);
   });
@@ -142,13 +129,11 @@ describe('PessoasController', () => {
     expect(result).toEqual({
       id: 1,
       nome: 'Maria Silva',
+      cep: '12345-678',
       endereco: 'Rua das Flores, 123',
       telefone: ['11987654321'],
       email: 'joao.silva@example.com',
       cpf: '123.456.789-00',
-      veterinario: null,
-      adotante: null,
-      doador: null,
     });
     expect(service.update).toHaveBeenCalledWith(1, updateDto);
   });

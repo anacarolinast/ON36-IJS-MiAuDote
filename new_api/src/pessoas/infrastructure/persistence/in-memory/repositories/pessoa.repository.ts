@@ -17,10 +17,16 @@ export class InMemoryPessoaRepository implements PessoaRepository {
         return PessoaMapper.paraDominio(pessoaEntity);
     }
 
-    async findPessoa(id: number): Promise <Pessoa | null> {
-        console.log("Listando todas as pessoas...");
+    async findByCpf(cpf: string): Promise<Pessoa | null> {
+        for (const pessoa of this.pessoas.values()) {
+            if (pessoa.cpf === cpf) {
+                console.log(`Pessoa encontrada com CPF ${cpf}: ${pessoa.nome}`);
+                return pessoa;
+            }
+        }
+        console.log(`Nenhuma pessoa encontrada com CPF ${cpf}.`);
         return null;
-    }
+    }    
 
     async findAll(): Promise<Pessoa[]> {
         console.log("Listando todas as pessoas...");

@@ -11,6 +11,7 @@ export class PessoaFactory {
         return new Pessoa(
             pessoaId,
             data.nome,
+            data.cep,
             data.endereco,
             data.telefone,
             data.email,

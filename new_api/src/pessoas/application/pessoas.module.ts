@@ -7,18 +7,22 @@ import { PessoaFactory } from '../domain/factories/pessoas-factory';
 import { DoadoresModule } from 'src/doadores/application/doadores.module';
 import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
 import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
+import { CepService } from '../infrastructure/adapters/cep-adapter.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     forwardRef(() => DoadoresModule),
     forwardRef(() => AdotantesModule),
     forwardRef(() => VeterinariosModule),
+    HttpModule
   ],
   controllers: [PessoasController],
   providers: [
     PessoasService, 
     PessoaFactory,
     { provide: PessoaRepository, useClass: InFilePessoaRepository },
+    CepService
   ],
   exports: [PessoasService, PessoaRepository],
 })

@@ -8,6 +8,11 @@ export class CreatePessoaDto {
 
     @IsString()
     @IsNotEmpty() 
+    @Length(1, 255) 
+    cep: string;
+
+    @IsString()
+    @IsNotEmpty() 
     @Length(1, 255)  
     endereco: string;
 

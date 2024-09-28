@@ -12,6 +12,7 @@ export class InFilePessoaRepository implements PessoaRepository {
         const pessoaEntity = new PessoaEntity();
         pessoaEntity.id = this.idCounter++;
         pessoaEntity.nome = pessoa.nome;
+        pessoaEntity.cep = pessoa.cep;
         pessoaEntity.endereco = pessoa.endereco;
         pessoaEntity.telefone = pessoa.telefone;
         pessoaEntity.email = pessoa.email;
@@ -21,11 +22,6 @@ export class InFilePessoaRepository implements PessoaRepository {
 
         console.log(`Pessoa ${pessoaEntity.nome} criada com sucesso!`); 
         return pessoaEntity;
-    }
-    
-    async findPessoa(id: number): Promise <Pessoa | null> {
-        console.log("Listando todas as pessoas...");
-        return null;
     }
 
     async findAll(): Promise<Pessoa[]> {
@@ -43,6 +39,17 @@ export class InFilePessoaRepository implements PessoaRepository {
             return null;
         }
     }
+
+    async findByCpf(cpf: string): Promise<Pessoa | null> {
+        for (const pessoa of this.pessoas.values()) {
+            if (pessoa.cpf === cpf) {
+                console.log(`Pessoa encontrada com CPF ${cpf}: ${pessoa.nome}`);
+                return pessoa;
+            }
+        }
+        console.log(`Nenhuma pessoa encontrada com CPF ${cpf}.`);
+        return null;
+    }    
 
     async update(id: number, pessoa: Partial<Pessoa>): Promise<Pessoa | null> {
         const existingPessoa = this.pessoas.get(id);
