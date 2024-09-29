@@ -7,15 +7,22 @@ import { CastracaoMapper } from "src/castracoes/infrastructure/persistence/in-fi
 
 export class VeterinarioMapper {
     static paraDominio(veterinarioEntity: VeterinarioEntity): Veterinario {
+        const {id, especialidade, registro_crmv, pessoa_id, pessoa, vacina, medicamento, castracao} = veterinarioEntity;
+
         return new Veterinario(
-            veterinarioEntity.id,
-            veterinarioEntity.especialidade,
-            veterinarioEntity.registro_crmv,
-            veterinarioEntity.pessoa_id,
-            PessoaMapper.paraDominio(veterinarioEntity.pessoa),
-            veterinarioEntity.vacina?.map(veterinarioEntity => VacinaMapper.paraDominio(veterinarioEntity)) || [],
-            veterinarioEntity.medicamento?.map(veterinarioEntity => MedicamentoMapper.paraDominio(veterinarioEntity)) || [],
-            veterinarioEntity.castracao?.map(veterinarioEntity => CastracaoMapper.paraDominio(veterinarioEntity)) || [],
+            id,
+            especialidade,
+            registro_crmv,
+            vacina?.map(VacinaMapper.paraDominio) || [],
+            medicamento?.map(MedicamentoMapper.paraDominio) || [],
+            castracao?.map(CastracaoMapper.paraDominio) || [],
+            pessoa_id,
+            pessoa.nome,
+            pessoa.cep,
+            pessoa.endereco,
+            pessoa.telefone,
+            pessoa.email,
+            pessoa.cpf
         );
     }
 
@@ -24,11 +31,12 @@ export class VeterinarioMapper {
         entity.id = veterinario.id;
         entity.especialidade = veterinario.especialidade;
         entity.registro_crmv = veterinario.registro_crmv;
-        entity.pessoa_id = veterinario.pessoa_id;
-        entity.pessoa = PessoaMapper.paraPersistencia(veterinario.pessoa);
-        entity.vacina = veterinario.vacinas?.map(vacinas => VacinaMapper.paraPersistencia(vacinas)) || []
+        
+        entity.pessoa = PessoaMapper.paraPersistencia(veterinario);
+        entity.vacina = veterinario.vacinas?.map(vacina => VacinaMapper.paraPersistencia(vacina)) || [];
         entity.medicamento = veterinario.medicamentos?.map(medicamento => MedicamentoMapper.paraPersistencia(medicamento)) || [];
         entity.castracao = veterinario.castracoes?.map(castracao => CastracaoMapper.paraPersistencia(castracao)) || [];
+    
         return entity;
     }
 }

@@ -20,15 +20,17 @@ export class InMemoryVeterinarioRepository implements VeterinarioRepository {
     }
 
     async findAll(): Promise<Veterinario[]> {
-        console.log("Listando todos os veterinario...");
-        return Array.from(this.veterinarios.values());
+        console.log("Listando todos os veterinarios...");
+        return Array.from(this.veterinarios.values()).map(veterinarioEntity =>
+            VeterinarioMapper.paraDominio(veterinarioEntity)
+        );
     }
 
     async findById(id: number): Promise<Veterinario | null> {
-        const veterinario = this.veterinarios.get(id);
-        if (veterinario) {
-            console.log(`Veterinario encontrado: ${veterinario.id}`);
-            return veterinario;
+        const veterinarioEntity = this.veterinarios.get(id);
+        if (veterinarioEntity) {
+            console.log(`Veterinario encontrado: ${veterinarioEntity.id}`);
+            return VeterinarioMapper.paraDominio(veterinarioEntity);
         } else {
             console.log(`Veterinario com ID ${id} não encontrado.`);
             return null;
@@ -36,14 +38,19 @@ export class InMemoryVeterinarioRepository implements VeterinarioRepository {
     }
 
     async update(id: number, veterinario: Partial<Veterinario>): Promise<Veterinario | null> {
-        const existingVeterinario = this.veterinarios.get(id);
-        if (existingVeterinario) {
-            const updatedAdotante = { ...existingVeterinario, ...veterinario } as VeterinarioEntity;
-            this.veterinarios.set(id, updatedAdotante);
+        const existingVeterinarioEntity = this.veterinarios.get(id);
+        if (existingVeterinarioEntity) {
+            const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia({
+                ...VeterinarioMapper.paraDominio(existingVeterinarioEntity),
+                ...veterinario,
+                id: existingVeterinarioEntity.id
+            });
+
+            this.veterinarios.set(id, updatedVeterinarioEntity);
             console.log(`Veterinario com ID ${id} atualizado com sucesso!`);
-            return updatedAdotante;
+            return VeterinarioMapper.paraDominio(updatedVeterinarioEntity);
         } else {
-            console.log(`Veterinario com ID ${id} não encontrada para atualização.`);
+            console.log(`Veterinario com ID ${id} não encontrado para atualização.`);
             return null;
         }
     }
@@ -63,11 +70,10 @@ export class InMemoryVeterinarioRepository implements VeterinarioRepository {
             const existingVeterinario = VeterinarioMapper.paraDominio(existingVeterinarioEntity);
 
             existingVeterinario.vacinas.push(vacina);
-
             const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia(existingVeterinario);
 
             this.veterinarios.set(id, updatedVeterinarioEntity);
-            return existingVeterinario;
+            return VeterinarioMapper.paraDominio(updatedVeterinarioEntity);
         } else {
             console.log(`Veterinario com ID ${id} não encontrado para vacinação.`);
             return null;
@@ -80,11 +86,10 @@ export class InMemoryVeterinarioRepository implements VeterinarioRepository {
             const existingVeterinario = VeterinarioMapper.paraDominio(existingVeterinarioEntity);
 
             existingVeterinario.medicamentos.push(medicamento);
-
             const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia(existingVeterinario);
 
             this.veterinarios.set(id, updatedVeterinarioEntity);
-            return existingVeterinario;
+            return VeterinarioMapper.paraDominio(updatedVeterinarioEntity);
         } else {
             console.log(`Veterinario com ID ${id} não encontrado para medicação.`);
             return null;
@@ -97,15 +102,13 @@ export class InMemoryVeterinarioRepository implements VeterinarioRepository {
             const existingVeterinario = VeterinarioMapper.paraDominio(existingVeterinarioEntity);
 
             existingVeterinario.castracoes.push(castracao);
-
             const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia(existingVeterinario);
 
             this.veterinarios.set(id, updatedVeterinarioEntity);
-            return existingVeterinario;
+            return VeterinarioMapper.paraDominio(updatedVeterinarioEntity);
         } else {
             console.log(`Veterinario com ID ${id} não encontrado para castração.`);
             return null;
         }
     }
-
 }

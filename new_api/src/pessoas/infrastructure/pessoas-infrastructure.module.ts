@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
 import { InFilePessoaPersistenceModule } from './persistence/in-file/in-file-persistence.module';
 import { InMemoryPessoaPersistenceModule } from './persistence/in-memory/in-memory-persistence.module';
+import { CepService } from './adapters/cep-adapter.service';  
+import { HttpModule } from '@nestjs/axios';
 
-@Module({})
+@Module({
+  imports: [HttpModule],
+  providers: [CepService],
+  exports: [CepService],
+})
 export class PessoaInfrastructureModule {
   static use(driver: 'in-file' | 'in-memory') {
     const persistenceModule =
@@ -12,8 +18,9 @@ export class PessoaInfrastructureModule {
 
     return {
       module: PessoaInfrastructureModule,
-      imports: [persistenceModule],
-      exports: [persistenceModule],
+      imports: [persistenceModule, HttpModule],
+      providers: [CepService],
+      exports: [persistenceModule, CepService], 
     };
   }
 }

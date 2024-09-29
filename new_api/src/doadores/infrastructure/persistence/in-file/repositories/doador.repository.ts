@@ -4,17 +4,39 @@ import { Doador } from "src/doadores/domain/doadores";
 import { DoadorEntity } from "../entities/doador.entity";
 import { DoadorMapper } from "../mappers/doador.mappers";
 import { Doacao } from "src/doacoes/domain/doacoes";
+import { PessoaEntity } from "src/pessoas/infrastructure/persistence/in-file/entities/pessoa.entity";
+import { PessoaRepository } from "src/pessoas/application/ports/pessoas.repository";
 
 @Injectable()
 export class InFileDoadorRepository implements DoadorRepository {
     private readonly doadores = new Map<number, DoadorEntity>();
     private idCounter = 1;
 
+    private pessoaRepository: PessoaRepository;
+
+    constructor(pessoaRepository: PessoaRepository) {
+        this.pessoaRepository = pessoaRepository;
+    }
+
     async save(doador: Doador): Promise<Doador> {
+        const pessoaEntity = new PessoaEntity();
+        pessoaEntity.nome = doador.nome;
+        pessoaEntity.cep = doador.cep;
+        pessoaEntity.endereco = doador.endereco;
+        pessoaEntity.telefone = doador.telefone;
+        pessoaEntity.email = doador.email;
+        pessoaEntity.cpf = doador.cpf;
+
+        const savedPessoa = await this.pessoaRepository.save(pessoaEntity);
+
         const doadorEntity = DoadorMapper.paraPersistencia(doador);
         doadorEntity.id = this.idCounter++;
+        doadorEntity.pessoa_id = savedPessoa.id;
+        doadorEntity.pessoa = savedPessoa;
+
         this.doadores.set(doadorEntity.id, doadorEntity);
-        console.log(`Doador ${doadorEntity.id} criado com sucesso!`); 
+        console.log(`Doador ${doadorEntity.id} criado com sucesso!`);
+
         return DoadorMapper.paraDominio(doadorEntity);
     }
 

@@ -16,8 +16,8 @@ export class AnimalMapper {
       animalEntity.condicao_saude,
       animalEntity.estado_adocao,
       animalEntity.adocao ? AdocaoMapper.paraDominio(animalEntity.adocao) : null,
-      animalEntity.medicamentos?.map(MedicamentoMapper.paraDominio) || [],
-      animalEntity.vacinas?.map(VacinaMapper.paraDominio) || [],
+      animalEntity.medicamentos?.map(animalEntity => MedicamentoMapper.paraDominio(animalEntity)) || [],
+      animalEntity.vacinas?.map(animalEntity => VacinaMapper.paraDominio(animalEntity)) || [],
       animalEntity.castracao ? CastracaoMapper.paraDominio(animalEntity.castracao) : null
     );
     return model;
@@ -33,8 +33,8 @@ export class AnimalMapper {
     entity.condicao_saude = animal.condicao_saude;
     entity.estado_adocao = animal.estado_adocao;
     entity.adocao = animal.adocao ? AdocaoMapper.paraPersistencia(animal.adocao) : null;
-    entity.medicamentos = animal.medicamentos?.map(MedicamentoMapper.paraPersistencia) || [];
-    entity.vacinas = animal.vacinas?.map(VacinaMapper.paraPersistencia) || [];
+    entity.medicamentos = animal.medicamentos?.map(medicamento => MedicamentoMapper.paraPersistencia(medicamento)) || [];
+    entity.vacinas = animal.vacinas?.map(vacinas => VacinaMapper.paraPersistencia(vacinas)) || []
     entity.castracao = animal.castracao ? CastracaoMapper.paraPersistencia(animal.castracao) : null;
     return entity;
   }

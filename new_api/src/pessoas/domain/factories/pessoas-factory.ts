@@ -1,21 +1,111 @@
 import { Injectable } from "@nestjs/common";
-import { CreatePessoaDto } from "src/pessoas/presenters/http/dto/create-pessoa.dto";
 import { v4 as uuidv4 } from 'uuid';
 import { Pessoa } from "../pessoas";
+import { CreatePessoaDto } from "src/pessoas/presenters/http/dto/create-pessoa.dto";
+import { Veterinario } from "src/veterinarios/domain/veterinarios"; 
+import { CreateVeterinarioDto } from "src/veterinarios/presenters/http/dto/create-veterinario.dto";
+import { Doador } from "src/doadores/domain/doadores"; 
+import { CreateDoadorDto } from "src/doadores/presenters/http/dto/create-doador.dto";
+import { Adotante } from "src/adotantes/domain/adotante";
+import { CreateAdotanteDto } from "src/adotantes/presenters/http/dto/create-adotante.dto";
+import { PessoaType } from "../enum/pessoa.enum";
+import { Vacina } from "src/vacinas/domain/vacinas";
+import { Medicamento } from "src/medicamentos/domain/medicamentos";
+import { Castracao } from "src/castracoes/domain/castracao";
+import { Doacao } from "src/doacoes/domain/doacoes";
+import { Adocao } from "src/adocoes/domain/adocao";
+import { validarCPF } from "src/pessoas/infrastructure/helpers/cpf-validator";
 
 @Injectable()
 export class PessoaFactory {
-    create(data: CreatePessoaDto): Pessoa {
+    createPerson(
+        type: PessoaType,
+        pessoaData: CreatePessoaDto,
+        additionalData: any
+    ): Pessoa {
+        if (!validarCPF(pessoaData.cpf)) {
+            throw new Error("CPF inválido.");
+        }
         const pessoaId = uuidv4();
 
-        return new Pessoa(
+        const pessoa = new Pessoa(
             pessoaId,
-            data.nome,
-            data.cep,
-            data.endereco,
-            data.telefone,
-            data.email,
-            data.cpf,
-        )
+            pessoaData.nome,
+            pessoaData.cep,
+            pessoaData.endereco,
+            pessoaData.telefone,
+            pessoaData.email,
+            pessoaData.cpf,
+        );
+
+        switch (type) {
+            case PessoaType.Veterinario:
+                return this.createVeterinario(pessoa, additionalData);
+            case PessoaType.Doador:
+                return this.createDoador(pessoa, additionalData);
+            case PessoaType.Adotante:
+                return this.createAdotante(pessoa, additionalData);
+            default:
+                throw new Error('Invalid person type');
+        }
+    }
+
+    private createVeterinario(pessoa: Pessoa, data: CreateVeterinarioDto): Veterinario {
+        const id = uuidv4();
+        const vacinas: Vacina[] = [];
+        const medicamentos: Medicamento[] = [];
+        const castracao: Castracao[] = [];
+        return new Veterinario(
+            id,
+            data.especialidade,
+            data.registro_crmv,
+            vacinas,
+            medicamentos,
+            castracao,
+            pessoa.id,
+            pessoa.nome,
+            pessoa.cep,
+            pessoa.endereco,
+            pessoa.telefone,
+            pessoa.email,
+            pessoa.cpf
+        );
+    }
+    
+
+    private createDoador(pessoa: Pessoa, data: CreateDoadorDto): Doador {
+        const id = uuidv4();
+        const doacao: Doacao[] = [];
+        return new Doador(
+            id,
+            data.tipo_doacao,
+            data.descricao,
+            doacao,
+            pessoa.id,
+            pessoa.nome,
+            pessoa.cep,
+            pessoa.endereco,
+            pessoa.telefone,
+            pessoa.email,
+            pessoa.cpf
+        );
+    }
+
+    private createAdotante(pessoa: Pessoa, data: CreateAdotanteDto): Adotante {
+        const adotanteId = uuidv4();
+        const adocoes: Adocao[] = [];
+        return new Adotante(
+            adotanteId,
+            data.renda,
+            data.condicao_entrevista,
+            adocoes,
+            pessoa.id,
+            pessoa.nome,
+            pessoa.cep,
+            pessoa.endereco,
+            pessoa.telefone,
+            pessoa.email,
+            pessoa.cpf
+        );
     }
 }

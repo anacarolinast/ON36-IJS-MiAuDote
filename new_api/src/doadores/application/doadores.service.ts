@@ -1,16 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Doador } from '../domain/doadores';
 import { CreateDoadorDto } from '../presenters/http/dto/create-doador.dto';
 import { UpdateDoadorDto } from '../presenters/http/dto/update-doador.dto';
-import { DoadorFactory } from '../domain/factories/doadores-factory';
 import { DoadorRepository } from './ports/doador.repository';
 import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
+import { PessoaFactory } from 'src/pessoas/domain/factories/pessoas-factory';
+import { PessoaType } from 'src/pessoas/domain/enum/pessoa.enum';
 
 @Injectable()
 export class DoadoresService {
   constructor(
-    private readonly doadorFactory: DoadorFactory,
     private readonly doadorRepository: DoadorRepository,
+    private readonly pessoaFactory: PessoaFactory,
     private readonly pessoaRepository: PessoaRepository,
   ) {}
 
@@ -27,46 +28,74 @@ export class DoadoresService {
   }
 
   async create(createDoadorDto: CreateDoadorDto): Promise<Doador> {
-    const pessoa = await this.pessoaRepository.findById(
-      createDoadorDto.pessoa_id,
-    );
-    if (!pessoa){
-      throw new NotFoundException(
-        `Pessoa with ID ${createDoadorDto.pessoa_id} not found`,
-      );
+    const existingPessoa = await this.pessoaRepository.findByCpf(createDoadorDto.cpf);
+    if (existingPessoa) {
+      throw new BadRequestException('Já existe um CPF cadastrado.');
     }
-    
-    const newDoador = this.doadorFactory.create(createDoadorDto, pessoa);
-    return this.doadorRepository.save(newDoador);
-  }
 
-  async update(
-    id: number,
-    updateDoadorDto: UpdateDoadorDto
-  ): Promise<Doador> {
+    const pessoaData = {
+      nome: createDoadorDto.nome,
+      cep: createDoadorDto.cep,
+      endereco: createDoadorDto.endereco,
+      telefone: createDoadorDto.telefone,
+      email: createDoadorDto.email,
+      cpf: createDoadorDto.cpf,
+    };
+    
+    const pessoa = this.pessoaFactory.createPerson(PessoaType.Doador, pessoaData, {});
+
+    const newDoador = new Doador(
+      pessoa.id,
+      createDoadorDto.tipo_doacao,
+      createDoadorDto.descricao,
+      [],
+      pessoa.id,
+      pessoa.nome,
+      pessoa.cep,
+      pessoa.endereco,
+      pessoa.telefone,
+      pessoa.email,
+      pessoa.cpf,
+    );
+
+    return this.doadorRepository.save(newDoador);
+  } 
+
+  async update(id: number, updateDoadorDto: UpdateDoadorDto): Promise<Doador> {
     const doador = await this.findOne(id);
-    const updatedDoadorData = {
-      tipo_doacao: updateDoadorDto.tipo_doacao ?? doador.tipo_doacao,
-      descricao: updateDoadorDto.descricao ?? doador.descricao,
-      pessoa_id: updateDoadorDto.pessoa_id ?? doador.pessoa_id,
+    
+    const updatedDoadorData: Partial<Doador> = {
+      ...doador,
+      ...updateDoadorDto,
     };
 
-    const pessoa = await this.pessoaRepository.findById(updatedDoadorData.pessoa_id);
+    const pessoa = await this.pessoaRepository.findById(doador.id);
     if (!pessoa) {
-      throw new NotFoundException(`Pessoa with ID ${updatedDoadorData.pessoa_id} not found`);
+      throw new NotFoundException(`Pessoa with ID ${doador.id} not found`);
     }
 
-    const updatedDoador = this.doadorFactory.create(updatedDoadorData, pessoa);
+    const updatedPessoaData = {
+      ...pessoa,
+      nome: updateDoadorDto.nome ?? pessoa.nome,
+      cep: updateDoadorDto.cep ?? pessoa.cep,
+      endereco: updateDoadorDto.endereco ?? pessoa.endereco,
+      telefone: updateDoadorDto.telefone ?? pessoa.telefone,
+      email: updateDoadorDto.email ?? pessoa.email,
+      cpf: updateDoadorDto.cpf ?? pessoa.cpf,
+    };
 
-    const result = await this.doadorRepository.update(id, updatedDoador);
-    if (!result) {
+    await this.pessoaRepository.update(doador.id, updatedPessoaData);
+
+    const updatedDoador = await this.doadorRepository.update(id, updatedDoadorData);
+    if (!updatedDoador) {
       throw new NotFoundException(`Doador with ID ${id} not found for update.`);
     }
 
-    return updatedDoador;
+    return updatedDoador; 
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {
+    const doador = await this.findOne(id);
     await this.doadorRepository.remove(id);
     return { deleted: true };
   }

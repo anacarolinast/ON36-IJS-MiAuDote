@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Vacina } from '../domain/vacinas';
 import { CreateVacinaDto } from '../presenters/http/dto/create-vacina.dto';
 import { UpdateVacinaDto } from '../presenters/http/dto/update-vacina.dto';
@@ -58,6 +58,16 @@ export class VacinasService {
         `Gasto with ID ${createVacinaDto.gasto_id} not found`,
       );
     }
+
+    const existingVacina = await this.vacinaRepository.findByAnimalAndTipoVacina(
+      createVacinaDto.animal_id,
+      createVacinaDto.tipo_vacina
+    );
+  
+    if (existingVacina) {
+      throw new ConflictException(`Vacina of type ${createVacinaDto.tipo_vacina} for Animal ID ${createVacinaDto.animal_id} already exists.`);
+    }
+
     const newVacina = this.vacinaFactory.create(createVacinaDto, veterinario, animal, gasto);
     const savedVacina = await this.vacinaRepository.save(newVacina);
     const { veterinario: _, ...veterinarioData} = savedVacina;

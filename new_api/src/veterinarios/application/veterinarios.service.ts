@@ -1,27 +1,19 @@
-import { VeterinarioFactory } from './../domain/factories/veterinarios-factory';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { VeterinarioRepository } from './ports/veterinarios.repository';
 import { Veterinario } from '../domain/veterinarios';
 import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
-import { VacinaRepository } from 'src/vacinas/application/ports/vacinas.repository';
-import { MedicamentoRepository } from 'src/medicamentos/application/ports/medicamento.repository';
-import { CastracaoRepository } from 'src/castracoes/application/ports/castracoes.repository';
 import { UpdateVeterinarioDto } from '../presenters/http/dto/update-veterinario.dto';
 import { CreateVeterinarioDto } from '../presenters/http/dto/create-veterinario.dto';
-// import { Pessoa } from 'src/pessoas/domain/pessoas';
-// import { Vacina } from 'src/vacinas/domain/vacinas';
-// import { Medicamento } from 'src/medicamentos/domain/medicamentos';
-// import { Castracao } from 'src/castracoes/domain/castracao';
+import { PessoaFactory } from 'src/pessoas/domain/factories/pessoas-factory';
+import { PessoaType } from 'src/pessoas/domain/enum/pessoa.enum';
+import { CreatePessoaDto } from 'src/pessoas/presenters/http/dto/create-pessoa.dto';
 
 @Injectable()
 export class VeterinariosService {
   constructor(
     private readonly veterinariosRepository: VeterinarioRepository,
-    private readonly veterinarioFactory: VeterinarioFactory,
+    private readonly pessoaFactory: PessoaFactory,
     private readonly pessoaRepository: PessoaRepository,
-    // private readonly vacinaRepository: VacinaRepository,
-    // private readonly medicamentoRepository: MedicamentoRepository,
-    // private readonly castracaoRepository: CastracaoRepository,
   ) {}
 
   async findAll(): Promise<Veterinario[]> {
@@ -37,47 +29,58 @@ export class VeterinariosService {
   }
 
   async create(createVeterinarioDto: CreateVeterinarioDto): Promise<Veterinario> {
-    const pessoa = await this.pessoaRepository.findById(
-      createVeterinarioDto.pessoa_id,
-    );
-    if (!pessoa) {
-      throw new NotFoundException(
-        `Pessoa with ID ${createVeterinarioDto.pessoa_id} not found`,
-      );
+    const existingPessoa = await this.pessoaRepository.findByCpf(createVeterinarioDto.cpf);
+    if (existingPessoa) {
+      throw new BadRequestException('Já existe um CPF cadastrado.');
     }
-    const newVeterinario = this.veterinarioFactory.create(createVeterinarioDto, pessoa);
-    return this.veterinariosRepository.save(newVeterinario);
-  }
 
-  async update(
-    id: number, 
-    updateVeterinarioDto: UpdateVeterinarioDto,
-  ): Promise<Veterinario> {
-    const veterinario = await this.findOne(id);
-    const updatedVeterinarioData = {
-      especialidade:
-        updateVeterinarioDto.especialidade ?? veterinario.especialidade,
-      registro_crmv:
-        updateVeterinarioDto.registro_crmv ?? veterinario.registro_crmv,
-      pessoa_id: updateVeterinarioDto.pessoa_id ?? veterinario.pessoa_id,
+    const createPessoaDto: CreatePessoaDto = {
+      nome: createVeterinarioDto.nome,
+      cep: createVeterinarioDto.cep,
+      endereco: createVeterinarioDto.endereco,
+      telefone: createVeterinarioDto.telefone,
+      email: createVeterinarioDto.email,
+      cpf: createVeterinarioDto.cpf,
     };
 
-    const pessoa = await this.pessoaRepository.findById(updatedVeterinarioData.pessoa_id);
-    if (!pessoa) {
-      throw new NotFoundException(`Pessoa with ID ${updatedVeterinarioData.pessoa_id} not found`);
-    }
-  
-    const updatedVeterinario = this.veterinarioFactory.create(
-      updatedVeterinarioData, pessoa
+    const pessoa = this.pessoaFactory.createPerson(PessoaType.Veterinario, createPessoaDto, {});
+
+    const newVeterinario = new Veterinario(
+      pessoa.id,
+      createVeterinarioDto.especialidade,
+      createVeterinarioDto.registro_crmv,
+      [],
+      [],
+      [],
+      pessoa.id,
+      pessoa.nome,
+      pessoa.cep,
+      pessoa.endereco,
+      pessoa.telefone,
+      pessoa.email,
+      pessoa.cpf,
     );
 
-  
-    const result = await this.veterinariosRepository.update(id, updatedVeterinario);
-    if (!result) {
-      throw new NotFoundException(`Adotante with ID ${id} not found for update.`);
+    const savedVeterinario = await this.veterinariosRepository.save(newVeterinario);
+    return savedVeterinario;
+  }
+
+  async update(id: number, updateVeterinarioDto: UpdateVeterinarioDto): Promise<Veterinario> {
+    const veterinario = await this.findOne(id);
+
+    const updatedVeterinarioData = {
+      especialidade: updateVeterinarioDto.especialidade ?? veterinario.especialidade,
+      registro_crmv: updateVeterinarioDto.registro_crmv ?? veterinario.registro_crmv,
+    };
+
+    const pessoa = await this.pessoaRepository.findById(veterinario.id);
+    if (!pessoa) {
+      throw new NotFoundException(`Pessoa with ID ${veterinario.id} not found`);
     }
 
-    return updatedVeterinario;
+    await this.veterinariosRepository.update(id, updatedVeterinarioData);
+
+    return { ...veterinario, ...updatedVeterinarioData };
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {

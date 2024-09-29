@@ -59,4 +59,15 @@ export class InMemoryVacinaRepository implements VacinaRepository {
       console.log(`Vacina com ID ${id} não encontrada para remoção.`);
   }
   }
+
+  async findByAnimalAndTipoVacina(animalId: number, tipoVacina: string): Promise<Vacina | null> {
+    for (const vacinaEntity of this.vacina.values()) {
+        if (vacinaEntity.animal_id === animalId && vacinaEntity.tipo_vacina === tipoVacina) {
+            console.log(`Vacina encontrada para o animal ${animalId} e tipo ${tipoVacina}.`);
+            return VacinaMapper.paraDominio(vacinaEntity);
+        }
+    }
+    console.log(`Nenhuma vacina encontrada para o animal ${animalId} e tipo ${tipoVacina}.`);
+    return null;
+}
 }

@@ -1,7 +1,6 @@
 import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { VeterinariosService } from './veterinarios.service'; 
 import { VeterinariosController } from '../presenters/http/veterinarios.controller'; 
-import { VeterinarioFactory } from '../domain/factories/veterinarios-factory';
 import { InFileVeterinarioRepository } from '../infrastructure/persistence/in-file/repositories/veterinario.repository';
 import { VeterinarioRepository } from './ports/veterinarios.repository';
 import { PessoasModule } from 'src/pessoas/application/pessoas.module'
@@ -18,8 +17,7 @@ import { CastracoesModule } from 'src/castracoes/application/castracoes.module';
   ],
   controllers: [VeterinariosController],
   providers: [
-    VeterinariosService, 
-    VeterinarioFactory,
+    VeterinariosService,
     { provide: VeterinarioRepository, useClass: InFileVeterinarioRepository },
   ],
   exports: [VeterinariosService, VeterinarioRepository],

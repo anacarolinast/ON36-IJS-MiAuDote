@@ -4,6 +4,8 @@ import { Adotante } from "src/adotantes/domain/adotante";
 import { AdotanteEntity } from "../entities/adotante.entity";
 import { AdotanteMapper } from "../mappers/adotante.mappers";
 import { Adocao } from "src/adocoes/domain/adocao";
+import { PessoaRepository } from "src/pessoas/application/ports/pessoas.repository";
+import { PessoaEntity } from "src/pessoas/infrastructure/persistence/in-file/entities/pessoa.entity";
 
 
 @Injectable()
@@ -11,11 +13,31 @@ export class InFileAdotanteRepository implements AdotanteRepository {
     private readonly adotantes = new Map<number, AdotanteEntity>();
     private idCounter = 1;
 
+    private pessoaRepository: PessoaRepository;
+
+    constructor(pessoaRepository: PessoaRepository) {
+        this.pessoaRepository = pessoaRepository;
+    }
+
     async save(adotante: Adotante): Promise<Adotante> {
+        const pessoaEntity = new PessoaEntity();
+        pessoaEntity.nome = adotante.nome;
+        pessoaEntity.cep = adotante.cep;
+        pessoaEntity.endereco = adotante.endereco;
+        pessoaEntity.telefone = adotante.telefone;
+        pessoaEntity.email = adotante.email;
+        pessoaEntity.cpf = adotante.cpf;
+
+        const savedPessoa = await this.pessoaRepository.save(pessoaEntity);
+
         const adotanteEntity = AdotanteMapper.paraPersistencia(adotante);
         adotanteEntity.id = this.idCounter++;
+        adotanteEntity.pessoa_id = savedPessoa.id;
+        adotanteEntity.pessoa = savedPessoa;
+
         this.adotantes.set(adotanteEntity.id, adotanteEntity);
         console.log(`Adotante ${adotanteEntity.id} criado com sucesso!`);
+
         return AdotanteMapper.paraDominio(adotanteEntity);
     }
 

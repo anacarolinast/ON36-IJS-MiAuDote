@@ -8,8 +8,6 @@ import { DoacaoMapper } from "../mappers/doacao.mappers";
 export class InFileDoacaoRepository implements DoacaoRepository {
     private readonly doacoes = new Map<number, DoacaoEntity>();
     private idCounter = 1;
-    gastoRepository: any;
-    doadorRepository: any;
 
     async save(doacao: Doacao): Promise<Doacao> {
         const doacaoEntity = DoacaoMapper.paraPersistencia(doacao);
@@ -17,19 +15,19 @@ export class InFileDoacaoRepository implements DoacaoRepository {
         this.doacoes.set(doacaoEntity.id, doacaoEntity);
 
         console.log(`Doacao criada com sucesso!`); 
-        return  DoacaoMapper.paraDominio(doacaoEntity);
+        return DoacaoMapper.paraDominio(doacaoEntity);
     }
 
     async findAll(): Promise<Doacao[]> {
         console.log("Listando todas as doacoes...");
-        return Array.from(this.doacoes.values());
+        return Array.from(this.doacoes.values()).map(DoacaoMapper.paraDominio);
     }
 
     async findById(id: number): Promise<Doacao | null> {
-        const doacao = this.doacoes.get(id);
-        if (doacao) {
-            console.log(`Doacao encontrada: ${doacao.id}`);
-            return doacao;
+        const doacaoEntity = this.doacoes.get(id);
+        if (doacaoEntity) {
+            console.log(`Doacao encontrada: ${doacaoEntity.id}`);
+            return DoacaoMapper.paraDominio(doacaoEntity);
         } else {
             console.log(`Doacao com ID ${id} não encontrada.`);
             return null;
@@ -37,12 +35,12 @@ export class InFileDoacaoRepository implements DoacaoRepository {
     }
 
     async update(id: number, doacao: Partial<Doacao>): Promise<Doacao | null> {
-        const existingDoacao = this.doacoes.get(id);
-        if (existingDoacao) {
-            const updatedDoacao = { ...existingDoacao, ...doacao };
-            this.doacoes.set(id, updatedDoacao);
+        const existingDoacaoEntity = this.doacoes.get(id);
+        if (existingDoacaoEntity) {
+            const updatedDoacaoEntity = { ...existingDoacaoEntity, ...DoacaoMapper.paraPersistencia(doacao as Doacao) };
+            this.doacoes.set(id, updatedDoacaoEntity);
             console.log(`Doacao com ID ${id} atualizada com sucesso!`);
-            return updatedDoacao;
+            return DoacaoMapper.paraDominio(updatedDoacaoEntity);
         } else {
             console.log(`Doacao com ID ${id} não encontrada para atualização.`);
             return null;

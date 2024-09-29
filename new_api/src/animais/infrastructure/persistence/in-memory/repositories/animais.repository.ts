@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { AnimalRepository } from "src/animais/application/ports/animais.repository";
 import { Animal } from "src/animais/domain/animal";
 import { AnimalEntity } from "../entities/animais.entity";
@@ -19,15 +19,15 @@ export class InMemoryAnimalRepository implements AnimalRepository {
     }
 
     async findAll(): Promise<Animal[]> {
-        console.log("Listando todos as animais...");
-        return Array.from(this.animais.values());
+        console.log("Listando todos os animais...");
+        return Array.from(this.animais.values()).map(AnimalMapper.paraDominio);
     }
 
     async findById(id: number): Promise<Animal | null> {
-        const animal = this.animais.get(id);
-        if (animal) {
-            console.log(`Animal encontrado: ${animal.nome}`);
-            return animal;
+        const animalEntity = this.animais.get(id);
+        if (animalEntity) {
+            console.log(`Animal encontrado: ${animalEntity.nome}`);
+            return AnimalMapper.paraDominio(animalEntity);
         } else {
             console.log(`Animal com ID ${id} não encontrado.`);
             return null;
@@ -35,12 +35,19 @@ export class InMemoryAnimalRepository implements AnimalRepository {
     }
 
     async update(id: number, animal: Partial<Animal>): Promise<Animal | null> {
-        const existingAnimal = this.animais.get(id);
-        if (existingAnimal) {
-            const updatedAnimal = { ...existingAnimal, ...animal };
-            this.animais.set(id, updatedAnimal);
+        const existingAnimalEntity = this.animais.get(id);
+        if (existingAnimalEntity) {
+            const existingAnimal = AnimalMapper.paraDominio(existingAnimalEntity);
+            const updatedAnimal: Animal = {
+                ...existingAnimal,
+                ...animal,
+                adocao: animal.adocao !== undefined ? animal.adocao : existingAnimal.adocao,
+            };
+
+            const updatedAnimalEntity = AnimalMapper.paraPersistencia(updatedAnimal);
+            this.animais.set(id, updatedAnimalEntity);
             console.log(`Animal com ID ${id} atualizado com sucesso!`);
-            return updatedAnimal;
+            return AnimalMapper.paraDominio(updatedAnimalEntity);
         } else {
             console.log(`Animal com ID ${id} não encontrado para atualização.`);
             return null;
@@ -59,13 +66,17 @@ export class InMemoryAnimalRepository implements AnimalRepository {
     async adopt(animalId: number, adocaoData: any): Promise<void> {
         const existingAnimalEntity = this.animais.get(animalId);
         if (existingAnimalEntity) {
+            if (existingAnimalEntity.estado_adocao === 'Adotado') {
+                throw new BadRequestException(`O animal com ID ${animalId} já foi adotado.`);
+            }
             existingAnimalEntity.estado_adocao = 'Adotado';
-            existingAnimalEntity.adocao = adocaoData; // Associa o objeto de adoção
+            existingAnimalEntity.adocao = adocaoData;
 
             this.animais.set(animalId, existingAnimalEntity);
             console.log(`Animal com ID ${animalId} adotado com sucesso!`);
         } else {
             console.log(`Animal com ID ${animalId} não encontrado para adoção.`);
+            throw new BadRequestException(`Animal com ID ${animalId} não encontrado.`);
         }
     }
 
@@ -75,15 +86,13 @@ export class InMemoryAnimalRepository implements AnimalRepository {
             const existingAnimal = AnimalMapper.paraDominio(existingAnimalEntity);
 
             existingAnimal.vacinas.push(vacina);
-
             const updatedAnimalEntity = AnimalMapper.paraPersistencia(existingAnimal);
-            
             this.animais.set(animalId, updatedAnimalEntity);
             console.log(`Animal com ID ${animalId} vacinado com sucesso!`);
-            return existingAnimal;
+            return AnimalMapper.paraDominio(updatedAnimalEntity);
         } else {
             console.log(`Animal com ID ${animalId} não encontrado para vacinação.`);
-            return null;
+            throw new BadRequestException(`Animal com ID ${animalId} não encontrado.`);
         }
     }
 
@@ -93,27 +102,29 @@ export class InMemoryAnimalRepository implements AnimalRepository {
             const existingAnimal = AnimalMapper.paraDominio(existingAnimalEntity);
 
             existingAnimal.medicamentos.push(medicamento);
-
             const updatedAnimalEntity = AnimalMapper.paraPersistencia(existingAnimal);
-            
             this.animais.set(animalId, updatedAnimalEntity);
             console.log(`Animal com ID ${animalId} medicado com sucesso!`);
-            return existingAnimal;
+            return AnimalMapper.paraDominio(updatedAnimalEntity);
         } else {
             console.log(`Animal com ID ${animalId} não encontrado para medicação.`);
-            return null;
+            throw new BadRequestException(`Animal com ID ${animalId} não encontrado.`);
         }
     }
 
     async castrate(animalId: number, castracaoData: any): Promise<void> {
         const existingAnimalEntity = this.animais.get(animalId);
         if (existingAnimalEntity) {
-            existingAnimalEntity.castracao = castracaoData;
+            if (existingAnimalEntity.castracao) {
+                throw new BadRequestException(`O animal com ID ${animalId} já foi castrado.`);
+            }
 
+            existingAnimalEntity.castracao = castracaoData;
             this.animais.set(animalId, existingAnimalEntity);
-            console.log(`Animal com ID ${animalId} adotado com sucesso!`);
+            console.log(`Animal com ID ${animalId} castrado com sucesso!`);
         } else {
-            console.log(`Animal com ID ${animalId} não encontrado para adoção.`);
+            console.log(`Animal com ID ${animalId} não encontrado para castração.`);
+            throw new BadRequestException(`Animal com ID ${animalId} não encontrado.`);
         }
     }
 }

@@ -8,4 +8,5 @@ export abstract class VacinaRepository {
     abstract findById(id: number): Promise<Vacina | null>;
     abstract update(id: number, vacina: Partial<Vacina>): Promise<Vacina | null>;
     abstract remove(id: number): Promise<void>;
+    abstract findByAnimalAndTipoVacina(animalId: number, tipoVacina: string): Promise<Vacina | null>;
 }

@@ -46,13 +46,30 @@ export class AdocoesService {
     return adotante;
   }
 
+  private checkIfAnimalIsAdopted(animal: Animal): void {
+    if (animal.estado_adocao === 'Adotado') {
+      throw new ConflictException(`Animal with ID ${animal.id} is already adopted.`);
+    }
+  }
+
+  private checkAdoptionsInLast12Months(adotante: Adotante): void {
+    const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+    const recentAdoptions = adotante.adocao.filter(({ data_adocao }) =>
+      new Date(data_adocao) >= oneYearAgo
+    );
+    if (recentAdoptions.length >= 3) {
+      throw new ConflictException(
+        `Adotante with ID ${adotante.id} has already adopted 3 animals in the last 12 months.`
+      );
+    }
+  }
+
   async create(createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
     const animal = await this.findAnimal(createAdocaoDto.animal_id);
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
 
-    if (animal.estado_adocao === 'Adotado') {
-      throw new ConflictException(`Animal with ID ${animal.id} is already adopted.`);
-  }
+    this.checkIfAnimalIsAdopted(animal);
+    this.checkAdoptionsInLast12Months(adotante);
 
     const newAdocao = this.adocaoFactory.create(
       createAdocaoDto,

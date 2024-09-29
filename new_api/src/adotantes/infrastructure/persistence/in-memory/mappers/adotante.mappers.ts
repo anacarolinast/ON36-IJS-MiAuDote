@@ -5,24 +5,34 @@ import { AdocaoMapper } from 'src/adocoes/infrastructure/persistence/in-memory/m
 
 export class AdotanteMapper {
   static paraDominio(adotanteEntity: AdotanteEntity): Adotante {
+    const { id, renda, condicao_entrevista, pessoa_id, pessoa, adocao } = adotanteEntity;
+
     return new Adotante(
-      adotanteEntity.id,
-      adotanteEntity.renda,
-      adotanteEntity.condicao_entrevista,
-      adotanteEntity.pessoa_id,
-      PessoaMapper.paraDominio(adotanteEntity.pessoa),
-      adotanteEntity.adocao?.map(adocaoEntity => AdocaoMapper.paraDominio(adocaoEntity)) || []
+      id,
+      renda,
+      condicao_entrevista,
+      adocao?.map(AdocaoMapper.paraDominio) || [], 
+      pessoa_id, 
+      pessoa.nome,
+      pessoa.cep,
+      pessoa.endereco,
+      pessoa.telefone,
+      pessoa.email,
+      pessoa.cpf
     );
   }
 
   static paraPersistencia(adotante: Adotante): AdotanteEntity {
     const entity = new AdotanteEntity();
-    entity.id = adotante.id;
+
+    entity.id = adotante.id; 
     entity.renda = adotante.renda;
     entity.condicao_entrevista = adotante.condicao_entrevista;
-    entity.pessoa_id = adotante.pessoa_id;
-    entity.pessoa = PessoaMapper.paraPersistencia(adotante.pessoa);
-    entity.adocao = adotante.adocao?.map(adocao => AdocaoMapper.paraPersistencia(adocao)) || [];
+    entity.pessoa_id = adotante.id; 
+    entity.pessoa = PessoaMapper.paraPersistencia(adotante); 
+    entity.adocao = adotante.adocao?.map(AdocaoMapper.paraPersistencia) || [];
+
     return entity;
   }
 }
+

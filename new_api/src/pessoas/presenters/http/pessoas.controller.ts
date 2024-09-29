@@ -25,19 +25,6 @@ export class PessoasController {
     return this.pessoasService.findOne(id);
   }
 
-  @Post()
-  async create(@Body() createPessoaDto: CreatePessoaDto) {
-    return this.pessoasService.create(createPessoaDto);
-  }
-
-  @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() updatePessoaDto: UpdatePessoaDto,
-  ) {
-    return this.pessoasService.update(id, updatePessoaDto);
-  }
-
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return this.pessoasService.remove(id);

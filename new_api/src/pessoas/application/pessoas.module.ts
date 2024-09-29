@@ -9,22 +9,22 @@ import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
 import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
 import { CepService } from '../infrastructure/adapters/cep-adapter.service';
 import { HttpModule } from '@nestjs/axios';
+import { PessoaInfrastructureModule } from '../infrastructure/pessoas-infrastructure.module';
 
 @Module({
   imports: [
     forwardRef(() => DoadoresModule),
     forwardRef(() => AdotantesModule),
     forwardRef(() => VeterinariosModule),
-    HttpModule
+    PessoaInfrastructureModule.use('in-file'),
   ],
   controllers: [PessoasController],
   providers: [
     PessoasService, 
     PessoaFactory,
     { provide: PessoaRepository, useClass: InFilePessoaRepository },
-    CepService
   ],
-  exports: [PessoasService, PessoaRepository],
+  exports: [PessoasService, PessoaRepository, PessoaFactory],
 })
 export class PessoasModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

@@ -1,6 +1,7 @@
 import { IsString, IsNumber, Length, Min } from 'class-validator';
+import { CreatePessoaDto } from 'src/pessoas/presenters/http/dto/create-pessoa.dto';
 
-export class CreateDoadorDto {
+export class CreateDoadorDto extends CreatePessoaDto {
     @IsString()
     @Length(1, 255)
     tipo_doacao: string;
@@ -8,8 +9,4 @@ export class CreateDoadorDto {
     @IsString()
     @Length(1, 255)
     descricao: string
-
-    @IsNumber()
-    @Min(1)
-    pessoa_id: number;
 }

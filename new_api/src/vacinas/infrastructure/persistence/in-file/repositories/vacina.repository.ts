@@ -11,13 +11,10 @@ export class InFileVacinaRepository implements VacinaRepository {
 
     async save(vacina: Vacina): Promise<Vacina> {
         const vacinaEntity = VacinaMapper.paraPersistencia(vacina);
-    
         vacinaEntity.id = this.idCounter++;
-    
         this.vacinas.set(vacinaEntity.id, vacinaEntity);
-    
+
         console.log(`Vacina criada com sucesso!`);
-    
         return VacinaMapper.paraDominio(vacinaEntity);
     }
 
@@ -44,10 +41,8 @@ export class InFileVacinaRepository implements VacinaRepository {
 
         if (vacinaEntity) {
             Object.assign(vacinaEntity, dadosAtualizados);
-
             this.vacinas.set(id, vacinaEntity);
             console.log(`Vacina com ID ${id} atualizada com sucesso!`);
-            
             return VacinaMapper.paraDominio(vacinaEntity);
         } else {
             console.log(`Vacina com ID ${id} não encontrada para atualização.`);
@@ -62,5 +57,16 @@ export class InFileVacinaRepository implements VacinaRepository {
         } else {
             console.log(`Vacina com ID ${id} não encontrada para remoção.`);
         }
+    }
+
+    async findByAnimalAndTipoVacina(animalId: number, tipoVacina: string): Promise<Vacina | null> {
+        for (const vacinaEntity of this.vacinas.values()) {
+            if (vacinaEntity.animal_id === animalId && vacinaEntity.tipo_vacina === tipoVacina) {
+                console.log(`Vacina encontrada para o animal ${animalId} e tipo ${tipoVacina}.`);
+                return VacinaMapper.paraDominio(vacinaEntity);
+            }
+        }
+        console.log(`Nenhuma vacina encontrada para o animal ${animalId} e tipo ${tipoVacina}.`);
+        return null;
     }
 }
