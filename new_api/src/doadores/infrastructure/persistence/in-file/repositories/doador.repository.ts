@@ -60,19 +60,35 @@ export class InFileDoadorRepository implements DoadorRepository {
 
     async update(id: number, dadosAtualizados: Partial<Doador>): Promise<Doador | null> {
         const doadorEntity = this.doadores.get(id);
-        
-        if (doadorEntity) {
-            Object.assign(doadorEntity, dadosAtualizados);
-                        
-            this.doadores.set(id, doadorEntity);
-            console.log(`Doador com ID ${id} atualizado com sucesso!`);
-
-            return DoadorMapper.paraDominio(doadorEntity);;
-        } else {
-            console.log(`Doador com ID ${id} não encontrada para atualização.`);
-            return null;
+    
+        if (!doadorEntity) {
+            console.log(`Doador com ID ${id} não encontrado.`);
         }
+    
+        if (dadosAtualizados.nome || dadosAtualizados.email || dadosAtualizados.cpf || dadosAtualizados.cep || dadosAtualizados.endereco || dadosAtualizados.telefone) {
+            const pessoaEntity = doadorEntity.pessoa;
+            Object.assign(pessoaEntity, {
+                nome: dadosAtualizados.nome ?? pessoaEntity.nome,
+                email: dadosAtualizados.email ?? pessoaEntity.email,
+                cpf: dadosAtualizados.cpf ?? pessoaEntity.cpf,
+                cep: dadosAtualizados.cep ?? pessoaEntity.cep,
+                endereco: dadosAtualizados.endereco ?? pessoaEntity.endereco,
+                telefone: dadosAtualizados.telefone ?? pessoaEntity.telefone
+            });
+    
+            await this.pessoaRepository.update(pessoaEntity.id, pessoaEntity);
+        }
+    
+        Object.assign(doadorEntity, {
+            doacao: dadosAtualizados.doacao ?? doadorEntity.doacao,
+        });
+    
+        this.doadores.set(id, doadorEntity);
+    
+        console.log(`Doador com ID ${id} e seus dados de pessoa atualizados com sucesso!`);
+        return DoadorMapper.paraDominio(doadorEntity);
     }
+    
 
     async remove(id: number): Promise<void> {
         if (this.doadores.has(id)) {

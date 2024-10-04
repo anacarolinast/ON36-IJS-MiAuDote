@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { VeterinarioRepository } from './ports/veterinarios.repository';
 import { Veterinario } from '../domain/veterinarios';
 import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
@@ -28,8 +32,12 @@ export class VeterinariosService {
     return veterinario;
   }
 
-  async create(createVeterinarioDto: CreateVeterinarioDto): Promise<Veterinario> {
-    const existingPessoa = await this.pessoaRepository.findByCpf(createVeterinarioDto.cpf);
+  async create(
+    createVeterinarioDto: CreateVeterinarioDto,
+  ): Promise<Veterinario> {
+    const existingPessoa = await this.pessoaRepository.findByCpf(
+      createVeterinarioDto.cpf,
+    );
     if (existingPessoa) {
       throw new BadRequestException('Já existe um CPF cadastrado.');
     }
@@ -43,7 +51,11 @@ export class VeterinariosService {
       cpf: createVeterinarioDto.cpf,
     };
 
-    const pessoa = this.pessoaFactory.createPerson(PessoaType.Veterinario, createPessoaDto, {});
+    const pessoa = this.pessoaFactory.createPerson(
+      PessoaType.Veterinario,
+      createPessoaDto,
+      {},
+    );
 
     const newVeterinario = new Veterinario(
       pessoa.id,
@@ -61,16 +73,20 @@ export class VeterinariosService {
       pessoa.cpf,
     );
 
-    const savedVeterinario = await this.veterinariosRepository.save(newVeterinario);
+    const savedVeterinario =
+      await this.veterinariosRepository.save(newVeterinario);
     return savedVeterinario;
   }
 
-  async update(id: number, updateVeterinarioDto: UpdateVeterinarioDto): Promise<Veterinario> {
+  async update(
+    id: number,
+    updateVeterinarioDto: UpdateVeterinarioDto,
+  ): Promise<Veterinario> {
     const veterinario = await this.findOne(id);
 
     const updatedVeterinarioData = {
-      especialidade: updateVeterinarioDto.especialidade ?? veterinario.especialidade,
-      registro_crmv: updateVeterinarioDto.registro_crmv ?? veterinario.registro_crmv,
+      ...veterinario,
+      ...updateVeterinarioDto,
     };
 
     const pessoa = await this.pessoaRepository.findById(veterinario.id);
@@ -78,9 +94,27 @@ export class VeterinariosService {
       throw new NotFoundException(`Pessoa with ID ${veterinario.id} not found`);
     }
 
-    await this.veterinariosRepository.update(id, updatedVeterinarioData);
+    const updatedPessoaData = {
+      ...pessoa,
+      nome: updateVeterinarioDto.nome ?? pessoa.nome,
+      cep: updateVeterinarioDto.cep ?? pessoa.cep,
+      endereco: updateVeterinarioDto.endereco ?? pessoa.endereco,
+      telefone: updateVeterinarioDto.telefone ?? pessoa.telefone,
+      email: updateVeterinarioDto.email ?? pessoa.email,
+      cpf: updateVeterinarioDto.cpf ?? pessoa.cpf,
+    };
 
-    return { ...veterinario, ...updatedVeterinarioData };
+    await this.pessoaRepository.update(veterinario.id, updatedPessoaData);
+    const updatedVeterinario = await this.veterinariosRepository.update(
+      id,
+      updatedVeterinarioData,
+    );
+    if (!updatedVeterinario) {
+      throw new NotFoundException(
+        `Veterinario with ID ${id} not found for update.`,
+      );
+    }
+    return updatedVeterinario;
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {

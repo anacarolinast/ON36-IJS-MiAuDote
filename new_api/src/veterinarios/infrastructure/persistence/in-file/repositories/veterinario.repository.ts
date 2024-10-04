@@ -58,22 +58,35 @@ export class InFileVeterinarioRepository implements VeterinarioRepository {
         }
     }
 
-    async update(id: number, veterinario: Partial<Veterinario>): Promise<Veterinario | null> {
-        const existingVeterinarioEntity = this.veterinarios.get(id);
-        if (existingVeterinarioEntity) {
-            const updatedVeterinarioEntity = VeterinarioMapper.paraPersistencia({
-                ...VeterinarioMapper.paraDominio(existingVeterinarioEntity),
-                ...veterinario,
-                id: existingVeterinarioEntity.id
+    async update(id: number, dadosAtualizados: Partial<Veterinario>): Promise<Veterinario | null> {
+        const veterinarioEntity = this.veterinarios.get(id);
+        if (!veterinarioEntity) {
+            console.log(`Veterinario com ID ${id} não encontrado.`);
+            return null; 
+        }
+
+        if (dadosAtualizados.nome || dadosAtualizados.email || dadosAtualizados.cpf || dadosAtualizados.cep || dadosAtualizados.endereco || dadosAtualizados.telefone) {
+            const pessoaEntity = veterinarioEntity.pessoa;
+            Object.assign(pessoaEntity, {
+                nome: dadosAtualizados.nome ?? pessoaEntity.nome,
+                email: dadosAtualizados.email ?? pessoaEntity.email,
+                cpf: dadosAtualizados.cpf ?? pessoaEntity.cpf,
+                cep: dadosAtualizados.cep ?? pessoaEntity.cep,
+                endereco: dadosAtualizados.endereco ?? pessoaEntity.endereco,
+                telefone: dadosAtualizados.telefone ?? pessoaEntity.telefone
             });
 
-            this.veterinarios.set(id, updatedVeterinarioEntity);
-            console.log(`Veterinario com ID ${id} atualizado com sucesso!`);
-            return VeterinarioMapper.paraDominio(updatedVeterinarioEntity);
-        } else {
-            console.log(`Veterinario com ID ${id} não encontrado para atualização.`);
-            return null;
+            await this.pessoaRepository.update(pessoaEntity.id, pessoaEntity);
         }
+
+        Object.assign(veterinarioEntity, {
+            especialidade: dadosAtualizados.especialidade ?? veterinarioEntity.especialidade,
+            registro_crmv: dadosAtualizados.registro_crmv ?? veterinarioEntity.registro_crmv,
+        });
+
+        this.veterinarios.set(id, veterinarioEntity);
+        console.log(`Veterinário com ID ${id} e seus dados de pessoa atualizados com sucesso!`);
+        return VeterinarioMapper.paraDominio(veterinarioEntity);
     }
 
     async remove(id: number): Promise<void> {

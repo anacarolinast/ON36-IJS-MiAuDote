@@ -61,20 +61,37 @@ export class InFileAdotanteRepository implements AdotanteRepository {
 
     async update(id: number, dadosAtualizados: Partial<Adotante>): Promise<Adotante | null> {
         const adotanteEntity = this.adotantes.get(id);
-        
-        if (adotanteEntity) {
-            Object.assign(adotanteEntity, dadosAtualizados);
-
-            this.adotantes.set(id, adotanteEntity);
-            console.log(`Adotante com ID ${id} atualizado com sucesso!`);
-            
-            return AdotanteMapper.paraDominio(adotanteEntity);
-        } else {
-            console.log(`Adotante com ID ${id} não encontrada.`);
+    
+        if (!adotanteEntity) {
+            console.log(`Adotante com ID ${id} não encontrado.`);
             return null;
         }
+    
+        if (dadosAtualizados.nome || dadosAtualizados.email || dadosAtualizados.cpf || dadosAtualizados.cep || dadosAtualizados.endereco || dadosAtualizados.telefone) {
+            const pessoaEntity = adotanteEntity.pessoa;
+            Object.assign(pessoaEntity, {
+                nome: dadosAtualizados.nome ?? pessoaEntity.nome,
+                email: dadosAtualizados.email ?? pessoaEntity.email,
+                cpf: dadosAtualizados.cpf ?? pessoaEntity.cpf,
+                cep: dadosAtualizados.cep ?? pessoaEntity.cep,
+                endereco: dadosAtualizados.endereco ?? pessoaEntity.endereco,
+                telefone: dadosAtualizados.telefone ?? pessoaEntity.telefone
+            });
+    
+            await this.pessoaRepository.update(pessoaEntity.id, pessoaEntity);
+        }
+    
+        Object.assign(adotanteEntity, {
+            renda: dadosAtualizados.renda ?? adotanteEntity.renda,
+            condicao_entrevista: dadosAtualizados.condicao_entrevista ?? adotanteEntity.condicao_entrevista,
+        });
+    
+        this.adotantes.set(id, adotanteEntity);
+    
+        console.log(`Adotante com ID ${id} e seus dados de pessoa atualizados com sucesso!`);
+        return AdotanteMapper.paraDominio(adotanteEntity);
     }
-       
+    
     async remove(id: number): Promise<void> {
         if (this.adotantes.has(id)) {
             this.adotantes.delete(id);
