@@ -52,14 +52,10 @@ export class AdocoesService {
     }
   }
 
-  private checkAdoptionsInLast12Months(adotante: Adotante): void {
-    const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
-    const recentAdoptions = adotante.adocao.filter(({ data_adocao }) =>
-      new Date(data_adocao) >= oneYearAgo
-    );
-    if (recentAdoptions.length >= 3) {
+  private checkAdoptionHistory(adotante: Adotante): void {
+    if (adotante.adocao.length >= 3) {
       throw new ConflictException(
-        `Adotante with ID ${adotante.id} has already adopted 3 animals in the last 12 months.`
+        `Adotante with ID ${adotante.id} has already adopted 3 animals.`
       );
     }
   }
@@ -69,7 +65,7 @@ export class AdocoesService {
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
 
     this.checkIfAnimalIsAdopted(animal);
-    this.checkAdoptionsInLast12Months(adotante);
+    this.checkAdoptionHistory(adotante);
 
     const newAdocao = this.adocaoFactory.create(
       createAdocaoDto,
@@ -79,22 +75,21 @@ export class AdocoesService {
 
     const savedAdocao = await this.adocaoRepository.save(newAdocao);
 
-    console.log('Antes da atualização do adotante:', adotante);
-
     const { adotante: _, ...adotanteData } = savedAdocao;
     adotante.adocao.push(savedAdocao);
     await this.adotanteRepository.adopt(adotante.id, adotanteData);
-    console.log('Depois da atualização do adotante:', adotante);
+    console.log(`${animal.nome} registrado na lista de animais adotados de ${adotante.nome} com sucesso!`);
 
     const { animal: __, ...animalData } = savedAdocao;
     await this.animalRepository.adopt(animal.id, animalData);
-    console.log('Depois da atualização do animal:', animal);
+    console.log(`Status de ${animal.nome} atualizado para: ADOTADO!`);
 
     return savedAdocao;
   }
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);
+    
     const animal = updateAdocaoDto.animal_id
       ? await this.animalRepository.findById(updateAdocaoDto.animal_id)
       : adocao.animal;
