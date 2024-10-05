@@ -8,8 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PessoasService } from 'src/pessoas/application/pessoas.service'; 
-import { CreatePessoaDto } from './dto/create-pessoa.dto'; 
-import { UpdatePessoaDto } from './dto/update-pessoa.dto'; 
 
 @Controller('pessoas')
 export class PessoasController {

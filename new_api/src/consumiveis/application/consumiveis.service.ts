@@ -2,15 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Consumivel } from '../domain/consumivel';
 import { CreateConsumivelDto } from '../presenters/http/dto/create-consumivel.dto';
 import { UpdateConsumivelDto } from '../presenters/http/dto/update-consumivel.dto';
-import { ConsumivelFactory } from '../domain/factories/consumivel-factory';
 import { ConsumivelRepository } from './ports/consumiveis.repository';
+import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
 import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
+import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto'
+import { GastoType } from 'src/gastos/domain/enum/gasto.enum';
 
 @Injectable()
 export class ConsumiveisService {
   constructor(
-    private readonly consumivelFactory: ConsumivelFactory,
     private readonly consumivelRepository: ConsumivelRepository,
+    private readonly gastoFactory: GastoFactory,
     private readonly gastoRepository: GastoRepository,
   ) {}
 
@@ -27,17 +29,27 @@ export class ConsumiveisService {
   }
 
   async create(createConsumivelDto: CreateConsumivelDto): Promise<Consumivel> {
-    const gasto = await this.gastoRepository.findById(
-      createConsumivelDto.gasto_id,
+    
+    const gastoData: CreateGastoDto = {
+      data_gasto: createConsumivelDto.data_gasto,
+      tipo: createConsumivelDto.tipo,
+      quantidade: createConsumivelDto.quantidade,
+      valor: createConsumivelDto.valor
+    };
+
+    const gasto = this.gastoFactory.createGasto(GastoType.Castracao, gastoData, {});
+    
+    const newConsumivel = new Consumivel(
+      gasto.id,
+      createConsumivelDto.tipo_animal,
+      createConsumivelDto.descricao,
+      gasto.id,
+      gasto.data_gasto,
+      gasto.tipo,
+      gasto.quantidade,
+      gasto.valor
     );
 
-    if (!gasto) {
-      throw new NotFoundException(
-        `Gasto with ID ${createConsumivelDto.gasto_id} not found`,
-      );
-    }
-    
-    const newConsumivel = this.consumivelFactory.create(createConsumivelDto, gasto);
     return this.consumivelRepository.save(newConsumivel);
   }
 
@@ -45,9 +57,8 @@ export class ConsumiveisService {
     const consumivel = await this.findOne(id);
 
     const updatedConsumivelData = {
-      tipo_animal: updateConsumivelDto.tipo_animal ?? consumivel.tipo_animal,
-      descricao: updateConsumivelDto.descricao ?? consumivel.descricao,
-      gasto_id: updateConsumivelDto.gasto_id ?? consumivel.gasto_id
+      ...consumivel,
+      ...updateConsumivelDto,
     };
 
     const gasto = await this.gastoRepository.findById(updatedConsumivelData.gasto_id);
@@ -55,15 +66,22 @@ export class ConsumiveisService {
       throw new NotFoundException(`Gasto with ID ${updatedConsumivelData.gasto_id} not found`)
     }
 
-    const updatedConsumivel = this.consumivelFactory.create(updatedConsumivelData, gasto);
+    const updatedGastoData = {
+      ...gasto,
+      data_gasto: updateConsumivelDto.data_gasto ?? gasto.data_gasto,
+      tipo: updateConsumivelDto.tipo ?? gasto.tipo,
+      quantidade: updateConsumivelDto.quantidade ?? gasto.quantidade,
+      valor: updateConsumivelDto.valor ?? gasto.valor
+    };
 
-    const result = await this.consumivelRepository.update(id, updatedConsumivel);
-    
+    await this.gastoRepository.update(gasto.id, updatedGastoData);
+
+    const result = await this.consumivelRepository.update(id, updatedConsumivelData);
     if(!result){
       throw new NotFoundException(`Consumivel with ID ${id} not found for update.`)
     }
 
-    return updatedConsumivel;
+    return updatedConsumivelData;
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {

@@ -2,19 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Medicamento } from '../domain/medicamentos';
 import { CreateMedicamentoDto } from '../presenters/http/dto/create-medicamento.dto';
 import { UpdateMedicamentoDto } from '../presenters/http/dto/update-medicamento.dto';
-import { MedicamentoFactory } from '../domain/factories/medicamentos-factory';
 import { MedicamentoRepository } from './ports/medicamento.repository';
-import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
-import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
 import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
+import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
+import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto';
+import { GastoType } from 'src/gastos/domain/enum/gasto.enum';
 
 @Injectable()
 export class MedicamentosService {
   constructor(
-    private readonly medicamentoFactory: MedicamentoFactory,
     private readonly medicamentoRepository: MedicamentoRepository,
-    private readonly veterinarioRepository: VeterinarioRepository,
-    private readonly animalRepository: AnimalRepository,
+    private readonly gastoFactory: GastoFactory,
     private readonly gastoRepository: GastoRepository,
   ) {}
 
@@ -31,81 +29,60 @@ export class MedicamentosService {
   }
 
   async create(createMedicamentoDto: CreateMedicamentoDto): Promise<Medicamento> {
-    const veterinario = await this.veterinarioRepository.findById(
-      createMedicamentoDto.veterinario_id,
-    );
-
-    const animal = await this.animalRepository.findById(
+    const gastoData: CreateGastoDto = {
+      data_gasto: createMedicamentoDto.data_gasto,
+      tipo: createMedicamentoDto.tipo,
+      quantidade: createMedicamentoDto.quantidade,
+      valor: createMedicamentoDto.valor
+    };
+    
+    const gasto = this.gastoFactory.createGasto(GastoType.Castracao, gastoData, {});
+  
+    const newMedicamento = new Medicamento(
+      gasto.id,
       createMedicamentoDto.animal_id,
+      createMedicamentoDto.data_compra,
+      createMedicamentoDto.descricao,
+      createMedicamentoDto.veterinario_id,
+      gasto.id,
+      gasto.data_gasto,
+      gasto.tipo,
+      gasto.quantidade,
+      gasto.valor
     );
-
-    const gasto = await this.gastoRepository.findById(
-      createMedicamentoDto.gasto_id,
-    );
-
-    if (!veterinario) {
-      throw new NotFoundException(
-        `Veterinario with ID ${createMedicamentoDto.veterinario_id} not found`,
-      );
-    }
-
-    if (!animal) {
-      throw new NotFoundException(
-        `Animal with ID ${createMedicamentoDto.animal_id} not found`,
-      );
-    }
-
-    if (!gasto) {
-      throw new NotFoundException(
-        `Gasto with ID ${createMedicamentoDto.gasto_id} not found`,
-      );
-    }
-    const newMedicamento = this.medicamentoFactory.create(createMedicamentoDto, veterinario, animal, gasto);
-    const savedMedicamento = await this.medicamentoRepository.save(newMedicamento);
-    const { veterinario: _, ...veterinarioData} = savedMedicamento;
-    veterinario.medicamentos.push(savedMedicamento);
-    await this.veterinarioRepository.medicate(veterinario.id, veterinarioData);
-    const { animal: __, ...animalData} = savedMedicamento;
-    await this.animalRepository.medicate(animal.id, animalData);
-    return savedMedicamento;
+    
+    return this.medicamentoRepository.save(newMedicamento);
   }
 
-  async update(
-    id: number, 
-    updateMedicamentoDto: UpdateMedicamentoDto
-  ): Promise<Medicamento> {
+  async update(id: number, updateMedicamentoDto: UpdateMedicamentoDto): Promise<Medicamento> {
     const medicamento = await this.findOne(id);
+
     const updatedMedicamentoData = {
-      animal_id: updateMedicamentoDto.animal_id ?? medicamento.animal_id,
-      data_compra: updateMedicamentoDto.data_compra ?? medicamento.data_compra,
-      descricao: updateMedicamentoDto.descricao ?? medicamento.descricao,
-      veterinario_id: updateMedicamentoDto.veterinario_id ?? medicamento.veterinario_id,
-      gasto_id: updateMedicamentoDto.gasto_id ?? medicamento.gasto_id,
+      ...medicamento,
+      ...updateMedicamentoDto
     };
-
-    const veterinario = await this.veterinarioRepository.findById(updatedMedicamentoData.veterinario_id);
-    if (!veterinario){
-      throw new NotFoundException(`Veterinario with ID ${updatedMedicamentoData.veterinario_id} not found`)
-    }
-
-    const animal = await this.animalRepository.findById(updatedMedicamentoData.animal_id);
-    if (!animal){
-      throw new NotFoundException(`Animal with ID ${updatedMedicamentoData.animal_id} not found`)
-    }
 
     const gasto = await this.gastoRepository.findById(updatedMedicamentoData.gasto_id);
     if (!gasto){
       throw new NotFoundException(`Gasto with ID ${updatedMedicamentoData.gasto_id} not found`)
     }
 
-    const updatedMedicamento = this.medicamentoFactory.create(updatedMedicamentoData, veterinario, animal, gasto);
-    const result = await this.medicamentoRepository.update(id, updatedMedicamento);
-    
+    const updatedGastoData = {
+      ...gasto,
+      data_gasto: updateMedicamentoDto.data_gasto ?? gasto.data_gasto,
+      tipo: updateMedicamentoDto.tipo ?? gasto.tipo,
+      quantidade: updateMedicamentoDto.quantidade ?? gasto.quantidade,
+      valor: updateMedicamentoDto.valor ?? gasto.valor
+    };
+
+    await this.gastoRepository.update(gasto.id, updatedGastoData);
+
+    const result = await this.medicamentoRepository.update(id, updatedMedicamentoData);
     if(!result){
-      throw new NotFoundException(`Medicação with ID ${id} not found for update.`)
+      throw new NotFoundException(`Medicamento with ID ${id} not found for update.`)
     }
 
-    return updatedMedicamento;
+    return updatedMedicamentoData;
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {

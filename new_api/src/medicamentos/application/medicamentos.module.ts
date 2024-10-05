@@ -17,10 +17,9 @@ import { GastosModule } from 'src/gastos/application/gastos.module';
   controllers: [MedicamentosController],
   providers: [
     MedicamentosService,
-    MedicamentoFactory,
     { provide: MedicamentoRepository, useClass: InFileMedicamentoRepository },
   ],
-  exports: [MedicamentosService, MedicamentoRepository]
+  exports: [MedicamentoRepository]
 })
 export class MedicamentosModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

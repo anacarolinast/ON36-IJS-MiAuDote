@@ -8,7 +8,6 @@ import { DoadoresModule } from 'src/doadores/application/doadores.module';
 import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
 import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
 import { CepService } from '../infrastructure/adapters/cep-adapter.service';
-import { HttpModule } from '@nestjs/axios';
 import { PessoaInfrastructureModule } from '../infrastructure/pessoas-infrastructure.module';
 
 @Module({

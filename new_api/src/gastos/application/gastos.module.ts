@@ -8,6 +8,7 @@ import { ConsumiveisModule } from 'src/consumiveis/application/consumiveis.modul
 import { DoacoesModule } from 'src/doacoes/application/doacoes.module';
 import { VacinasModule } from 'src/vacinas/application/vacinas.module';
 import { MedicamentosModule } from 'src/medicamentos/application/medicamentos.module';
+import { GastoInfrastructureModule } from '../infrastructure/gastos-infrastructure.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MedicamentosModule } from 'src/medicamentos/application/medicamentos.mo
     forwardRef(() => DoacoesModule),
     forwardRef(() => VacinasModule),
     forwardRef(() => MedicamentosModule),
+    GastoInfrastructureModule.use('in-file'),
   ],
   controllers: [GastosController],
   providers: [
@@ -22,7 +24,7 @@ import { MedicamentosModule } from 'src/medicamentos/application/medicamentos.mo
     GastoFactory,
     { provide: GastoRepository, useClass: InFileGastoRepository },
   ],
-  exports: [GastosService, GastoRepository],
+  exports: [GastosService, GastoRepository, GastoFactory],
 })
 export class GastosModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

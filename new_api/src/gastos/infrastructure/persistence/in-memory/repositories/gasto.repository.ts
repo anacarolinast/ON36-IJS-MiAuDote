@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
 import { Gasto } from 'src/gastos/domain/gastos';
 import { GastoEntity } from '../entities/gasto.entity';

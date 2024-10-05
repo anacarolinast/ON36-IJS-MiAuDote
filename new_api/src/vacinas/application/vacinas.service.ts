@@ -7,14 +7,15 @@ import { VacinaRepository } from './ports/vacinas.repository';
 import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
 import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
 import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
+import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
+import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto';
+import { GastoType } from 'src/gastos/domain/enum/gasto.enum';
 
 @Injectable()
 export class VacinasService {
   constructor (
     private readonly vacinaRepository: VacinaRepository,
-    private readonly vacinaFactory: VacinaFactory,
-    private readonly veterinarioRepository: VeterinarioRepository,
-    private readonly animalRepository: AnimalRepository,
+    private readonly gastoFactory: GastoFactory,
     private readonly gastoRepository: GastoRepository,
   ) {}
 
@@ -31,89 +32,61 @@ export class VacinasService {
   }
 
   async create(createVacinaDto: CreateVacinaDto): Promise<Vacina> {
-    const veterinario = await this.veterinarioRepository.findById(
+
+    const gastoData: CreateGastoDto = {
+      data_gasto: createVacinaDto.data_gasto,
+      tipo: createVacinaDto.tipo,
+      quantidade: createVacinaDto.quantidade,
+      valor: createVacinaDto.valor
+    };
+    
+    const gasto = this.gastoFactory.createGasto(GastoType.Vacina, gastoData, {});
+    
+    const newVacina = new Vacina(
+      gasto.id,
+      createVacinaDto.animal_id,
+      createVacinaDto.data_vacinacao,
+      createVacinaDto.tipo_vacina,
       createVacinaDto.veterinario_id,
-    );
-    const animal = await this.animalRepository.findById(
-      createVacinaDto.animal_id,
-    );
-    const gasto = await this.gastoRepository.findById(
-      createVacinaDto.gasto_id,
+      gasto.id,
+      gasto.data_gasto,
+      gasto.tipo,
+      gasto.quantidade,
+      gasto.valor
     );
 
-    console.log('Retrieved Gasto:', gasto);
-
-    if (!veterinario) {
-      throw new NotFoundException(
-        `Veterinario with ID ${createVacinaDto.veterinario_id} not found`,
-      );
-    }
-    if (!animal) {
-      throw new NotFoundException(
-        `Animal with ID ${createVacinaDto.animal_id} not found`,
-      );
-    }
-    if (!gasto) {
-      throw new NotFoundException(
-        `Gasto with ID ${createVacinaDto.gasto_id} not found`,
-      );
-    }
-
-    const existingVacina = await this.vacinaRepository.findByAnimalAndTipoVacina(
-      createVacinaDto.animal_id,
-      createVacinaDto.tipo_vacina
-    );
-  
-    if (existingVacina) {
-      throw new ConflictException(`Vacina of type ${createVacinaDto.tipo_vacina} for Animal ID ${createVacinaDto.animal_id} already exists.`);
-    }
-
-    const newVacina = this.vacinaFactory.create(createVacinaDto, veterinario, animal, gasto);
-    const savedVacina = await this.vacinaRepository.save(newVacina);
-    const { veterinario: _, ...veterinarioData} = savedVacina;
-    veterinario.vacinas.push(savedVacina);
-    await this.veterinarioRepository.vaccinate(veterinario.id, veterinarioData);
-    const { animal: __, ...animalData} = savedVacina;
-    await this.animalRepository.vaccinate(animal.id, animalData);
-    return savedVacina;
+    return this.vacinaRepository.save(newVacina);
   }
 
-  async update(
-    id: number, 
-    updateVacinaDto: UpdateVacinaDto
-  ): Promise<Vacina> {
+  async update(id: number, updateVacinaDto: UpdateVacinaDto): Promise<Vacina> {
     const vacina = await this.findOne(id);
+
     const updatedVacinaData = {
-      animal_id: updateVacinaDto.animal_id ?? vacina.animal_id,
-      data_vacinacao: updateVacinaDto.data_vacinacao ?? vacina.data_vacinacao,
-      tipo_vacina: updateVacinaDto.tipo_vacina ?? vacina.tipo_vacina,
-      veterinario_id: updateVacinaDto.veterinario_id ?? vacina.veterinario_id,
-      gasto_id: updateVacinaDto.gasto_id ?? vacina.gasto_id,
+      ...vacina,
+      ...updateVacinaDto,
     };
-
-    const veterinario = await this.veterinarioRepository.findById(updatedVacinaData.veterinario_id);
-    if (!veterinario){
-      throw new NotFoundException(`Veterinario with ID ${updatedVacinaData.veterinario_id} not found`)
-    }
-
-    const animal = await this.animalRepository.findById(updatedVacinaData.animal_id);
-    if (!animal){
-      throw new NotFoundException(`Animal with ID ${updatedVacinaData.animal_id} not found`)
-    }
 
     const gasto = await this.gastoRepository.findById(updatedVacinaData.gasto_id);
     if (!gasto){
       throw new NotFoundException(`Gasto with ID ${updatedVacinaData.gasto_id} not found`)
     }
 
-    const updatedVacina = this.vacinaFactory.create(updatedVacinaData, veterinario, animal, gasto);
+    const updatedGastoData = {
+      ...gasto,
+      data_gasto: updateVacinaDto.data_gasto ?? gasto.data_gasto,
+      tipo: updateVacinaDto.tipo ?? gasto.tipo,
+      quantidade: updateVacinaDto.quantidade ?? gasto.quantidade,
+      valor: updateVacinaDto.valor ?? gasto.valor
+    };
 
-    const result = await this.vacinaRepository.update(id, updatedVacina);
-    
+    await this.gastoRepository.update(gasto.id, updatedGastoData);
+
+    const result = await this.vacinaRepository.update(id, updatedVacinaData);
     if(!result){
       throw new NotFoundException(`Castração with ID ${id} not found for update.`)
     }
-    return updatedVacina;
+
+    return updatedVacinaData;
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {

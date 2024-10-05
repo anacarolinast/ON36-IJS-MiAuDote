@@ -2,10 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, InternalServerError
 import { PessoaFactory } from './../domain/factories/pessoas-factory';
 import { PessoaRepository } from "./ports/pessoas.repository";
 import { Pessoa } from '../domain/pessoas';
-import { CreatePessoaDto } from '../presenters/http/dto/create-pessoa.dto';
-import { UpdatePessoaDto } from '../presenters/http/dto/update-pessoa.dto';
 import { CepService } from '../infrastructure/adapters/cep-adapter.service';
-import { validarCPF } from '../infrastructure/helpers/cpf-validator';
 
 @Injectable()
 export class PessoasService {

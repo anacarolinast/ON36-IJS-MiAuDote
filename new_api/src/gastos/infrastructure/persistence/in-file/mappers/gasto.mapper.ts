@@ -1,7 +1,6 @@
 import { Gasto } from "src/gastos/domain/gastos";
 import { GastoEntity } from "../entities/gasto.entity";
 
-
 export class GastoMapper {
   static paraDominio(gastoEntity: GastoEntity): Gasto {
     const model = new Gasto(
@@ -11,7 +10,6 @@ export class GastoMapper {
       gastoEntity.quantidade,
       gastoEntity.valor,
     );
-    console.log('Mapping GastoEntity to Gasto:', gastoEntity);
     return model;
   }
 

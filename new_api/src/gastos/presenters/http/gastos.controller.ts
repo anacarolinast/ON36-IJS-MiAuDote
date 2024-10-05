@@ -7,9 +7,7 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { GastosService } from 'src/gastos/application/gastos.service'; 
-import { CreateGastoDto } from './dto/create-gasto.dto'; 
-import { UpdateGastoDto } from './dto/update-gasto.dto'; 
+import { GastosService } from 'src/gastos/application/gastos.service';
 
 @Controller('gastos')
 export class GastosController {
@@ -25,18 +23,6 @@ export class GastosController {
     return this.gastosService.findOne(id);
   }
 
-  @Post()
-  async create(@Body() createGastoDto: CreateGastoDto) {
-    return this.gastosService.create(createGastoDto);
-  }
-
-  @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() updateGastoDto: UpdateGastoDto,
-  ) {
-    return this.gastosService.update(id, updateGastoDto);
-  }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {

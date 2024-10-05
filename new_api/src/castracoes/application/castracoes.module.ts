@@ -1,7 +1,6 @@
 import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { CastracoesService } from './castracoes.service';
 import { CastracoesController } from '../presenters/http/castracoes.controller'; 
-import { CastracaoFactory } from '../domain/factories/castracoes-factory';
 import { CastracaoRepository } from './ports/castracoes.repository';
 import { InFileCastracaoRepository } from '../infrastructure/persistence/in-file/repositories/castracao.repository';
 import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
@@ -17,10 +16,9 @@ import { GastosModule } from 'src/gastos/application/gastos.module';
   controllers: [CastracoesController],
   providers: [
     CastracoesService,
-    CastracaoFactory,
     { provide: CastracaoRepository, useClass: InFileCastracaoRepository },
   ],
-  exports: [CastracoesService, CastracaoRepository]
+  exports: [CastracaoRepository]
 })
 export class CastracoesModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

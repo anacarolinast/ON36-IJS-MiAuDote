@@ -1,20 +1,18 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Castracao } from '../domain/castracao';
 import { CreateCastracaoDto } from '../presenters/http/dto/create-castracao.dto';
 import { UpdateCastracaoDto } from '../presenters/http/dto/update-castracao.dto';
-import { CastracaoFactory } from '../domain/factories/castracoes-factory';
 import { CastracaoRepository } from './ports/castracoes.repository';
-import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
-import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
+import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
 import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
+import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto'
+import { GastoType } from 'src/gastos/domain/enum/gasto.enum';
 
 @Injectable()
 export class CastracoesService {
   constructor(
-    private readonly castracaoFactory: CastracaoFactory,
     private readonly castracaoRepository: CastracaoRepository,
-    private readonly veterinarioRepository: VeterinarioRepository,
-    private readonly animalRepository: AnimalRepository,
+    private readonly gastoFactory: GastoFactory,
     private readonly gastoRepository: GastoRepository,
   ) {}
 
@@ -31,88 +29,61 @@ export class CastracoesService {
   }
 
   async create(createCastracaoDto: CreateCastracaoDto): Promise<Castracao> {
-    const veterinario = await this.veterinarioRepository.findById(
-      createCastracaoDto.veterinario_id,
-    );
 
-    const animal = await this.animalRepository.findById(
+    const gastoData: CreateGastoDto = {
+      data_gasto: createCastracaoDto.data_gasto,
+      tipo: createCastracaoDto.tipo,
+      quantidade: createCastracaoDto.quantidade,
+      valor: createCastracaoDto.valor
+    };
+    
+    const gasto = this.gastoFactory.createGasto(GastoType.Castracao, gastoData, {});
+    
+    const newCastracao = new Castracao(
+      gasto.id,
       createCastracaoDto.animal_id,
+      createCastracaoDto.data_castracao,
+      createCastracaoDto.condicao_pos,
+      createCastracaoDto.veterinario_id,
+      gasto.id,
+      gasto.data_gasto,
+      gasto.tipo,
+      gasto.quantidade,
+      gasto.valor
     );
 
-    const gasto = await this.gastoRepository.findById(
-      createCastracaoDto.gasto_id,
-    );
-
-    if (animal.castracao) {
-      throw new ConflictException(`Animal with ID ${animal.id} already has a castration procedure.`);
-    }
-
-    if (!veterinario) {
-      throw new NotFoundException(
-        `Veterinario with ID ${createCastracaoDto.veterinario_id} not found`,
-      );
-    }
-
-    if (!animal) {
-      throw new NotFoundException(
-        `Animal with ID ${createCastracaoDto.animal_id} not found`,
-      );
-    }
-
-    if (!gasto) {
-      throw new NotFoundException(
-        `Gasto with ID ${createCastracaoDto.gasto_id} not found`,
-      );
-    }
-
-    const newCastracao = this.castracaoFactory.create(createCastracaoDto, veterinario, animal, gasto);
-    console.log(newCastracao);
-    const savedCastracao = await this.castracaoRepository.save(newCastracao);
-    const {veterinario: _, ...veterinarioData} = savedCastracao;
-    veterinario.castracoes.push(savedCastracao);
-    await this.veterinarioRepository.castrate(veterinario.id, veterinarioData);
-    const { animal: __, ...animalData} = savedCastracao;
-    await this.animalRepository.castrate(animal.id, animalData);
-    return savedCastracao;
+    return this.castracaoRepository.save(newCastracao);
   }
 
-  async update(
-    id: number, 
-    updateCastracaoDto: UpdateCastracaoDto
-  ): Promise<Castracao> {
+  async update(id: number, updateCastracaoDto: UpdateCastracaoDto): Promise<Castracao> {
     const castracao = await this.findOne(id);
+
     const updatedCastracaoData = {
-      animal_id: updateCastracaoDto.animal_id ?? castracao.animal_id,
-      data_castracao: updateCastracaoDto.data_castracao ?? castracao.data_castracao,
-      condicao_pos: updateCastracaoDto.condicao_pos ?? castracao.condicao_pos,
-      veterinario_id: updateCastracaoDto.veterinario_id ?? castracao.veterinario_id,
-      gasto_id: updateCastracaoDto.gasto_id ?? castracao.gasto_id
+      ...castracao,
+      ...updateCastracaoDto,
     };
-
-    const veterinario = await this.veterinarioRepository.findById(updatedCastracaoData.veterinario_id);
-    if (!veterinario){
-      throw new NotFoundException(`Veterinario with ID ${updatedCastracaoData.veterinario_id} not found`)
-    }
-
-    const animal = await this.animalRepository.findById(updatedCastracaoData.animal_id);
-    if (!veterinario){
-      throw new NotFoundException(`Animal with ID ${updatedCastracaoData.animal_id} not found`)
-    }
 
     const gasto = await this.gastoRepository.findById(updatedCastracaoData.gasto_id);
     if (!gasto){
       throw new NotFoundException(`Gasto with ID ${updatedCastracaoData.gasto_id} not found`)
     }
 
-    const updatedCastracao = this.castracaoFactory.create(updatedCastracaoData, veterinario, animal, gasto);
+    const updatedGastoData = {
+      ...gasto,
+      data_gasto: updateCastracaoDto.data_gasto ?? gasto.data_gasto,
+      tipo: updateCastracaoDto.tipo ?? gasto.tipo,
+      quantidade: updateCastracaoDto.quantidade ?? gasto.quantidade,
+      valor: updateCastracaoDto.valor ?? gasto.valor
+    };
 
-    const result = await this.castracaoRepository.update(id, updatedCastracao);
-    
+    await this.gastoRepository.update(gasto.id, updatedGastoData);
+
+    const result = await this.castracaoRepository.update(id, updatedCastracaoData);
     if(!result){
       throw new NotFoundException(`Castração with ID ${id} not found for update.`)
     }
 
-    return updatedCastracao;
+    return updatedCastracaoData;
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {
