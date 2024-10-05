@@ -60,10 +60,18 @@ export class AdocoesService {
     }
   }
 
+  private checkAnimalAdoptionState(animal: Animal): void {
+    const estadosIndisponiveis = ['indisponivel', 'faleceu', 'adotado']; 
+    if (estadosIndisponiveis.includes(animal.estado_adocao)) {
+      throw new ConflictException(`Animal com ID ${animal.id} não está disponível para adoção. Estado atual: ${animal.estado_adocao}.`);
+    }
+  }
+
   async create(createAdocaoDto: CreateAdocaoDto): Promise<Adocao> {
     const animal = await this.findAnimal(createAdocaoDto.animal_id);
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
 
+    this.checkAnimalAdoptionState(animal);
     this.checkIfAnimalIsAdopted(animal);
     this.checkAdoptionHistory(adotante);
 
