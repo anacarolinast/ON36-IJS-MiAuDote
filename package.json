@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@nestjs/axios": "^3.0.3",
+    "axios": "^1.7.7",
+    "class-transformer": "^0.5.1"
+  }
+}

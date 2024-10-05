@@ -1,0 +1,13 @@
+POST http://localhost:3000/animais
+Content-Type: application/json
+
+{
+  "nome": "Rex",
+  "especie": "Cachorro",
+  "sexo": "Macho",
+  "data_nascimento": "2023-09-20",
+  "condicao_saude": "Saudável",
+  "estado_adocao": "Disponível"
+}
+
+
