@@ -52,15 +52,18 @@ export class AdocoesService {
     }
   }
 
-  private checkAdoptionsInLast12Months(adotante: Adotante): void {
-    const oneYearAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
-    const recentAdoptions = adotante.adocao.filter(({ data_adocao }) =>
-      new Date(data_adocao) >= oneYearAgo
-    );
-    if (recentAdoptions.length >= 3) {
+  private checkAdoptionHistory(adotante: Adotante): void {
+    if (adotante.adocao.length >= 3) {
       throw new ConflictException(
-        `Adotante with ID ${adotante.id} has already adopted 3 animals in the last 12 months.`
+        `Adotante with ID ${adotante.id} has already adopted 3 animals.`
       );
+    }
+  }
+
+  private checkAnimalAdoptionState(animal: Animal): void {
+    const estadosIndisponiveis = ['indisponivel', 'faleceu', 'adotado']; 
+    if (estadosIndisponiveis.includes(animal.estado_adocao)) {
+      throw new ConflictException(`Animal com ID ${animal.id} não está disponível para adoção. Estado atual: ${animal.estado_adocao}.`);
     }
   }
 
@@ -68,8 +71,9 @@ export class AdocoesService {
     const animal = await this.findAnimal(createAdocaoDto.animal_id);
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
 
+    this.checkAnimalAdoptionState(animal);
     this.checkIfAnimalIsAdopted(animal);
-    this.checkAdoptionsInLast12Months(adotante);
+    this.checkAdoptionHistory(adotante);
 
     const newAdocao = this.adocaoFactory.create(
       createAdocaoDto,
@@ -79,22 +83,21 @@ export class AdocoesService {
 
     const savedAdocao = await this.adocaoRepository.save(newAdocao);
 
-    console.log('Antes da atualização do adotante:', adotante);
-
     const { adotante: _, ...adotanteData } = savedAdocao;
     adotante.adocao.push(savedAdocao);
     await this.adotanteRepository.adopt(adotante.id, adotanteData);
-    console.log('Depois da atualização do adotante:', adotante);
+    console.log(`${animal.nome} registrado na lista de animais adotados de ${adotante.nome} com sucesso!`);
 
     const { animal: __, ...animalData } = savedAdocao;
     await this.animalRepository.adopt(animal.id, animalData);
-    console.log('Depois da atualização do animal:', animal);
+    console.log(`Status de ${animal.nome} atualizado para: ADOTADO!`);
 
     return savedAdocao;
   }
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);
+    
     const animal = updateAdocaoDto.animal_id
       ? await this.animalRepository.findById(updateAdocaoDto.animal_id)
       : adocao.animal;
@@ -106,6 +109,10 @@ export class AdocoesService {
     if (!animal || !adotante) {
       throw new NotFoundException('Animal ou Adotante não encontrado.');
     }
+
+    this.checkAnimalAdoptionState(animal);
+    this.checkIfAnimalIsAdopted(animal);
+    this.checkAdoptionHistory(adotante);
 
     const updatedAdocao = this.adocaoFactory.create(
       { ...adocao, ...updateAdocaoDto },

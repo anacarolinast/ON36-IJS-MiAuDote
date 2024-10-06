@@ -4,7 +4,6 @@ import { CreateDoacaoDto } from '../presenters/http/dto/create-doacao.dto';
 import { UpdateDoacaoDto } from '../presenters/http/dto/update-doacao.dto';
 import { DoacaoRepository } from './ports/doacao.repository';
 import { GastoRepository } from '../../gastos/application/ports/gasto.repository';
-import { Gasto } from 'src/gastos/domain/gastos';
 import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
 import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto';
 import { GastoType } from 'src/gastos/domain/enum/gasto.enum';
@@ -29,13 +28,19 @@ export class DoacoesService {
     return doacao;
   }
 
+  private ensureNegativeValue(value: number): number {
+    return value > 0 ? -value : value;
+  }
+
   async create(createDoacaoDto: CreateDoacaoDto): Promise<Doacao> {
+
+    createDoacaoDto.valor_estimado = this.ensureNegativeValue(createDoacaoDto.valor_estimado);
 
     const gastoData: CreateGastoDto = {
       data_gasto: createDoacaoDto.data_gasto,
       tipo: createDoacaoDto.tipo,
       quantidade: createDoacaoDto.quantidade,
-      valor: createDoacaoDto.valor
+      valor: this.ensureNegativeValue(createDoacaoDto.valor)
     };
 
     const gasto = this.gastoFactory.createGasto(GastoType.Castracao, gastoData, {});
@@ -59,6 +64,8 @@ export class DoacoesService {
 async update(id: number, updateDoacaoDto: UpdateDoacaoDto): Promise<Doacao> {
   const doacao = await this.findOne(id);
 
+  updateDoacaoDto.valor_estimado = this.ensureNegativeValue(updateDoacaoDto.valor_estimado);
+
   const updatedDoacaoData = {
     ...doacao,
     ...updateDoacaoDto,
@@ -74,7 +81,7 @@ async update(id: number, updateDoacaoDto: UpdateDoacaoDto): Promise<Doacao> {
     data_gasto: updateDoacaoDto.data_gasto ?? gasto.data_gasto,
     tipo: updateDoacaoDto.tipo ?? gasto.tipo,
     quantidade: updateDoacaoDto.quantidade ?? gasto.quantidade,
-    valor: updateDoacaoDto.valor ?? gasto.valor,
+    valor: this.ensureNegativeValue(updateDoacaoDto.valor ?? gasto.valor),
   }
 
   await this.doacaoRepository.update(gasto.id, updatedGastoData);

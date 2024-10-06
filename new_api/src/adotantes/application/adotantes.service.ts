@@ -7,6 +7,7 @@ import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.reposito
 import { PessoaFactory } from 'src/pessoas/domain/factories/pessoas-factory';
 import { CreatePessoaDto } from 'src/pessoas/presenters/http/dto/create-pessoa.dto';
 import { PessoaType } from 'src/pessoas/domain/enum/pessoa.enum';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AdotantesService {
@@ -44,9 +45,10 @@ export class AdotantesService {
     };
 
     const pessoa = this.pessoaFactory.createPerson(PessoaType.Adotante, pessoaData, {});
-
+    const adotanteId = uuidv4();
+    
     const newAdotante = new Adotante(
-      pessoa.id,
+      adotanteId,
       createAdotanteDto.renda,
       createAdotanteDto.condicao_entrevista,
       [],
