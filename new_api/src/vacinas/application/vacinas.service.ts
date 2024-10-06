@@ -1,11 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Vacina } from '../domain/vacinas';
 import { CreateVacinaDto } from '../presenters/http/dto/create-vacina.dto';
 import { UpdateVacinaDto } from '../presenters/http/dto/update-vacina.dto';
-import { VacinaFactory } from '../domain/factories/vacinas-factory';
 import { VacinaRepository } from './ports/vacinas.repository';
-import { VeterinarioRepository } from 'src/veterinarios/application/ports/veterinarios.repository';
-import { AnimalRepository } from 'src/animais/application/ports/animais.repository';
 import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
 import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
 import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto';
