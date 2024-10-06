@@ -4,7 +4,6 @@ import { CreateDoacaoDto } from '../presenters/http/dto/create-doacao.dto';
 import { UpdateDoacaoDto } from '../presenters/http/dto/update-doacao.dto';
 import { DoacaoRepository } from './ports/doacao.repository';
 import { GastoRepository } from '../../gastos/application/ports/gasto.repository';
-import { Gasto } from 'src/gastos/domain/gastos';
 import { GastoFactory } from 'src/gastos/domain/factories/gastos-factory';
 import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto';
 import { GastoType } from 'src/gastos/domain/enum/gasto.enum';
