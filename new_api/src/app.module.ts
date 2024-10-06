@@ -1,6 +1,4 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PessoasModule } from './pessoas/application/pessoas.module'; 
 import { VeterinariosModule } from './veterinarios/application/veterinarios.module';
 import { DoadoresModule } from './doadores/application/doadores.module';
