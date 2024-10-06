@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsDate, IsString, Length, Min } from 'class-validator';
+import { IsNumber, IsDate, IsString, Length, Min, Max } from 'class-validator';
 import { CreateGastoDto } from 'src/gastos/presenters/http/dto/create-gasto.dto';
 
 export class CreateDoacaoDto extends CreateGastoDto {
@@ -16,7 +16,7 @@ export class CreateDoacaoDto extends CreateGastoDto {
     tipo_doacao: string;
 
     @IsNumber()
-    @Min(0)  
+    @Max(0)  
     valor_estimado: number;
 
     @IsNumber()

@@ -83,6 +83,9 @@ export class CastracoesService {
   async update(id: number, updateCastracaoDto: UpdateCastracaoDto): Promise<Castracao> {
     const castracao = await this.findOne(id);
 
+    await this.findVeterinario(updateCastracaoDto.veterinario_id);
+    await this.findAnimal(updateCastracaoDto.animal_id);
+
     const updatedCastracaoData = {
       ...castracao,
       ...updateCastracaoDto,

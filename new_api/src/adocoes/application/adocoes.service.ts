@@ -110,6 +110,10 @@ export class AdocoesService {
       throw new NotFoundException('Animal ou Adotante não encontrado.');
     }
 
+    this.checkAnimalAdoptionState(animal);
+    this.checkIfAnimalIsAdopted(animal);
+    this.checkAdoptionHistory(adotante);
+
     const updatedAdocao = this.adocaoFactory.create(
       { ...adocao, ...updateAdocaoDto },
       animal,
