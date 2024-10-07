@@ -3,10 +3,10 @@ import { Adotante } from '../domain/adotante';
 import { CreateAdotanteDto } from '../presenters/http/dto/create-adotante.dto';
 import { UpdateAdotanteDto } from '../presenters/http/dto/update-adotante.dto';
 import { AdotanteRepository } from './ports/adotantes.repository';
-import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
-import { PessoaFactory } from 'src/pessoas/domain/factories/pessoas-factory';
-import { CreatePessoaDto } from 'src/pessoas/presenters/http/dto/create-pessoa.dto';
-import { PessoaType } from 'src/pessoas/domain/enum/pessoa.enum';
+import { PessoaRepository } from '../../pessoas/application/ports/pessoas.repository';
+import { PessoaFactory } from '../../pessoas/domain/factories/pessoas-factory';
+import { CreatePessoaDto } from '../../pessoas/presenters/http/dto/create-pessoa.dto';
+import { PessoaType } from '../../pessoas/domain/enum/pessoa.enum';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -98,7 +98,9 @@ export class AdotantesService {
   }
 
   async remove(id: number): Promise<{ deleted: boolean }> {
-    await this.adotanteRepository.remove(id);
+    const adotante = await this.findOne(id);
+    await this.pessoaRepository.remove(adotante.id); 
+    await this.adotanteRepository.remove(id); 
     return { deleted: true };
   }
 }
