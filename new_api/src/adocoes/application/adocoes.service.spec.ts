@@ -61,25 +61,37 @@ describe('AdocoesService', () => {
         data_adocao: new Date(),
         condicoes_especiais: 'Some conditions',
         status_aprovacao: 'Approved',
-        animal_id: 1,    // This is fine as the DTO requires animal_id
-        adotante_id: 1,   // This is fine as the DTO requires adotante_id
+        animal_id: 1,
+        adotante_id: 1,
       };
 
-      const animal: Animal = { id: 1, nome: 'Rex', estado_adocao: 'Disponivel' } as Animal;
-      const adotante: Adotante = { id: 1, nome: 'John Doe', adocao: [] } as Adotante;
+      const animal: Animal = {
+        id: 1,
+        nome: 'Rex',
+        estado_adocao: 'Disponivel',
+      } as Animal;
+      const adotante: Adotante = {
+        id: 1,
+        nome: 'John Doe',
+        adocao: [],
+      } as Adotante;
 
       jest.spyOn(animalRepository, 'findById').mockResolvedValue(animal);
       jest.spyOn(adotanteRepository, 'findById').mockResolvedValue(adotante);
-      jest.spyOn(adocaoRepository, 'save').mockResolvedValue(new Adocao(
-        1,
-        adotante.id,
-        animal.id,
-        createAdocaoDto.data_adocao,
-        createAdocaoDto.condicoes_especiais,
-        createAdocaoDto.status_aprovacao,
-        animal,
-        adotante,
-      ));
+      jest
+        .spyOn(adocaoRepository, 'save')
+        .mockResolvedValue(
+          new Adocao(
+            1,
+            adotante.id,
+            animal.id,
+            createAdocaoDto.data_adocao,
+            createAdocaoDto.condicoes_especiais,
+            createAdocaoDto.status_aprovacao,
+            animal,
+            adotante,
+          ),
+        );
 
       const result = await service.create(createAdocaoDto);
       expect(result).toBeDefined();
@@ -95,9 +107,11 @@ describe('AdocoesService', () => {
         adotante_id: 1,
       };
 
-      jest.spyOn(animalRepository, 'findById').mockResolvedValue(null); // Animal not found
+      jest.spyOn(animalRepository, 'findById').mockResolvedValue(null);
 
-      await expect(service.create(createAdocaoDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createAdocaoDto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw a NotFoundException if adotante is not found', async () => {
@@ -109,11 +123,17 @@ describe('AdocoesService', () => {
         adotante_id: 1,
       };
 
-      const animal: Animal = { id: 1, nome: 'Rex', estado_adocao: 'Disponivel' } as Animal;
+      const animal: Animal = {
+        id: 1,
+        nome: 'Rex',
+        estado_adocao: 'Disponivel',
+      } as Animal;
       jest.spyOn(animalRepository, 'findById').mockResolvedValue(animal);
-      jest.spyOn(adotanteRepository, 'findById').mockResolvedValue(null); // Adotante not found
+      jest.spyOn(adotanteRepository, 'findById').mockResolvedValue(null);
 
-      await expect(service.create(createAdocaoDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createAdocaoDto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw a ConflictException if the animal is already adopted', async () => {
@@ -125,17 +145,23 @@ describe('AdocoesService', () => {
         adotante_id: 1,
       };
 
-      const animal: Animal = { id: 1, nome: 'Rex', estado_adocao: 'Adotado' } as Animal;
-      const adotante: Adotante = { id: 1, nome: 'John Doe', adocao: [] } as Adotante;
+      const animal: Animal = {
+        id: 1,
+        nome: 'Rex',
+        estado_adocao: 'Adotado',
+      } as Animal;
+      const adotante: Adotante = {
+        id: 1,
+        nome: 'John Doe',
+        adocao: [],
+      } as Adotante;
 
       jest.spyOn(animalRepository, 'findById').mockResolvedValue(animal);
       jest.spyOn(adotanteRepository, 'findById').mockResolvedValue(adotante);
 
-      await expect(service.create(createAdocaoDto)).rejects.toThrow(ConflictException);
+      await expect(service.create(createAdocaoDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
-
-    // More tests for other methods can be added here
   });
-
-  // Other describe blocks for findAll, findOne, update, and remove
 });
