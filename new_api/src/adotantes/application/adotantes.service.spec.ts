@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdotantesService } from './adotantes.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { Adotante } from '../domain/adotante';
 import { AdotanteRepository } from './ports/adotantes.repository';
 import { PessoaRepository } from '../../pessoas/application/ports/pessoas.repository';
