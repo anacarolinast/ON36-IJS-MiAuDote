@@ -4,7 +4,6 @@ import { CastracoesService } from './castracoes.service';
 import { CastracaoRepository } from './ports/castracoes.repository';
 import { GastoRepository } from '../../gastos/application/ports/gasto.repository';
 import { CreateCastracaoDto } from '../presenters/http/dto/create-castracao.dto';
-import { UpdateCastracaoDto } from '../presenters/http/dto/update-castracao.dto';
 import { Castracao } from '../domain/castracao';
 import { VeterinarioRepository } from '../../veterinarios/application/ports/veterinarios.repository';
 import { Veterinario } from 'src/veterinarios/domain/veterinarios';

@@ -64,7 +64,10 @@ export class AdotantesService {
     return this.adotanteRepository.save(newAdotante);
   }
 
-  async update(id: number, updateAdotanteDto: UpdateAdotanteDto): Promise<Adotante> {
+  async update(
+    id: number, 
+    updateAdotanteDto: UpdateAdotanteDto
+  ): Promise<Adotante> {
     const adotante = await this.findOne(id);
     
     const updatedAdotanteData = {
