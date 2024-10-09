@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PessoasService } from './pessoas.service';
 import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
 
-describe('PessoasService', () => {
+describe('Testando PessoasService', () => {
   let service: PessoasService;
   let pessoaRepository: PessoaRepository;
 
