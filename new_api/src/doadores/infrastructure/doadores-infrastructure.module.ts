@@ -4,7 +4,7 @@ import { InFileDoadorPersistenceModule } from './persistence/in-file/in-file-per
 
 @Module({})
 export class DoadorInfrastructureModule {
-  static use(driver: 'in-file' | 'in-memory') {
+  static use(driver: 'typeorm'| 'in-file' | 'in-memory') {
     const persistenceModule =
       driver === 'in-file'
         ? InFileDoadorPersistenceModule

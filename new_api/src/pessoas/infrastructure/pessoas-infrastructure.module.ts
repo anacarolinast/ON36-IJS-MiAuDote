@@ -10,7 +10,7 @@ import { HttpModule } from '@nestjs/axios';
   exports: [CepService],
 })
 export class PessoaInfrastructureModule {
-  static use(driver: 'in-file' | 'in-memory') {
+  static use(driver: 'typeorm' | 'in-file' | 'in-memory') {
     const persistenceModule =
       driver === 'in-file'
         ? InFilePessoaPersistenceModule

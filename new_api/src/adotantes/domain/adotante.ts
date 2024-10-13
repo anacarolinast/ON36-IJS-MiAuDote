@@ -6,7 +6,7 @@ export class Adotante extends Pessoa {
     public readonly id: number,
     public readonly renda: number,
     public readonly condicao_entrevista: string,
-    public readonly adocao: Adocao[],
+    public readonly adocao?: Adocao[],
     pessoa_id?: number,
     nome?: string,
     cep?: string,

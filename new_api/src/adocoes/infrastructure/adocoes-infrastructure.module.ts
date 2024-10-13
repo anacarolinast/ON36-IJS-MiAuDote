@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
-import { InMemoryAdocaoPersistenceModule } from './persistence/in-memory/in-memory-persistence.module'; 
-import { InFileAdocaoPersistenceModule } from './persistence/in-file/in-file-persistence.module';
+import { TypeOrmAdocaoPersistenceModule } from '../infrastructure/persistence/type-orm/typeorm-persistence.module';
 
 @Module({})
 export class AdocaoInfrastructureModule {
-  static use(driver: 'in-file' | 'in-memory') {
-    const persistenceModule =
-      driver === 'in-file'
-        ? InFileAdocaoPersistenceModule
-        : InMemoryAdocaoPersistenceModule;
+  static use(driver: 'in-file' | 'in-memory' | 'typeorm') {
+    let persistenceModule;
 
+    if (driver === 'typeorm') {
+      persistenceModule = TypeOrmAdocaoPersistenceModule;
+    } else if (driver === 'in-file' || driver === 'in-memory') {
+      throw new Error('Persistencia ainda nao implementada.')
+    } else {
+      throw new Error('Driver invalido.')
+    }
+    
     return {
       module: AdocaoInfrastructureModule,
       imports: [persistenceModule],

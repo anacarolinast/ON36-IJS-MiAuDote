@@ -4,7 +4,7 @@ import { InMemoryVacinaPersistenceModule } from './persistence/in-memory/in-memo
 
 @Module({})
 export class VacinaInfrastructureModule {
-  static use(driver: 'in-file' | 'in-memory') {
+  static use(driver: 'typeorm' | 'in-file' | 'in-memory') {
     const persistenceModule =
       driver === 'in-file'
         ? InFileVacinaPersistenceModule

@@ -4,7 +4,7 @@ import { InFileGastoPersistenceModule } from './persistence/in-file/in-file-pers
 
 @Module({})
 export class GastoInfrastructureModule {
-  static use(driver: 'in-file' | 'in-memory') {
+  static use(driver: 'typeorm' | 'in-file' | 'in-memory') {
     const persistenceModule =
       driver === 'in-file'
         ? InFileGastoPersistenceModule
