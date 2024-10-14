@@ -3,10 +3,10 @@ import { MedicamentoRepository } from '../../../application/ports/medicamento.re
 import { TypeOrmMedicamentoRepository } from './repositories/medicamento.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './typeOrm.config';
-import { MedicamentoEntity } from './entities/medicamento.entity';
+import { MedicamentoEntity } from './entities/medicamento.entity'; 
 import { GastoEntity } from '../../../../gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
 import { VeterinarioEntity } from '../../../../veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
-import { AnimalEntity } from '../../../../animais/infrastructure/persistence/type-orm/entities/animal.entity';
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity'; 
 import { MedicamentoMapper } from './mappers/medicamento.mapper';
 
 @Module({

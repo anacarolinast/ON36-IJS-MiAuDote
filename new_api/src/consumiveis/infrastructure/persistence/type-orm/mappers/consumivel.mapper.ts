@@ -10,7 +10,7 @@ import { Gasto } from '../../../../../gastos/domain/gastos';
 export class ConsumivelMapper {
   constructor(
     @InjectRepository(GastoEntity)
-    private readonly gastoRepository: Repository<GastoEntity>,
+    private readonly gastoEntityRepository: Repository<GastoEntity>
   ) {}
 
   paraDominio(consumivelEntity: ConsumivelEntity): Consumivel {
@@ -20,7 +20,7 @@ export class ConsumivelMapper {
         consumivelEntity.gasto.tipo,
         consumivelEntity.gasto.quantidade,
         consumivelEntity.gasto.valor
-      );
+    );
 
     return new Consumivel(
       consumivelEntity.id,
@@ -31,7 +31,6 @@ export class ConsumivelMapper {
   }
 
   async paraPersistencia(consumivel: Consumivel): Promise<ConsumivelEntity> {
-
     const entity = new ConsumivelEntity();
     entity.tipo_animal = consumivel.tipo_animal;
     entity.descricao = consumivel.descricao;

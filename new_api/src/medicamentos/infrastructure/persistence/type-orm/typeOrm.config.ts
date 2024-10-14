@@ -1,9 +1,9 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import { DoacaoEntity } from '../../../../doacoes/infrastructure/persistence/type-orm/entities/doacao.entity';
 import 'dotenv/config';
 import { GastoEntity } from '../../../../gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
-import { VeterinarioEntity } from '../../../../veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
-import { AnimalEntity } from '../../../../animais/infrastructure/persistence/type-orm/entities/animal.entity';
+import { VeterinarioEntity } from "src/veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity"; 
+import { AnimalEntity } from "src/animais/infrastructure/persistence/type-orm/entities/animal.entity"; 
+import { MedicamentoEntity } from "src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity"; 
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -14,7 +14,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_NAME,
   logging: true,
   migrations: [`${__dirname}/migrations/*.{ts,js}`],
-  entities: [GastoEntity, AnimalEntity, VeterinarioEntity, DoacaoEntity]
+  entities: [GastoEntity, AnimalEntity, VeterinarioEntity, MedicamentoEntity]
 };
 
 export default new DataSource(dataSourceOptions);

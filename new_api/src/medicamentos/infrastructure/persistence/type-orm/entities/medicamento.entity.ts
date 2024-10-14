@@ -1,6 +1,6 @@
-import { GastoEntity } from '../../../../../gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
-import { VeterinarioEntity } from '../../../../../veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
-import { AnimalEntity } from '../../../../../animais/infrastructure/persistence/type-orm/entities//animal.entity';
+import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity'; 
+import { VeterinarioEntity } from 'src/veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity'; 
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity'; 
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('medicamentos')
@@ -23,7 +23,7 @@ export class MedicamentoEntity {
     @Column()
     gasto_id: number;
 
-    @ManyToOne(() => AnimalEntity, (animal) => animal.medicamentos)
+    @ManyToOne(() => AnimalEntity, (animal) => animal.medicamentos, { cascade: true })
     @JoinColumn({ name: 'animal_id' })
     animal: AnimalEntity;
 

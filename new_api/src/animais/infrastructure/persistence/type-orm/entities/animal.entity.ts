@@ -1,7 +1,7 @@
-import { AdocaoEntity } from '../../../../../adocoes/infrastructure/persistence/type-orm/entities/adocao.entity';
-import { MedicamentoEntity } from '../../../../../medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
-import { VacinaEntity } from '../../../../../vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
-import { CastracaoEntity } from '../../../../../castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
+import { AdocaoEntity } from 'src/adocoes/infrastructure/persistence/type-orm/entities/adocao.entity'; 
+import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity'; 
+import { VacinaEntity } from 'src/vacinas/infrastructure/persistence/type-orm/entities/vacina.entity'; 
+import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity'; 
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('animais')
@@ -30,7 +30,7 @@ export class AnimalEntity {
     @OneToOne(() => AdocaoEntity, (adocao) => adocao.animal)
     adocao: AdocaoEntity;
 
-    @OneToMany(() => MedicamentoEntity, (medicamento) => medicamento.animal)
+    @OneToMany(() => MedicamentoEntity, (medicamento) => medicamento.animal, { cascade: false })
     medicamentos: MedicamentoEntity[];
 
     @OneToMany(() => VacinaEntity, (vacina) => vacina.animal)

@@ -1,9 +1,8 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import { PessoaEntity } from '../../../../pessoas/infrastructure/persistence/in-file/entities/pessoa.entity'; //MUDAR PARA TYPE-ORM
+import { PessoaEntity } from '../../../../pessoas/infrastructure/persistence/type-orm/entities/pessoa.entity';
 import { AdocaoEntity } from '../../../../adocoes/infrastructure/persistence/type-orm/entities/adocao.entity';
 import 'dotenv/config';
 import { AdotanteEntity } from '../../../../adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
-
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',

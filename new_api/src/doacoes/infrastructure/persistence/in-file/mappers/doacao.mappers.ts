@@ -1,6 +1,5 @@
 import { Doacao } from "src/doacoes/domain/doacoes";
 import { DoacaoEntity } from "../entities/doacao.entity";
-import { DoadorMapper } from "src/doadores/infrastructure/persistence/in-file/mappers/doador.mappers";
 import { GastoMapper } from "src/gastos/infrastructure/persistence/in-file/mappers/gasto.mapper";
 
 export class DoacaoMapper {
@@ -12,8 +11,6 @@ export class DoacaoMapper {
       doacaoEntity.tipo_doacao,
       doacaoEntity.valor_estimado,
       doacaoEntity.gasto_id,
-      GastoMapper.paraDominio(doacaoEntity.gastos),
-      doacaoEntity.doador ? DoadorMapper.paraDominio(doacaoEntity.doador) : undefined
     );
     return model;
   }
@@ -25,11 +22,7 @@ export class DoacaoMapper {
     entity.data_doacao = doacao.data_doacao;
     entity.tipo_doacao = doacao.tipo_doacao;
     entity.valor_estimado = doacao.valor_estimado;
-    entity.gasto_id = doacao.gasto_id;
-    entity.gastos = GastoMapper.paraPersistencia(doacao.gasto);
-    if (doacao.doador) {
-        entity.doador = DoadorMapper.paraPersistencia(doacao.doador);
-    }
+    entity.gastos = GastoMapper.paraPersistencia(doacao); 
     return entity;
   }
 }

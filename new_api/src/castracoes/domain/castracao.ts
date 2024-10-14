@@ -1,4 +1,6 @@
+import { Animal } from 'src/animais/domain/animal';
 import { Gasto } from '../../gastos/domain/gastos';
+import { Veterinario } from 'src/veterinarios/domain/veterinarios';
 
 export class Castracao extends Gasto {
     constructor(
@@ -11,7 +13,7 @@ export class Castracao extends Gasto {
       data_gasto?: Date,
       tipo?: string,
       quantidade?: number,
-      valor?: number
+      valor?: number,
     ) {
       super(gasto_id, data_gasto, tipo, quantidade, valor)
     }

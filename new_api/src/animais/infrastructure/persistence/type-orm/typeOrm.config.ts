@@ -1,10 +1,9 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import { CastracaoEntity } from '../../../../castracoes/infrastructure/persistence/in-file/entities/castracao.entity';
-import { VacinaEntity } from '../../../../vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
-import { MedicamentoEntity } from '../../../../medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
-import { AdocaoEntity } from '../../../../adocoes/infrastructure/persistence/type-orm/entities/adocao.entity';
-import 'dotenv/config';
-import { AnimalEntity } from '../../../../animais/infrastructure/persistence/type-orm/entities/animal.entity';
+import { CastracaoEntity } from "src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity"; 
+import { VacinaEntity } from "src/vacinas/infrastructure/persistence/type-orm/entities/vacina.entity"; 
+import { MedicamentoEntity } from "src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity"; 
+import { AdocaoEntity } from "src/adocoes/infrastructure/persistence/type-orm/entities/adocao.entity";
+import { AnimalEntity } from "src/animais/infrastructure/persistence/type-orm/entities/animal.entity";
 
 
 export const dataSourceOptions: DataSourceOptions = {
@@ -16,7 +15,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_NAME,
   logging: true,
   migrations: [`${__dirname}/migrations/*.{ts,js}`],
-  entities: [AdocaoEntity, AnimalEntity,MedicamentoEntity, VacinaEntity, CastracaoEntity]
+  entities: [AdocaoEntity, AnimalEntity, MedicamentoEntity, VacinaEntity, CastracaoEntity],
 };
 
 export default new DataSource(dataSourceOptions);

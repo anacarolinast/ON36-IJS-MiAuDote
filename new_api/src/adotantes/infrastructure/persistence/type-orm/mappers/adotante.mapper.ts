@@ -11,10 +11,10 @@ import { Pessoa } from '../../../../../pessoas/domain/pessoas';
 @Injectable()
 export class AdotanteMapper {
   constructor(
-    @InjectRepository(AdocaoEntity)
+ @InjectRepository(AdocaoEntity)
     private readonly adocaoRepository: Repository<AdocaoEntity>,
     @InjectRepository(PessoaEntity)
-    private readonly pessoaRepository: Repository<PessoaEntity>
+    private readonly pessoaRepository: Repository<PessoaEntity>,
   ) {}
 
   paraDominio(adotanteEntity: AdotanteEntity): Adotante {

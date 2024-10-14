@@ -23,7 +23,7 @@ export class InFileMedicamentoRepository implements MedicamentoRepository {
 
     async findAll(): Promise<Medicamento[]> {
         console.log("Listando todos as medicamentos...");
-        return Array.from(this.medicamentos.values());
+        return Array.from(this.medicamentos.values()).map(medicamentoEntity => MedicamentoMapper.paraDominio(medicamentoEntity))
     }
 
     async findById(id: number): Promise<Medicamento | null> {

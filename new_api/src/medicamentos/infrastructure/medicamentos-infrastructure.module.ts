@@ -1,14 +1,19 @@
-import { Module } from '@nestjs/common';
-import { InMemoryMedicamentoPersistenceModule } from './persistence/in-memory/in-memory-persistence.module'; 
+import { DynamicModule, Module } from '@nestjs/common';
 import { InFileMedicamentoPersistenceModule } from './persistence/in-file/in-file-persistence.module';
+import { TypeOrmMedicamentoPersistenceModule } from './persistence/type-orm/typeorm-persistence.module';
 
 @Module({})
 export class MedicamentoInfrastructureModule {
-  static use(driver: 'typeorm' | 'in-file' | 'in-memory') {
-    const persistenceModule =
-      driver === 'in-file'
-        ? InFileMedicamentoPersistenceModule
-        : InMemoryMedicamentoPersistenceModule;
+  static use(driver: 'in-file' | 'typeorm'): DynamicModule {
+    let persistenceModule;
+
+    if (driver === 'typeorm') {
+      persistenceModule = TypeOrmMedicamentoPersistenceModule;
+    } else if (driver === 'in-file') {
+      persistenceModule = InFileMedicamentoPersistenceModule; 
+    } else {
+      throw new Error(`Unsupported driver: ${driver}. Only 'typeorm' and 'in-file' are allowed.`);
+    }
 
     return {
       module: MedicamentoInfrastructureModule,

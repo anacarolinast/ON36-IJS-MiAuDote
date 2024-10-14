@@ -1,24 +1,31 @@
 import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { VacinasController } from '../presenters/http/vacinas.controller'; 
 import { VacinasService } from './vacinas.service'; 
-import { VacinaFactory } from '../domain/factories/vacinas-factory';
 import { VacinaRepository } from './ports/vacinas.repository';
-import { InFileVacinaRepository } from '../infrastructure/persistence/in-file/repositories/vacina.repository';
 import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
 import { AnimaisModule } from 'src/animais/application/animais.module';
 import { GastosModule } from 'src/gastos/application/gastos.module';
+import { TypeOrmVacinaRepository } from '../infrastructure/persistence/type-orm/repositories/vacina.repository';
+import { VeterinarioEntity } from 'src/veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity';
+import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
+import { VacinaMapper } from '../infrastructure/persistence/type-orm/mappers/vacina.mapper';
 
 @Module({
   imports: [
     forwardRef(() => VeterinariosModule), 
     forwardRef(() => AnimaisModule), 
     forwardRef(() => GastosModule),
+    TypeOrmModule.forFeature([VeterinarioEntity]),
+    TypeOrmModule.forFeature([AnimalEntity]),
+    TypeOrmModule.forFeature([GastoEntity]),
   ],
   controllers: [VacinasController],
   providers: [
-    VacinasService, 
-    VacinaFactory,
-    { provide: VacinaRepository, useClass: InFileVacinaRepository },
+    VacinasService,
+    VacinaMapper,
+    { provide: VacinaRepository, useClass: TypeOrmVacinaRepository, }
   ],
   exports: [VacinasService, VacinaRepository]
 })
