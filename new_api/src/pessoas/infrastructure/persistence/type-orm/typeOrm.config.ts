@@ -4,6 +4,7 @@ import 'dotenv/config';
 import { AdotanteEntity } from '../../../../adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
 import { VeterinarioEntity } from '../../../../veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
 import { DoadorEntity } from '../../../../doadores/infrastructure/persistence/type-orm/entities/doador.entity';
+import { PessoaEntity } from "./entities/pessoa.entity";
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -14,7 +15,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_NAME,
   logging: true,
   migrations: [`${__dirname}/migrations/*.{ts,js}`],
-  entities: [AdotanteEntity, DoadorEntity, VeterinarioEntity, DoacaoEntity]
+  entities: [PessoaEntity, AdotanteEntity, DoadorEntity, VeterinarioEntity, DoacaoEntity]
 };
 
 export default new DataSource(dataSourceOptions);

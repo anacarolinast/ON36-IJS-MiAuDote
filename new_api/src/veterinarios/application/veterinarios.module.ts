@@ -13,6 +13,7 @@ import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/t
 import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VeterinarioMapper } from '../infrastructure/persistence/type-orm/mappers/veterinario.mapper';
+import { VeterinarioEntity } from '../infrastructure/persistence/type-orm/entities/veterinario.entity';
 
 @Module({
   imports: [
@@ -20,10 +21,7 @@ import { VeterinarioMapper } from '../infrastructure/persistence/type-orm/mapper
     forwardRef(() => VacinasModule),
     forwardRef(() => MedicamentosModule),
     forwardRef(() => CastracoesModule),
-    TypeOrmModule.forFeature([PessoaEntity]),
-    TypeOrmModule.forFeature([VacinaEntity]),
-    TypeOrmModule.forFeature([MedicamentoEntity]),
-    TypeOrmModule.forFeature([CastracaoEntity]),
+    TypeOrmModule.forFeature([VeterinarioEntity, PessoaEntity, VacinaEntity, MedicamentoEntity, CastracaoEntity]),
   ],
   controllers: [VeterinariosController],
   providers: [

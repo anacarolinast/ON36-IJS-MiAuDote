@@ -7,19 +7,16 @@ import { AnimaisModule } from 'src/animais/application/animais.module';
 import { GastosModule } from 'src/gastos/application/gastos.module';
 import { TypeOrmMedicamentoRepository } from '../infrastructure/persistence/type-orm/repositories/medicamento.repository';
 import { MedicamentoMapper } from '../infrastructure/persistence/type-orm/mappers/medicamento.mapper';
-import { VeterinarioEntity } from 'src/veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity';
-import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
+import { TypeOrmMedicamentoPersistenceModule } from '../infrastructure/persistence/type-orm/typeorm-persistence.module';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
   imports: [
     forwardRef(() => VeterinariosModule), 
     forwardRef(() => AnimaisModule), 
     forwardRef(() => GastosModule),
-    TypeOrmModule.forFeature([VeterinarioEntity]),
-    TypeOrmModule.forFeature([AnimalEntity]),
-    TypeOrmModule.forFeature([GastoEntity]),
+    TypeOrmMedicamentoPersistenceModule,
+    DatabaseModule,
   ],
   controllers: [MedicamentosController],
   providers: [

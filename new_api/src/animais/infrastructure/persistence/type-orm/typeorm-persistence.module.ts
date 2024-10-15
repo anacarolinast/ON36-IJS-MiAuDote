@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AnimalRepository } from '../../../application/ports/animais.repository';
 import { TypeOrmAnimalRepository } from './repositories/animal.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './typeOrm.config'; 
 import { AnimalEntity } from './entities/animal.entity';
 import { AdocaoEntity } from '../../../../adocoes/infrastructure/persistence/type-orm/entities/adocao.entity'
 import { AnimalMapper } from './mappers/animal.mapper';
@@ -12,8 +11,7 @@ import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/t
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(dataSourceOptions),
-    TypeOrmModule.forFeature([AdocaoEntity, AnimalEntity, MedicamentoEntity, VacinaEntity, CastracaoEntity])
+    TypeOrmModule.forFeature([AnimalEntity, MedicamentoEntity, VacinaEntity, CastracaoEntity, AdocaoEntity])
   ],
   providers: [
     {

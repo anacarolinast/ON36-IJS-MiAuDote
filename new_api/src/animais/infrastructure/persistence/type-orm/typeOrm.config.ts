@@ -5,7 +5,6 @@ import { MedicamentoEntity } from "src/medicamentos/infrastructure/persistence/t
 import { AdocaoEntity } from "src/adocoes/infrastructure/persistence/type-orm/entities/adocao.entity";
 import { AnimalEntity } from "src/animais/infrastructure/persistence/type-orm/entities/animal.entity";
 
-
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -14,7 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   password: String(process.env.DB_PASSWORD),
   database: process.env.DB_NAME,
   logging: true,
-  migrations: [`${__dirname}/migrations/*.{ts,js}`],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
   entities: [AdocaoEntity, AnimalEntity, MedicamentoEntity, VacinaEntity, CastracaoEntity],
 };
 

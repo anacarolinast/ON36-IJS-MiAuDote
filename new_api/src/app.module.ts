@@ -4,9 +4,9 @@ import { AppService } from './app.service';
 import { CoreModule } from './adocoes/core/core.module';
 import { ApplicationBootstrapOptions } from './adocoes/common/interfaces/application-bootstrap-options.interface';
 import { AdocoesModule } from './adocoes/application/adocoes.module';
-import { AdocaoInfrastructureModule } from './adocoes/infrastructure/adocoes-infrastructure.module';
+import { AdocaoInfrastructureModule } from './adocoes/infrastructure/adocoes-infrastructure.module'; 
 import { AdotantesModule } from './adotantes/application/adotantes.module';
-import { AdotanteInfrastructureModule } from './adotantes/infrastructure/adotantes-infrastrucutre.module';
+import { AdotanteInfrastructureModule } from './adotantes/infrastructure/adotantes-infrastrucutre.module'; 
 import { AnimaisModule } from './animais/application/animais.module';
 import { AnimalInfrastructureModule } from './animais/infrastructure/animais-infrastructure.module';
 import { CastracoesModule } from './castracoes/application/castracoes.module';
@@ -27,9 +27,19 @@ import { VacinasModule } from './vacinas/application/vacinas.module';
 import { VacinaInfrastructureModule } from './vacinas/infrastructure/vacinas-infrastructure.module';
 import { VeterinariosModule } from './veterinarios/application/veterinarios.module';
 import { VeterinarioInfrastructureModule } from './veterinarios/infrastructure/veterinarios-infrastructure.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config'; // Importando o ConfigModule
+import { dataSourceOptions } from './database/typeOrm.config'; // Ajuste o caminho conforme necessário
 
 @Module({
-  imports: [CoreModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env', // Especificando o caminho do arquivo .env
+      isGlobal: true, // Fazendo as variáveis de ambiente globais
+    }),
+    CoreModule,
+    TypeOrmModule.forRoot(dataSourceOptions), // Adicionando a configuração do TypeORM aqui
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -38,7 +48,12 @@ export class AppModule {
     return {
       module: AppModule,
       imports: [
+        ConfigModule.forRoot({
+          envFilePath: '.env',
+          isGlobal: true,
+        }), // Incluindo o ConfigModule aqui também, se necessário
         CoreModule.forRoot(options),
+        TypeOrmModule.forRoot(dataSourceOptions),
         AdocoesModule,
         AdocaoInfrastructureModule.use(options.driver),
         AdotantesModule,

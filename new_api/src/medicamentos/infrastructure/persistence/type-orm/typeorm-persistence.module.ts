@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MedicamentoRepository } from '../../../application/ports/medicamento.repository';
 import { TypeOrmMedicamentoRepository } from './repositories/medicamento.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './typeOrm.config';
 import { MedicamentoEntity } from './entities/medicamento.entity'; 
 import { GastoEntity } from '../../../../gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
 import { VeterinarioEntity } from '../../../../veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
@@ -11,7 +10,6 @@ import { MedicamentoMapper } from './mappers/medicamento.mapper';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(dataSourceOptions),
     TypeOrmModule.forFeature([GastoEntity, VeterinarioEntity, AnimalEntity, MedicamentoEntity])
   ],
   providers: [

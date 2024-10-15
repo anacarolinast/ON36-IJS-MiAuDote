@@ -8,12 +8,9 @@ import { MedicamentosModule } from 'src/medicamentos/application/medicamentos.mo
 import { VacinasModule } from 'src/vacinas/application/vacinas.module';
 import { AdocoesModule } from 'src/adocoes/application/adocoes.module';
 import { TypeOrmAnimalRepository } from '../infrastructure/persistence/type-orm/repositories/animal.repository';
-import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
-import { VacinaEntity } from 'src/vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
-import { AdocaoEntity } from 'src/adocoes/infrastructure/persistence/type-orm/entities/adocao.entity';
 import { AnimalMapper } from '../infrastructure/persistence/type-orm/mappers/animal.mapper';
+import { TypeOrmAnimalPersistenceModule } from '../infrastructure/persistence/type-orm/typeorm-persistence.module';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
   imports: [
@@ -21,10 +18,8 @@ import { AnimalMapper } from '../infrastructure/persistence/type-orm/mappers/ani
     forwardRef(() => MedicamentosModule),
     forwardRef(() => VacinasModule),
     forwardRef(() => AdocoesModule),
-    TypeOrmModule.forFeature([CastracaoEntity]),
-    TypeOrmModule.forFeature([MedicamentoEntity]),
-    TypeOrmModule.forFeature([AdocaoEntity]),
-    TypeOrmModule.forFeature([VacinaEntity])
+    TypeOrmAnimalPersistenceModule,
+    DatabaseModule,
 
   ],
   controllers: [AnimaisController],

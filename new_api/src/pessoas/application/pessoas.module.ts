@@ -15,15 +15,14 @@ import { VeterinarioEntity } from 'src/veterinarios/infrastructure/persistence/t
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
 import { DoadorEntity } from 'src/doadores/infrastructure/persistence/type-orm/entities/doador.entity';
+import { PessoaEntity } from '../infrastructure/persistence/type-orm/entities/pessoa.entity';
 
 @Module({
   imports: [
     forwardRef(() => DoadoresModule),
     forwardRef(() => AdotantesModule),
     forwardRef(() => VeterinariosModule),
-    TypeOrmModule.forFeature([VeterinarioEntity]),
-    TypeOrmModule.forFeature([AdotanteEntity]),
-    TypeOrmModule.forFeature([DoadorEntity]),
+    TypeOrmModule.forFeature([PessoaEntity, AdotanteEntity, DoadorEntity, VeterinarioEntity]),
   ],
   controllers: [PessoasController],
   providers: [

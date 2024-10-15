@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(
     AppModule.register({
-      driver: 'typeorm',
+      driver: 'typeorm'
     }),
   );
   app.useGlobalPipes(

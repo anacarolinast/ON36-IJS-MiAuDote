@@ -13,7 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
   password: String(process.env.DB_PASSWORD),
   database: process.env.DB_NAME,
   logging: true,
-  migrations: [`${__dirname}/migrations/*.{ts,js}`],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
   entities: [AdocaoEntity, AdotanteEntity, AnimalEntity]
 };
 
