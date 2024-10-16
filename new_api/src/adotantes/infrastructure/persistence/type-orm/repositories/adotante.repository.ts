@@ -79,8 +79,7 @@ export class TypeOrmAdotanteRepository implements AdotanteRepository {
     }
 
     async adopt(adotanteId: number, adocao: Adocao): Promise<Adotante | null> {
-        // Apenas imprime uma mensagem de log e retorna null -- IMPLEMENTAR
         console.log(`Tentativa de adoção para o adotante com ID ${adotanteId}.`);
-        return null; // Retorna nulo
+        return null; 
     }
 }

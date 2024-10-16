@@ -19,34 +19,34 @@ export class TypeOrmAnimalRepository implements AnimalRepository {
     ) {}
 
     async save(animal: Animal): Promise<Animal> {
-        const animalEntity = await this.animalMapper.paraPersistencia(animal);
+        const animalEntity = await AnimalMapper.paraPersistencia(animal);
         const savedAnimalEntity = await this.animalRepository.save(animalEntity);
-        return this.animalMapper.paraDominio(savedAnimalEntity);
+        return AnimalMapper.paraDominio(savedAnimalEntity);
     }
 
     async findAll(): Promise<Animal[]> {
         const entities = await this.animalRepository.find();
-        return Promise.all(entities.map((item) => this.animalMapper.paraDominio(item)));
+        return Promise.all(entities.map((item) => AnimalMapper.paraDominio(item)));
     }
 
     async findById(id: number): Promise<Animal | null> {
         const animalEntity = await this.animalRepository.findOne({ where: { id } });
-        return animalEntity ? this.animalMapper.paraDominio(animalEntity) : null;
+        return animalEntity ? AnimalMapper.paraDominio(animalEntity) : null;
     }
 
     async update(id: number, animal: Partial<Animal>): Promise<Animal | null> {
         const existingAnimal = await this.animalRepository.findOne({ where: { id } });
 
         if (existingAnimal) {
-            const updatedAnimalEntity = await this.animalMapper.paraPersistencia({
-                ...this.animalMapper.paraDominio(existingAnimal),
+            const updatedAnimalEntity = await AnimalMapper.paraPersistencia({
+                ...AnimalMapper.paraDominio(existingAnimal),
                 ...animal,
             });
 
             await this.animalRepository.update(id, updatedAnimalEntity);
             console.log(`Animal com ID ${id} atualizado com sucesso!`);
 
-            return this.animalMapper.paraDominio({ ...existingAnimal, ...updatedAnimalEntity });
+            return AnimalMapper.paraDominio({ ...existingAnimal, ...updatedAnimalEntity });
         } else {
             console.log(`Animal com ID ${id} não encontrado para atualização.`);
             return null;

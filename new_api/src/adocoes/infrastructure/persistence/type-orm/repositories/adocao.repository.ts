@@ -15,41 +15,42 @@ export class TypeOrmAdocaoRepository implements AdocaoRepository {
     ) {}
 
     async save(adocao: Adocao): Promise<Adocao> {
-        const persistenceModel = await this.adocaoMapper.paraPersistencia(adocao);
+        console.log('Chamando paraPersistencia com a adoção:', adocao);
+        const persistenceModel = await AdocaoMapper.paraPersistencia(adocao);
     
         console.log('persistenceModel:', persistenceModel);
         
         const savedEntity = await this.adocaoRepository.save(persistenceModel);
         
-        return this.adocaoMapper.paraDominio(savedEntity);
+        return AdocaoMapper.paraDominio(savedEntity);
     }
     
 
     async findAll(): Promise<Adocao[]> {
-        const entities = await this.adocaoRepository.find();
-        return Promise.all(entities.map((item) => this.adocaoMapper.paraDominio(item)));
+        const entities = await this.adocaoRepository.find({ relations: ['adotante', 'animal'] });
+        return Promise.all(entities.map((item) => AdocaoMapper.paraDominio(item)));
     }
 
     async findById(id: number): Promise<Adocao | null> {
         const adocaoEncontrada = await this.adocaoRepository.findOne({ where: { id } });
         if (!adocaoEncontrada) return null;
-        return this.adocaoMapper.paraDominio(adocaoEncontrada);
+        return AdocaoMapper.paraDominio(adocaoEncontrada);
     }
 
     async update(id: number, adocao: Partial<Adocao>): Promise<Adocao | null> {
         const existingAdocaoEntity = await this.adocaoRepository.findOne({ where: { id } });
         if (existingAdocaoEntity) {
-            const existingAdocao = this.adocaoMapper.paraDominio(existingAdocaoEntity);
+            const existingAdocao = AdocaoMapper.paraDominio(existingAdocaoEntity);
 
             const updatedAdocao = {
                 ...existingAdocao,
                 ...adocao,
             };
 
-            const updatedAdocaoEntity = await this.adocaoMapper.paraPersistencia(updatedAdocao);
+            const updatedAdocaoEntity = await AdocaoMapper.paraPersistencia(updatedAdocao);
             await this.adocaoRepository.update(id, updatedAdocaoEntity); 
             console.log(`Adoção com ID ${id} atualizada com sucesso!`);
-            return this.adocaoMapper.paraDominio({ ...existingAdocaoEntity, ...updatedAdocaoEntity });
+            return AdocaoMapper.paraDominio({ ...existingAdocaoEntity, ...updatedAdocaoEntity });
         } else {
             console.log(`Adoção com ID ${id} não encontrada para atualização.`);
             return null;

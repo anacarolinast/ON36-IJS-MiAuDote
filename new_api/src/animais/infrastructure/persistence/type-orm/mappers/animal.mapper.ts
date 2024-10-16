@@ -25,11 +25,11 @@ export class AnimalMapper {
     private readonly medicamentoRepository: Repository<MedicamentoEntity>,
   ) {}
 
-  paraDominio(animalEntity: AnimalEntity): Animal {
+  static paraDominio(animalEntity: AnimalEntity): Animal {
     const adocao = animalEntity.adocao
       ? new Adocao(
           animalEntity.adocao.id,
-          animalEntity.adocao.adotante_id, 
+          animalEntity.adocao.adotante.id,
           animalEntity.adocao.animal_id,
           animalEntity.adocao.data_adocao,
           animalEntity.adocao.condicoes_especiais,
@@ -89,7 +89,7 @@ export class AnimalMapper {
     );
   }
 
-  async paraPersistencia(animal: Animal): Promise<AnimalEntity> {
+  static async paraPersistencia(animal: Animal): Promise<AnimalEntity> {
     const entity = new AnimalEntity();
     entity.nome = animal.nome;
     entity.especie = animal.especie;

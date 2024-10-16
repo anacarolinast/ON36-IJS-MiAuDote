@@ -7,6 +7,7 @@ import { PessoaEntity } from '../../../../../pessoas/infrastructure/persistence/
 import { Repository } from 'typeorm';
 import { Adocao } from '../../../../../adocoes/domain/adocao';
 import { Pessoa } from '../../../../../pessoas/domain/pessoas';
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity';
 
 @Injectable()
 export class AdotanteMapper {
@@ -18,39 +19,43 @@ export class AdotanteMapper {
   ) {}
 
   static paraDominio(adotanteEntity: AdotanteEntity): Adotante {
+    console.log('Adotante entity:', adotanteEntity);
+    
     const adocoes = adotanteEntity.adocoes?.map(adocaoEntity => {
       return new Adocao(
         adocaoEntity.id,
-        adocaoEntity.adotante.id,
-        adocaoEntity.animal.id,
+        adocaoEntity.adotante ? adocaoEntity.adotante.id : null, 
+        adocaoEntity.animal ? adocaoEntity.animal.id : null,
         adocaoEntity.data_adocao,
         adocaoEntity.condicoes_especiais,
         adocaoEntity.status_aprovacao,
       );
     }) || []; 
 
-    const pessoa = new Pessoa(
-      adotanteEntity.pessoa.id,
-      adotanteEntity.pessoa.nome,
-      adotanteEntity.pessoa.cep,
-      adotanteEntity.pessoa.endereco,
-      adotanteEntity.pessoa.telefone,
-      adotanteEntity.pessoa.email,
-      adotanteEntity.pessoa.cpf
-    );
+    const pessoa = adotanteEntity.pessoa 
+      ? new Pessoa(
+          adotanteEntity.pessoa.id,
+          adotanteEntity.pessoa.nome,
+          adotanteEntity.pessoa.cep,
+          adotanteEntity.pessoa.endereco,
+          adotanteEntity.pessoa.telefone,
+          adotanteEntity.pessoa.email,
+          adotanteEntity.pessoa.cpf
+        )
+      : null;
 
     return new Adotante(
       adotanteEntity.id,
       adotanteEntity.renda,
       adotanteEntity.condicao_entrevista,
       adocoes,
-      pessoa.id,
-      pessoa.nome,
-      pessoa.cep,
-      pessoa.endereco,
-      pessoa.telefone,
-      pessoa.email,
-      pessoa.cpf
+      pessoa?.id, 
+      pessoa?.nome,
+      pessoa?.cep,
+      pessoa?.endereco,
+      pessoa?.telefone,
+      pessoa?.email,
+      pessoa?.cpf
     );
   }
 
@@ -58,6 +63,28 @@ export class AdotanteMapper {
     const entity = new AdotanteEntity();
     entity.renda = adotante.renda;
     entity.condicao_entrevista = adotante.condicao_entrevista;
+
+    entity.pessoa = {
+      id: adotante.id, 
+      nome: adotante.nome,
+      cep: adotante.cep,
+      endereco: adotante.endereco,
+      telefone: adotante.telefone,
+      email: adotante.email,
+      cpf: adotante.cpf
+    } as PessoaEntity;
+
+    if (adotante.adocao) { 
+      entity.adocoes = await Promise.all(adotante.adocao.map(async (adocao) => {
+        const adocaoEntity = new AdocaoEntity();
+        adocaoEntity.animal = { id: adocao.animal_id } as AnimalEntity;
+        adocaoEntity.data_adocao = adocao.data_adocao;
+        adocaoEntity.condicoes_especiais = adocao.condicoes_especiais;
+        adocaoEntity.status_aprovacao = adocao.status_aprovacao;
+
+        return adocaoEntity;
+      }));
+    }
 
     return entity;
   }

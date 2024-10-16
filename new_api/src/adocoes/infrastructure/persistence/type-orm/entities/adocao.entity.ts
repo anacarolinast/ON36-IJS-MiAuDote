@@ -8,9 +8,6 @@ export class AdocaoEntity {
     id: number;
 
     @Column()
-    adotante_id: number;
-
-    @Column()
     animal_id: number;
 
     @Column()
@@ -23,6 +20,7 @@ export class AdocaoEntity {
     status_aprovacao: string;
 
     @ManyToOne(() => AdotanteEntity, (adotante) => adotante.adocoes)
+    @JoinColumn({ name: 'adotante_id' })
     adotante: AdotanteEntity;
 
     @OneToOne(() => AnimalEntity, (animal) => animal.adocao)
