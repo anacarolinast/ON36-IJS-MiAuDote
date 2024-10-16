@@ -5,5 +5,10 @@ export class Gasto {
     public readonly tipo: string,
     public readonly quantidade: number,
     public readonly valor: number,
+    public readonly doacaoId?: number,
+    public readonly consumivelId?: number,
+    public readonly castracaoId?: number,
+    public readonly vacinaId?: number,
+    public readonly medicamentoId?: number,
   ) {}
 }

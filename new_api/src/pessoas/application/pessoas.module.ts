@@ -9,21 +9,29 @@ import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
 import { VeterinariosModule } from 'src/veterinarios/application/veterinarios.module';
 import { CepService } from '../infrastructure/adapters/cep-adapter.service';
 import { PessoaInfrastructureModule } from '../infrastructure/pessoas-infrastructure.module';
+import { TypeOrmPessoaRepository } from '../infrastructure/persistence/type-orm/repositories/pessoa.repository';
+import { PessoaMapper } from '../infrastructure/persistence/type-orm/mappers/pessoa.mapper';
+import { VeterinarioEntity } from 'src/veterinarios/infrastructure/persistence/type-orm/entities/veterinario.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
+import { DoadorEntity } from 'src/doadores/infrastructure/persistence/type-orm/entities/doador.entity';
+import { PessoaEntity } from '../infrastructure/persistence/type-orm/entities/pessoa.entity';
 
 @Module({
   imports: [
     forwardRef(() => DoadoresModule),
     forwardRef(() => AdotantesModule),
     forwardRef(() => VeterinariosModule),
-    PessoaInfrastructureModule.use('in-file'),
+    TypeOrmModule.forFeature([PessoaEntity, AdotanteEntity, DoadorEntity, VeterinarioEntity]),
   ],
   controllers: [PessoasController],
   providers: [
     PessoasService, 
     PessoaFactory,
-    { provide: PessoaRepository, useClass: InFilePessoaRepository },
+    PessoaMapper,
+    { provide: PessoaRepository, useClass: TypeOrmPessoaRepository }
   ],
-  exports: [PessoasService, PessoaRepository, PessoaFactory],
+  exports: [PessoasService, PessoaRepository, PessoaFactory, PessoaMapper],
 })
 export class PessoasModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

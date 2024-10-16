@@ -18,8 +18,4 @@ export class CreateVacinaDto extends CreateGastoDto {
     @IsNumber()
     @Min(1) 
     veterinario_id: number;
-
-    @IsNumber()
-    @Min(1)
-    gasto_id: number;
 }

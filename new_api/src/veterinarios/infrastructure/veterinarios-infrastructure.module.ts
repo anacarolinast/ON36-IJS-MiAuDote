@@ -1,15 +1,19 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { InFileVeterinarioPersistenceModule } from './persistence/in-file/in-file-persistence.module';
-import { InMemoryVeterinarioPersistenceModule } from './persistence/in-memory/in-memory-persistence.module';
+import { TypeOrmVeterinarioPersistenceModule } from './persistence/type-orm/typeorm-persistence.module';
 
 @Module({})
 export class VeterinarioInfrastructureModule {
-  static use(driver: 'in-file' | 'in-memory') {
-    const persistenceModule =
-      driver === 'in-file'
-        ? InFileVeterinarioPersistenceModule
-        : InMemoryVeterinarioPersistenceModule;
+  static use(driver: 'in-file' | 'typeorm'): DynamicModule {
+    let persistenceModule;
 
+    if (driver === 'typeorm') {
+      persistenceModule = TypeOrmVeterinarioPersistenceModule;
+    } else if (driver === 'in-file') {
+      persistenceModule = InFileVeterinarioPersistenceModule; 
+    } else {
+      throw new Error(`Unsupported driver: ${driver}. Only 'typeorm' and 'in-file' are allowed.`);
+    }
     return {
       module: VeterinarioInfrastructureModule,
       imports: [persistenceModule],

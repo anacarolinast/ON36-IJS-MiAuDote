@@ -71,9 +71,9 @@ async update(id: number, updateDoacaoDto: UpdateDoacaoDto): Promise<Doacao> {
     ...updateDoacaoDto,
   }
 
-  const gasto = await this.gastoRepository.findById(updatedDoacaoData.gasto_id);
+  const gasto = await this.gastoRepository.findById(doacao.id);
   if(!gasto){
-    throw new NotFoundException(`Gasto with ID ${updatedDoacaoData.gasto_id} not found`)
+    throw new NotFoundException(`Gasto with ID ${doacao.id} not found`)
   }
 
   const updatedGastoData = {

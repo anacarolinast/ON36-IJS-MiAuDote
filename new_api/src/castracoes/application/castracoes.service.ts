@@ -91,9 +91,9 @@ export class CastracoesService {
       ...updateCastracaoDto,
     };
 
-    const gasto = await this.gastoRepository.findById(updatedCastracaoData.gasto_id);
+    const gasto = await this.gastoRepository.findById(castracao.id);
     if (!gasto){
-      throw new NotFoundException(`Gasto with ID ${updatedCastracaoData.gasto_id} not found`)
+      throw new NotFoundException(`Gasto with ID ${castracao.id} not found`)
     }
 
     const updatedGastoData = {

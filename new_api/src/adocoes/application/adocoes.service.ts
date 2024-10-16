@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Adocao } from '../domain/adocao';
 import { CreateAdocaoDto } from '../presenters/http/dto/create-adocao.dto';
 import { UpdateAdocaoDto } from '../presenters/http/dto/update-adocao.dto';
@@ -48,22 +52,26 @@ export class AdocoesService {
 
   private checkIfAnimalIsAdopted(animal: Animal): void {
     if (animal.estado_adocao === 'Adotado') {
-      throw new ConflictException(`Animal with ID ${animal.id} is already adopted.`);
+      throw new ConflictException(
+        `Animal with ID ${animal.id} is already adopted.`,
+      );
     }
   }
 
   private checkAdoptionHistory(adotante: Adotante): void {
     if (adotante.adocao.length >= 3) {
       throw new ConflictException(
-        `Adotante with ID ${adotante.id} has already adopted 3 animals.`
+        `Adotante with ID ${adotante.id} has already adopted 3 animals.`,
       );
     }
   }
 
   private checkAnimalAdoptionState(animal: Animal): void {
-    const estadosIndisponiveis = ['indisponivel', 'faleceu', 'adotado']; 
+    const estadosIndisponiveis = ['indisponivel', 'faleceu', 'adotado'];
     if (estadosIndisponiveis.includes(animal.estado_adocao)) {
-      throw new ConflictException(`Animal com ID ${animal.id} não está disponível para adoção. Estado atual: ${animal.estado_adocao}.`);
+      throw new ConflictException(
+        `Animal com ID ${animal.id} não está disponível para adoção. Estado atual: ${animal.estado_adocao}.`,
+      );
     }
   }
 
@@ -71,9 +79,9 @@ export class AdocoesService {
     const animal = await this.findAnimal(createAdocaoDto.animal_id);
     const adotante = await this.findAdotante(createAdocaoDto.adotante_id);
 
-    this.checkAnimalAdoptionState(animal);
-    this.checkIfAnimalIsAdopted(animal);
-    this.checkAdoptionHistory(adotante);
+    this.checkAnimalAdoptionState(animal);  
+    this.checkIfAnimalIsAdopted(animal);   
+    this.checkAdoptionHistory(adotante);   
 
     const newAdocao = this.adocaoFactory.create(
       createAdocaoDto,
@@ -83,21 +91,24 @@ export class AdocoesService {
 
     const savedAdocao = await this.adocaoRepository.save(newAdocao);
 
-    const { adotante: _, ...adotanteData } = savedAdocao;
     adotante.adocao.push(savedAdocao);
-    await this.adotanteRepository.adopt(adotante.id, adotanteData);
-    console.log(`${animal.nome} registrado na lista de animais adotados de ${adotante.nome} com sucesso!`);
+    await this.adotanteRepository.adopt(adotante.id, savedAdocao);
+    console.log(
+      `${animal.nome} registrado na lista de animais adotados de ${adotante.nome} com sucesso!`,
+    );
 
-    const { animal: __, ...animalData } = savedAdocao;
-    await this.animalRepository.adopt(animal.id, animalData);
+    await this.animalRepository.adopt(animal.id, savedAdocao);
     console.log(`Status de ${animal.nome} atualizado para: ADOTADO!`);
 
+    console.log('createAdocaoDto:', createAdocaoDto);
+    console.log('newAdocao:', newAdocao);
+
     return savedAdocao;
-  }
+}
 
   async update(id: number, updateAdocaoDto: UpdateAdocaoDto): Promise<Adocao> {
     const adocao = await this.findOne(id);
-    
+
     const animal = updateAdocaoDto.animal_id
       ? await this.animalRepository.findById(updateAdocaoDto.animal_id)
       : adocao.animal;

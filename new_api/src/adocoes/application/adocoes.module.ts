@@ -6,16 +6,27 @@ import { AdocaoRepository } from './ports/adocoes.repository';
 import { InFileAdocaoRepository } from '../infrastructure/persistence/in-file/repositories/adocoes.repository';
 import { AnimaisModule } from 'src/animais/application/animais.module';
 import { AdotantesModule } from 'src/adotantes/application/adotantes.module';
+import { TypeOrmAdocaoRepository } from '../infrastructure/persistence/type-orm/repositories/adocao.repository';
+import { AdocaoMapper } from '../infrastructure/persistence/type-orm/mappers/adocao.mapper';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
+import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity';
+import { AdocaoEntity } from '../infrastructure/persistence/type-orm/entities/adocao.entity';
 
 @Module({
-  imports: [AnimaisModule, forwardRef(() => AdotantesModule)],
+  imports: [
+    forwardRef(() => AnimaisModule),
+    forwardRef(() => AdotantesModule),
+    TypeOrmModule.forFeature([AdocaoEntity, AnimalEntity, AdotanteEntity]),
+  ],
   controllers: [AdocoesController],
   providers: [
     AdocoesService,
     AdocaoFactory,
-    { provide: AdocaoRepository, useClass: InFileAdocaoRepository },
+    AdocaoMapper,
+    { provide: AdocaoRepository, useClass: TypeOrmAdocaoRepository },
   ],
-  exports: [AdocoesService, AdocaoRepository],
+  exports: [AdocoesService, AdocaoRepository, AdocaoMapper],
 })
 export class AdocoesModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

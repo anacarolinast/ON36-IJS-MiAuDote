@@ -2,13 +2,21 @@ import { DynamicModule, forwardRef, Module, Type } from '@nestjs/common';
 import { GastosService } from './gastos.service';
 import { GastosController } from '../presenters/http/gastos.controller';
 import { GastoFactory } from '../domain/factories/gastos-factory';
-import { InFileGastoRepository } from '../infrastructure/persistence/in-file/repositories/gasto.repository';
 import { GastoRepository } from './ports/gasto.repository';
 import { ConsumiveisModule } from 'src/consumiveis/application/consumiveis.module';
 import { DoacoesModule } from 'src/doacoes/application/doacoes.module';
 import { VacinasModule } from 'src/vacinas/application/vacinas.module';
 import { MedicamentosModule } from 'src/medicamentos/application/medicamentos.module';
-import { GastoInfrastructureModule } from '../infrastructure/gastos-infrastructure.module';
+import { TypeOrmGastoRepository } from '../infrastructure/persistence/type-orm/repositories/gasto.repository';
+import { GastoMapper } from '../infrastructure/persistence/type-orm/mappers/gasto.mapper';
+import { DoacaoEntity } from 'src/doacoes/infrastructure/persistence/type-orm/entities/doacao.entity';
+import { ConsumivelEntity } from 'src/consumiveis/infrastructure/persistence/type-orm/entities/consumivel.entity';
+import { VacinaEntity } from 'src/vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
+import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
+import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CastracoesModule } from 'src/castracoes/application/castracoes.module';
+import { GastoEntity } from '../infrastructure/persistence/type-orm/entities/gasto.entity';
 
 @Module({
   imports: [
@@ -16,15 +24,17 @@ import { GastoInfrastructureModule } from '../infrastructure/gastos-infrastructu
     forwardRef(() => DoacoesModule),
     forwardRef(() => VacinasModule),
     forwardRef(() => MedicamentosModule),
-    GastoInfrastructureModule.use('in-file'),
+    forwardRef(() => CastracoesModule),
+    TypeOrmModule.forFeature([GastoEntity, DoacaoEntity, ConsumivelEntity, VacinaEntity, MedicamentoEntity, CastracaoEntity]),
   ],
   controllers: [GastosController],
   providers: [
     GastosService,
     GastoFactory,
-    { provide: GastoRepository, useClass: InFileGastoRepository },
+    GastoMapper,
+    { provide: GastoRepository, useClass: TypeOrmGastoRepository }
   ],
-  exports: [GastosService, GastoRepository, GastoFactory],
+  exports: [GastosService, GastoRepository, GastoFactory, GastoMapper],
 })
 export class GastosModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

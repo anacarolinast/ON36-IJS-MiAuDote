@@ -62,9 +62,9 @@ export class MedicamentosService {
       ...updateMedicamentoDto
     };
 
-    const gasto = await this.gastoRepository.findById(updatedMedicamentoData.gasto_id);
+    const gasto = await this.gastoRepository.findById(medicamento.id);
     if (!gasto){
-      throw new NotFoundException(`Gasto with ID ${updatedMedicamentoData.gasto_id} not found`)
+      throw new NotFoundException(`Gasto with ID ${medicamento.id} not found`)
     }
 
     const updatedGastoData = {

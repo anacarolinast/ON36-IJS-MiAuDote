@@ -6,7 +6,7 @@ export class Doador extends Pessoa {
     public readonly id: number,
     public readonly tipo_doacao: string,
     public readonly descricao: string,
-    public readonly doacao: Doacao[],
+    public readonly doacao?: Doacao[],
     pessoaId?: number,
     nome?: string,
     cep?: string,

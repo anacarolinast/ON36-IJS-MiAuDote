@@ -1,3 +1,4 @@
+import { Doador } from 'src/doadores/domain/doadores';
 import { Gasto } from '../../gastos/domain/gastos';
 
 export class Doacao extends Gasto{

@@ -3,8 +3,11 @@ import {
   Get,
   Param,
   Delete,
+  Body,
+  Put,
 } from '@nestjs/common';
 import { PessoasService } from '../../../pessoas/application/pessoas.service'; 
+import { Pessoa } from 'src/pessoas/domain/pessoas';
 
 @Controller('pessoas')
 export class PessoasController {
@@ -18,6 +21,11 @@ export class PessoasController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.pessoasService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() pessoaData: Partial<Pessoa>) {
+    return this.pessoasService.update(id, pessoaData);
   }
 
   @Delete(':id')

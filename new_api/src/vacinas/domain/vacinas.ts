@@ -1,4 +1,6 @@
+import { Animal } from 'src/animais/domain/animal';
 import { Gasto } from '../../gastos/domain/gastos';
+import { Veterinario } from 'src/veterinarios/domain/veterinarios';
 
 export class Vacina extends Gasto {
     constructor(

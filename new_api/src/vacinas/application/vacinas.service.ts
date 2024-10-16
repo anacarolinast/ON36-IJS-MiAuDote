@@ -63,9 +63,9 @@ export class VacinasService {
       ...updateVacinaDto,
     };
 
-    const gasto = await this.gastoRepository.findById(updatedVacinaData.gasto_id);
+    const gasto = await this.gastoRepository.findById(vacina.id);
     if (!gasto){
-      throw new NotFoundException(`Gasto with ID ${updatedVacinaData.gasto_id} not found`)
+      throw new NotFoundException(`Gasto with ID ${vacina.id} not found`)
     }
 
     const updatedGastoData = {

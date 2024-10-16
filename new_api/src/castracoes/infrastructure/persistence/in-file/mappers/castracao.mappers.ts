@@ -6,35 +6,35 @@ import { GastoMapper } from "src/gastos/infrastructure/persistence/in-file/mappe
 
 export class CastracaoMapper {
   static paraDominio(castracaoEntity: CastracaoEntity): Castracao {
-    const model = new Castracao(
-      castracaoEntity.id,
-      castracaoEntity.animal_id,
-      castracaoEntity.data_castracao,
-      castracaoEntity.condicao_pos,
-      castracaoEntity.veterinario_id,
-      castracaoEntity.gasto_id,
-      castracaoEntity.veterinarios ? VeterinarioMapper.paraDominio(castracaoEntity.veterinarios) : undefined,
-      AnimalMapper.paraDominio(castracaoEntity.animais),
-      castracaoEntity.gastos ? GastoMapper.paraDominio(castracaoEntity.gastos) : undefined,
+    const { 
+      id, 
+      animal_id, 
+      data_castracao, 
+      condicao_pos, 
+      veterinario_id, 
+      gasto_id 
+    } = castracaoEntity;
+
+    return new Castracao(
+      id,
+      animal_id,
+      data_castracao,
+      condicao_pos,
+      veterinario_id,
+      gasto_id,
     );
-    return model;
   }
 
   static paraPersistencia(castracao: Castracao): CastracaoEntity {
     const entity = new CastracaoEntity();
+    
     entity.id = castracao.id;
     entity.animal_id = castracao.animal_id;
     entity.data_castracao = castracao.data_castracao;
     entity.condicao_pos = castracao.condicao_pos;
     entity.veterinario_id = castracao.veterinario_id;
-    entity.gasto_id = castracao.gasto_id;
-    if (castracao.veterinario) {
-      entity.veterinarios = VeterinarioMapper.paraPersistencia(castracao.veterinario);
-  }
-  entity.animais = AnimalMapper.paraPersistencia(castracao.animal);
-    if (castracao.gasto) {
-      entity.gastos = GastoMapper.paraPersistencia(castracao.gasto);
-  }
+
+    entity.gastos = GastoMapper.paraPersistencia(castracao);
     return entity;
   }
 }
