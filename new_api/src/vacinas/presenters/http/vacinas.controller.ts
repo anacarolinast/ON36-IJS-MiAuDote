@@ -12,8 +12,10 @@ import { VacinasService } from '../../application/vacinas.service';
 import { CreateVacinaDto } from './dto/create-vacina.dto';
 import { UpdateVacinaDto } from './dto/update-vacina.dto';
 import { Vacina } from '../../domain/vacinas'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('vacinas')
+@ApiTags('Vacinas')
 export class VacinasController {
   constructor(private readonly vacinasService: VacinasService) {}
 

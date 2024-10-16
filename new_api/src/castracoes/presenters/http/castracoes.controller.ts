@@ -12,8 +12,10 @@ import { CastracoesService } from '../../application/castracoes.service';
 import { CreateCastracaoDto } from './dto/create-castracao.dto';
 import { UpdateCastracaoDto } from './dto/update-castracao.dto';
 import { Castracao } from '../../domain/castracao'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('castracoes')
+@ApiTags('Castrações')
 export class CastracoesController {
   constructor(private readonly castracoesService: CastracoesService) {}
 

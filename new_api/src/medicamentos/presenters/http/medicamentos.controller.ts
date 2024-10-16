@@ -12,8 +12,10 @@ import { MedicamentosService } from '../../application/medicamentos.service';
 import { CreateMedicamentoDto } from './dto/create-medicamento.dto';
 import { UpdateMedicamentoDto } from './dto/update-medicamento.dto';
 import { Medicamento } from '../../domain/medicamentos'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('medicamentos')
+@ApiTags('Medicamentos')
 export class MedicamentosController {
   constructor(private readonly medicamentosService: MedicamentosService) {}
 

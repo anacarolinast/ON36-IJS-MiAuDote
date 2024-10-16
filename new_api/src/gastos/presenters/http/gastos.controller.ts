@@ -8,8 +8,10 @@ import {
 } from '@nestjs/common';
 import { GastosService } from '../../../gastos/application/gastos.service';
 import { Gasto } from 'src/gastos/domain/gastos';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('gastos')
+@ApiTags('Gastos')
 export class GastosController {
   constructor(private readonly gastosService: GastosService) {}
 

@@ -10,8 +10,10 @@ import {
 import { VeterinariosService } from '../../application/veterinarios.service'; 
 import { CreateVeterinarioDto } from './dto/create-veterinario.dto';
 import { UpdateVeterinarioDto } from './dto/update-veterinario.dto'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('veterinarios')
+@ApiTags('Veterinários')
 export class VeterinariosController {
   constructor(private readonly veterinariosService: VeterinariosService) {}
 

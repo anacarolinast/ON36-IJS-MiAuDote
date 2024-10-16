@@ -12,8 +12,10 @@ import { ConsumiveisService } from '../../application/consumiveis.service';
 import { CreateConsumivelDto } from './dto/create-consumivel.dto';
 import { UpdateConsumivelDto } from './dto/update-consumivel.dto';
 import { Consumivel } from '../../domain/consumivel'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('consumiveis')
+@ApiTags('Consumiveis')
 export class ConsumiveisController {
   constructor(private readonly consumiveisService: ConsumiveisService) {}
 

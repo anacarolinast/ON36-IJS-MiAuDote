@@ -12,8 +12,10 @@ import { DoacoesService } from '../../application/doacoes.service';
 import { CreateDoacaoDto } from './dto/create-doacao.dto';
 import { UpdateDoacaoDto } from './dto/update-doacao.dto';
 import { Doacao } from '../../domain/doacoes'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('doacoes')
+@ApiTags('Doações')
 export class DoacoesController {
   constructor(private readonly doacoesService: DoacoesService) {}
 

@@ -11,8 +11,10 @@ import { AnimaisService } from '../../application/animais.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
 import { Animal } from '../../domain/animal'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('animais')
+@ApiTags('Animais')
 export class AnimaisController {
   constructor(private readonly animaisService: AnimaisService) {}
 

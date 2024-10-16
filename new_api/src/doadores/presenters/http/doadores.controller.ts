@@ -3,8 +3,10 @@ import { DoadoresService } from '../../application/doadores.service';
 import { CreateDoadorDto } from './dto/create-doador.dto';
 import { UpdateDoadorDto } from './dto/update-doador.dto';
 import { Doador } from 'src/doadores/domain/doadores';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('doadores')
+@ApiTags('Doadores')
 export class DoadoresController {
   constructor(private readonly doadoresService: DoadoresService) {}
 

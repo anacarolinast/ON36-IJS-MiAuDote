@@ -12,8 +12,10 @@ import { AdotantesService } from '../../application/adotantes.service';
 import { CreateAdotanteDto } from './dto/create-adotante.dto';
 import { UpdateAdotanteDto } from './dto/update-adotante.dto';
 import { Adotante } from '../../domain/adotante'; 
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('adotantes')
+@ApiTags('Adotantes')
 export class AdotantesController {
   constructor(private readonly adotantesService: AdotantesService) {}
 
