@@ -21,10 +21,10 @@ export class GastoFactory {
     gastoData: CreateGastoDto,
     additionalData: any
   ): Gasto {
-    const castracaoId = uuidv4();
+    const gastoId = uuidv4();
 
     const gasto = new Gasto(
-      castracaoId,
+      gastoId,
       gastoData.data_gasto,
       gastoData.tipo,
       gastoData.quantidade,

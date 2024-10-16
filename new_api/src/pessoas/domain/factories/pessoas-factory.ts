@@ -36,6 +36,7 @@ export class PessoaFactory {
             pessoaData.telefone,
             pessoaData.email,
             pessoaData.cpf,
+            
         );
 
         switch (type) {

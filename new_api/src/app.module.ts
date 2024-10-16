@@ -27,18 +27,15 @@ import { VacinasModule } from './vacinas/application/vacinas.module';
 import { VacinaInfrastructureModule } from './vacinas/infrastructure/vacinas-infrastructure.module';
 import { VeterinariosModule } from './veterinarios/application/veterinarios.module';
 import { VeterinarioInfrastructureModule } from './veterinarios/infrastructure/veterinarios-infrastructure.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config'; // Importando o ConfigModule
-import { dataSourceOptions } from './database/typeOrm.config'; // Ajuste o caminho conforme necessário
+import { ConfigModule } from '@nestjs/config'; 
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env', // Especificando o caminho do arquivo .env
-      isGlobal: true, // Fazendo as variáveis de ambiente globais
+      envFilePath: '.env',
+      isGlobal: true,
     }),
     CoreModule,
-    TypeOrmModule.forRoot(dataSourceOptions), // Adicionando a configuração do TypeORM aqui
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -51,9 +48,8 @@ export class AppModule {
         ConfigModule.forRoot({
           envFilePath: '.env',
           isGlobal: true,
-        }), // Incluindo o ConfigModule aqui também, se necessário
+        }), 
         CoreModule.forRoot(options),
-        TypeOrmModule.forRoot(dataSourceOptions),
         AdocoesModule,
         AdocaoInfrastructureModule.use(options.driver),
         AdotantesModule,

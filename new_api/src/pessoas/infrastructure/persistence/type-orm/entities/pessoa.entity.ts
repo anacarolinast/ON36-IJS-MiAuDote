@@ -5,33 +5,37 @@ import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('pessoas')
 export class PessoaEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ length: 255 })
-    nome: string;
+  @Column({ length: 255 })
+  nome: string;
 
-    @Column({ length: 255 })
-    cep: string;
+  @Column({ length: 255 })
+  cep: string;
 
-    @Column({ length: 255 })
-    endereco: string;
+  @Column({ length: 255 })
+  endereco: string;
 
-    @Column('text') 
-    telefone: string[];
+  @Column('text')
+  telefone: string[];
 
-    @Column({ length: 255 })
-    email: string;
+  @Column({ length: 255 })
+  email: string;
 
-    @Column({ length: 255 })
-    cpf: string;
+  @Column({ length: 255 })
+  cpf: string;
 
-    @OneToOne(() => VeterinarioEntity, (veterinario) => veterinario.pessoa)
-    veterinario: VeterinarioEntity;
+  @OneToOne(() => VeterinarioEntity, (veterinario) => veterinario.pessoa, {
+    cascade: false,
+  })
+  veterinario?: VeterinarioEntity;
 
-    @OneToOne(() => AdotanteEntity, (adotante) => adotante.pessoa)
-    adotante: AdotanteEntity;
+  @OneToOne(() => AdotanteEntity, (adotante) => adotante.pessoa, {
+    cascade: false,
+  })
+  adotante?: AdotanteEntity;
 
-    @OneToOne(() => DoadorEntity, (doador) => doador.pessoa)
-    doador: DoadorEntity;
+  @OneToOne(() => DoadorEntity, (doador) => doador.pessoa, { cascade: false })
+  doador?: DoadorEntity;
 }

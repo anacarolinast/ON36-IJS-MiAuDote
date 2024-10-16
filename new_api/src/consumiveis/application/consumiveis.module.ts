@@ -7,20 +7,21 @@ import { TypeOrmConsumivelRepository } from '../infrastructure/persistence/type-
 import { ConsumivelMapper } from '../infrastructure/persistence/type-orm/mappers/consumivel.mapper';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
+import { ConsumivelEntity } from '../infrastructure/persistence/type-orm/entities/consumivel.entity'; // Importe a entidade ConsumivelEntity
 
 @Module({
   imports: [
     forwardRef(() => GastosModule),
-    TypeOrmModule.forFeature([GastoEntity])
+    TypeOrmModule.forFeature([GastoEntity, ConsumivelEntity]),
   ],
   controllers: [ConsumiveisController],
   providers: [
     ConsumiveisService,
     ConsumivelMapper,
+    TypeOrmConsumivelRepository,
     { provide: ConsumivelRepository, useClass: TypeOrmConsumivelRepository }
   ],
-  
-  exports: [ConsumiveisService, ConsumivelRepository]
+  exports: [ConsumivelRepository],
 })
 export class ConsumiveisModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

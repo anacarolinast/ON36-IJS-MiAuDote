@@ -24,6 +24,20 @@ export class GastosService {
     return gasto;
   }
 
+  async update(id: number, gastoData: Partial<Gasto>): Promise<Gasto | null> {
+    const existingGasto = await this.findOne(id);
+
+    try {
+      Object.assign(existingGasto, gastoData);
+
+      await this.gastoRepository.update(id, existingGasto);
+      console.log(`Gasto com ID ${id} atualizado com sucesso!`);
+
+      return existingGasto; 
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update gasto');
+  }
+  }
 
   async remove(id: number): Promise<{ deleted: boolean }> {
     await this.findOne(id);

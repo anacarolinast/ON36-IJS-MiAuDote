@@ -31,7 +31,7 @@ export class VacinaEntity {
     @JoinColumn({ name: 'veterinario_id' })
     veterinario: VeterinarioEntity;
 
-    @OneToOne(() => GastoEntity, (gasto) => gasto.vacina)
+    @OneToOne(() => GastoEntity, (gasto) => gasto.vacina, { cascade: true })
     @JoinColumn({ name: 'gasto_id' })
     gasto: GastoEntity;
 }

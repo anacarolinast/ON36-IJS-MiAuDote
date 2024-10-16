@@ -24,6 +24,20 @@ export class PessoasService {
     return pessoa;
   }
 
+  async update(id: number, pessoaData: Partial<Pessoa>): Promise<Pessoa | null> {
+    const existingPessoa = await this.findOne(id);
+
+    try {
+      Object.assign(existingPessoa, pessoaData);
+
+      await this.pessoaRepository.update(id, existingPessoa);
+      console.log(`Pessoa com ID ${id} atualizada com sucesso!`);
+
+      return existingPessoa; 
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update pessoa'); 
+    }
+  }
 
   async remove(id: number): Promise<{ deleted: boolean }> {
     await this.findOne(id);

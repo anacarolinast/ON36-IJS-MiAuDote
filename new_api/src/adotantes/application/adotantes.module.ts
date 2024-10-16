@@ -10,21 +10,22 @@ import { AdotanteMapper } from '../infrastructure/persistence/type-orm/mappers/a
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PessoaEntity } from 'src/pessoas/infrastructure/persistence/type-orm/entities/pessoa.entity';
 import { AdocaoEntity } from 'src/adocoes/infrastructure/persistence/type-orm/entities/adocao.entity';
+import { AdotanteEntity } from '../infrastructure/persistence/type-orm/entities/adotante.entity';
 
 @Module({
   imports: [
     forwardRef(() => AdocoesModule), 
     forwardRef(() => PessoasModule),
-    TypeOrmModule.forFeature([PessoaEntity]), 
-    TypeOrmModule.forFeature([AdocaoEntity]),
+    TypeOrmModule.forFeature([AdotanteEntity, PessoaEntity, AdocaoEntity]),
   ],
   controllers: [AdotantesController], 
   providers: [
     AdotantesService, 
     AdotanteMapper,
+    TypeOrmAdotanteRepository,
     { provide: AdotanteRepository, useClass: TypeOrmAdotanteRepository },
   ],
-  exports: [AdotanteRepository, AdotanteMapper], 
+  exports: [AdotanteRepository], 
 })
 export class AdotantesModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

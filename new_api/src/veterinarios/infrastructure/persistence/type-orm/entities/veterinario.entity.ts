@@ -23,11 +23,11 @@ export class VeterinarioEntity {
     pessoa: PessoaEntity;
 
     @OneToMany(() => VacinaEntity, (vacina) => vacina.veterinario)
-    vacinas: VacinaEntity[];
+    vacinas?: VacinaEntity[];
 
     @OneToMany(() => MedicamentoEntity, (medicamento) => medicamento.veterinario)
-    medicamentos: MedicamentoEntity[];
+    medicamentos?: MedicamentoEntity[];
 
     @OneToMany(() => CastracaoEntity, (castracao) => castracao.veterinario)
-    castracoes: CastracaoEntity[];
+    castracoes?: CastracaoEntity[];
 }

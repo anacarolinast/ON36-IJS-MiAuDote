@@ -3,46 +3,53 @@ import { AdocaoRepository } from '../../../../../adocoes/application/ports/adoco
 import { Adocao } from '../../../../../adocoes/domain/adocao';
 import { AdocaoEntity } from '../entities/adocao.entity';
 import { AdocaoMapper } from '../mappers/adocao.mapper';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TypeOrmAdocaoRepository implements AdocaoRepository {
-    private readonly adocoes = new Map<number, AdocaoEntity>();
-    constructor(private readonly adocaoMapper: AdocaoMapper) {}
+    constructor(
+        @InjectRepository(AdocaoEntity)
+        private readonly adocaoRepository: Repository<AdocaoEntity>,
+        private readonly adocaoMapper: AdocaoMapper
+    ) {}
 
     async save(adocao: Adocao): Promise<Adocao> {
         const persistenceModel = await this.adocaoMapper.paraPersistencia(adocao);
-        this.adocoes.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.adocoes.get(persistenceModel.id);
+    
+        console.log('persistenceModel:', persistenceModel);
         
-        return this.adocaoMapper.paraDominio(newEntity);
+        const savedEntity = await this.adocaoRepository.save(persistenceModel);
+        
+        return this.adocaoMapper.paraDominio(savedEntity);
     }
+    
 
     async findAll(): Promise<Adocao[]> {
-        const entities = Array.from(this.adocoes.values());
+        const entities = await this.adocaoRepository.find();
         return Promise.all(entities.map((item) => this.adocaoMapper.paraDominio(item)));
     }
 
     async findById(id: number): Promise<Adocao | null> {
-        const entities = Array.from(this.adocoes.values());
-        const adocaoEncontrada = entities.find((item) => item.id === id);
+        const adocaoEncontrada = await this.adocaoRepository.findOne({ where: { id } });
         if (!adocaoEncontrada) return null;
         return this.adocaoMapper.paraDominio(adocaoEncontrada);
     }
 
     async update(id: number, adocao: Partial<Adocao>): Promise<Adocao | null> {
-        const existingAdocaoEntity = this.adocoes.get(id);
+        const existingAdocaoEntity = await this.adocaoRepository.findOne({ where: { id } });
         if (existingAdocaoEntity) {
             const existingAdocao = this.adocaoMapper.paraDominio(existingAdocaoEntity);
-            
+
             const updatedAdocao = {
                 ...existingAdocao,
                 ...adocao,
             };
+
             const updatedAdocaoEntity = await this.adocaoMapper.paraPersistencia(updatedAdocao);
-            
-            this.adocoes.set(id, updatedAdocaoEntity);
+            await this.adocaoRepository.update(id, updatedAdocaoEntity); 
             console.log(`Adoção com ID ${id} atualizada com sucesso!`);
-            return this.adocaoMapper.paraDominio(updatedAdocaoEntity);
+            return this.adocaoMapper.paraDominio({ ...existingAdocaoEntity, ...updatedAdocaoEntity });
         } else {
             console.log(`Adoção com ID ${id} não encontrada para atualização.`);
             return null;
@@ -50,8 +57,8 @@ export class TypeOrmAdocaoRepository implements AdocaoRepository {
     }
 
     async remove(id: number): Promise<void> {
-        if (this.adocoes.has(id)) {
-            this.adocoes.delete(id);
+        const result = await this.adocaoRepository.delete(id);
+        if (result.affected) {
             console.log(`Adoção com ID ${id} removida com sucesso!`);
         } else {
             console.log(`Adoção com ID ${id} não encontrada para remoção.`);

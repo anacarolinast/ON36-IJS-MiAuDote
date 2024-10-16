@@ -13,7 +13,7 @@ export class ConsumivelMapper {
     private readonly gastoEntityRepository: Repository<GastoEntity>
   ) {}
 
-  paraDominio(consumivelEntity: ConsumivelEntity): Consumivel {
+  static paraDominio(consumivelEntity: ConsumivelEntity): Consumivel {
     const gasto = new Gasto(
         consumivelEntity.gasto.id,
         consumivelEntity.gasto.data_gasto, 
@@ -34,7 +34,6 @@ export class ConsumivelMapper {
     const entity = new ConsumivelEntity();
     entity.tipo_animal = consumivel.tipo_animal;
     entity.descricao = consumivel.descricao;
-    entity.gasto_id = null;
 
     return entity;
   }

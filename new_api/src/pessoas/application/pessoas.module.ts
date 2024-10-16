@@ -31,7 +31,7 @@ import { PessoaEntity } from '../infrastructure/persistence/type-orm/entities/pe
     PessoaMapper,
     { provide: PessoaRepository, useClass: TypeOrmPessoaRepository }
   ],
-  exports: [PessoasService, PessoaRepository, PessoaFactory],
+  exports: [PessoasService, PessoaRepository, PessoaFactory, PessoaMapper],
 })
 export class PessoasModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

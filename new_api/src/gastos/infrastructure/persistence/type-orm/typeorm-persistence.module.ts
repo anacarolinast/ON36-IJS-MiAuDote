@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { GastoRepository } from '../../../application/ports/gasto.repository';
 import { TypeOrmGastoRepository } from './repositories/gasto.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSourceOptions } from './typeOrm.config';
 import { GastoEntity } from './entities/gasto.entity';
 import { ConsumivelEntity } from '../../../../consumiveis/infrastructure/persistence/type-orm/entities/consumivel.entity';
 import { DoacaoEntity } from '../../../../doacoes/infrastructure/persistence/type-orm/entities/doacao.entity';
@@ -10,6 +9,7 @@ import { CastracaoEntity } from '../../../../castracoes/infrastructure/persisten
 import { VacinaEntity } from '../../../../vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
 import { MedicamentoEntity } from '../../../../medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
 import { GastoMapper } from './mappers/gasto.mapper';
+import { dataSourceOptions } from 'src/database/typeOrm.config';
 
 @Module({
   imports: [

@@ -7,10 +7,12 @@ import { Adotante } from '../../../adotantes/domain/adotante';
 
 @Injectable()
 export class AdocaoFactory {
+  private static currentId: number = 0; 
+
   create(data: CreateAdocaoDto, animal: Animal, adotante: Adotante): Adocao {
-    const adocaoId = uuidv4();
+    AdocaoFactory.currentId++; 
     return new Adocao(
-      adocaoId,
+      AdocaoFactory.currentId,
       adotante.id,
       animal.id,
       data.data_adocao,
@@ -21,3 +23,4 @@ export class AdocaoFactory {
     );
   }
 }
+

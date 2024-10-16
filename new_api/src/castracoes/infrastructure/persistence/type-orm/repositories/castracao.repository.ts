@@ -1,65 +1,93 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CastracaoRepository } from '../../../../../castracoes/application/ports/castracoes.repository';
 import { Castracao } from '../../../../../castracoes/domain/castracao';
 import { CastracaoEntity } from '../entities/castracao.entity';
 import { CastracaoMapper } from '../mappers/castracao.mapper';
-import { Gasto } from '../../../../../gastos/domain/gastos';
-import { Animal } from '../../../../../animais/domain/animal';
-import { Veterinario } from '../../../../../veterinarios/domain/veterinarios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
+import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TypeOrmCastracaoRepository implements CastracaoRepository {
-    private readonly castracoes = new Map<number, CastracaoEntity>();
-    constructor(private readonly castracaoMapper: CastracaoMapper) {}
+  constructor(
+    private readonly castracaoMapper: CastracaoMapper,
+    @Inject(GastoRepository)
+    private readonly gastoRepository: GastoRepository,
+    @InjectRepository(CastracaoEntity)
+    private readonly castracaoRepository: Repository<CastracaoEntity>,
+  ) {}
 
-    async save(castracao: Castracao): Promise<Castracao> {
-        const persistenceModel = await this.castracaoMapper.paraPersistencia(castracao);
-        this.castracoes.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.castracoes.get(persistenceModel.id);
-        
-        return this.castracaoMapper.paraDominio(newEntity);
+  async save(castracao: Castracao): Promise<Castracao> {
+    const gastoEntity = new GastoEntity();
+
+    gastoEntity.data_gasto = castracao.data_gasto;
+    gastoEntity.tipo = castracao.tipo;
+    gastoEntity.quantidade = castracao.quantidade;
+    gastoEntity.valor = castracao.valor;
+
+    const savedGasto = await this.gastoRepository.save(gastoEntity);
+
+    const castracaoEntity =
+      await this.castracaoMapper.paraPersistencia(castracao);
+
+    castracaoEntity.gasto_id = savedGasto.id;
+    castracaoEntity.gasto = savedGasto;
+
+    const savedCastracaoEntity =
+      await this.castracaoRepository.save(castracaoEntity);
+
+    return CastracaoMapper.paraDominio(savedCastracaoEntity);
+  }
+
+  async findAll(): Promise<Castracao[]> {
+    const entities = await this.castracaoRepository.find({
+      relations: ['gasto'],
+    });
+    return entities.map(CastracaoMapper.paraDominio);
+  }
+
+  async findById(id: number): Promise<Castracao | null> {
+    const entity = await this.castracaoRepository.findOne({
+      where: { id },
+      relations: ['gasto'],
+    });
+    if (!entity) return null;
+    return CastracaoMapper.paraDominio(entity);
+  }
+
+  async update(
+    id: number,
+    castracao: Partial<Castracao>,
+  ): Promise<Castracao | null> {
+    const existingCastracaoEntity = await this.castracaoRepository.findOne({
+      where: { id },
+      relations: ['gasto'],
+    });
+    if (!existingCastracaoEntity) {
+      console.log(`Castracao com ID ${id} não encontrado.`);
+      return null;
     }
 
-    async findAll(): Promise<Castracao[]> {
-        const entities = Array.from(this.castracoes.values());
-        return Promise.all(entities.map((item) => this.castracaoMapper.paraDominio(item)));
-    }
+    existingCastracaoEntity.data_castracao =
+      castracao.data_castracao ?? existingCastracaoEntity.data_castracao;
+    existingCastracaoEntity.condicao_pos =
+      castracao.condicao_pos ?? existingCastracaoEntity.condicao_pos;
 
-    async findById(id: number): Promise<Castracao | null> {
-        const entities = Array.from(this.castracoes.values());
-        const castracaoEncontrada = entities.find((item) => item.id === id);
-        if (!castracaoEncontrada) return null;
-        return this.castracaoMapper.paraDominio(castracaoEncontrada);
-    }
+    const updatedCastracaoEntity = await this.castracaoRepository.save({
+      ...existingCastracaoEntity,
+      ...castracao,
+    });
 
-    async update(id: number, castracao: Partial<Castracao>): Promise<Castracao | null> {
-        const existingCastracaoEntity = this.castracoes.get(id);
-        if (existingCastracaoEntity) {
-            const existingCastracao = this.castracaoMapper.paraDominio(existingCastracaoEntity);
-            
-            const updatedCastracao = {
-                ...existingCastracao,
-                ...castracao,
-            };
-            const updatedCastracaoEntity = await this.castracaoMapper.paraPersistencia(updatedCastracao);
-            
-            this.castracoes.set(id, updatedCastracaoEntity);
-            console.log(`Castracao com ID ${id} atualizada com sucesso!`);
-            return this.castracaoMapper.paraDominio(updatedCastracaoEntity);
-        } else {
-            console.log(`Castracao com ID ${id} não encontrada para atualização.`);
-            return null;
-        }
-    }
+    return CastracaoMapper.paraDominio(updatedCastracaoEntity);
+  }
 
-    async remove(id: number): Promise<void> {
-        if (this.castracoes.has(id)) {
-            this.castracoes.delete(id);
-            console.log(`Castracao com ID ${id} removida com sucesso!`);
-        } else {
-            console.log(`Castracao com ID ${id} não encontrada para remoção.`);
-        }
+  async remove(id: number): Promise<void> {
+    const result = await this.castracaoRepository.delete(id);
+    if (result.affected === 0) {
+      console.log(`Castracao com ID ${id} não encontrado.`);
+    } else {
+      console.log(`Castracao com ID ${id} removido.`);
     }
-
+  }
 }
-

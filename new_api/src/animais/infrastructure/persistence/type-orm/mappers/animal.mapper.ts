@@ -26,57 +26,53 @@ export class AnimalMapper {
   ) {}
 
   paraDominio(animalEntity: AnimalEntity): Animal {
-    const adocao = new Adocao(
-        animalEntity.adocao.id,
-        animalEntity.adocao.adotante_id, 
-        animalEntity.adocao.animal_id,
-        animalEntity.adocao.data_adocao,
-        animalEntity.adocao.condicoes_especiais,
-        animalEntity.adocao.status_aprovacao
-      );
+    const adocao = animalEntity.adocao
+      ? new Adocao(
+          animalEntity.adocao.id,
+          animalEntity.adocao.adotante_id, 
+          animalEntity.adocao.animal_id,
+          animalEntity.adocao.data_adocao,
+          animalEntity.adocao.condicoes_especiais,
+          animalEntity.adocao.status_aprovacao
+        )
+      : null;
 
-     const castracoes = new Castracao(
-        animalEntity.castracao.id,
-        animalEntity.castracao.animal_id, 
-        animalEntity.castracao.data_castracao,
-        animalEntity.castracao.condicao_pos,
-        animalEntity.castracao.veterinario_id,
-        animalEntity.castracao.gasto_id,
-        // animalEntity.castracao.data_gasto,
-        // animalEntity.castracao.tipo,
-        // animalEntity.castracao.quantidade,
-        // animalEntity.castracao.valor,
-      );
+    const castracoes = animalEntity.castracao
+      ? new Castracao(
+          animalEntity.castracao.id,
+          animalEntity.castracao.animal_id, 
+          animalEntity.castracao.data_castracao,
+          animalEntity.castracao.condicao_pos,
+          animalEntity.castracao.veterinario_id,
+          animalEntity.castracao.gasto_id
+        )
+      : null;
 
-    const vacina = animalEntity.vacinas.map(vacinaEntity => {
-        return new Vacina(
+    const vacinas = animalEntity.vacinas
+      ? animalEntity.vacinas.map(vacinaEntity => {
+          return new Vacina(
             vacinaEntity.id,
             vacinaEntity.animal_id, 
             vacinaEntity.data_vacinacao,
             vacinaEntity.tipo_vacina,
             vacinaEntity.veterinario_id,
-            vacinaEntity.gasto_id,
-            // vacinaEntity.data_gasto,
-            // vacinaEntity.tipo,
-            // vacinaEntity.quantidade,
-            // vacinaEntity.valor,
-        );
-      });
+            vacinaEntity.gasto_id
+          );
+        })
+      : [];
 
-    const medicamento = animalEntity.medicamentos.map(medicamentoEntity => {
-        return new Medicamento(
+    const medicamentos = animalEntity.medicamentos
+      ? animalEntity.medicamentos.map(medicamentoEntity => {
+          return new Medicamento(
             medicamentoEntity.id,
             medicamentoEntity.animal_id, 
             medicamentoEntity.data_compra,
             medicamentoEntity.descricao,
             medicamentoEntity.veterinario_id,
-            medicamentoEntity.gasto_id,
-            // medicamentoEntity.data_gasto,
-            // medicamentoEntity.tipo,
-            // medicamentoEntity.quantidade,
-            // medicamentoEntity.valor,
-      );
-    });
+            medicamentoEntity.gasto_id
+          );
+        })
+      : [];
 
     return new Animal(
       animalEntity.id,
@@ -87,14 +83,13 @@ export class AnimalMapper {
       animalEntity.condicao_saude,
       animalEntity.estado_adocao,
       adocao,
-      medicamento,
-      vacina,
+      medicamentos,
+      vacinas,
       castracoes
     );
   }
 
   async paraPersistencia(animal: Animal): Promise<AnimalEntity> {
-
     const entity = new AnimalEntity();
     entity.nome = animal.nome;
     entity.especie = animal.especie;

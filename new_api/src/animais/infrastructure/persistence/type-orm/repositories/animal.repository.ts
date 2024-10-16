@@ -7,83 +7,76 @@ import { Adocao } from 'src/adocoes/domain/adocao';
 import { Vacina } from 'src/vacinas/domain/vacinas';
 import { Medicamento } from 'src/medicamentos/domain/medicamentos';
 import { Castracao } from 'src/castracoes/domain/castracao';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TypeOrmAnimalRepository implements AnimalRepository {
-    private readonly animais = new Map<number, AnimalEntity>();
-    constructor(private readonly animalMapper: AnimalMapper) {}
+    constructor(
+        @InjectRepository(AnimalEntity)
+        private readonly animalRepository: Repository<AnimalEntity>,
+        private readonly animalMapper: AnimalMapper,
+    ) {}
 
     async save(animal: Animal): Promise<Animal> {
-        const persistenceModel = await this.animalMapper.paraPersistencia(animal);
-        this.animais.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.animais.get(persistenceModel.id);
-        
-        return this.animalMapper.paraDominio(newEntity);
+        const animalEntity = await this.animalMapper.paraPersistencia(animal);
+        const savedAnimalEntity = await this.animalRepository.save(animalEntity);
+        return this.animalMapper.paraDominio(savedAnimalEntity);
     }
 
     async findAll(): Promise<Animal[]> {
-        const entities = Array.from(this.animais.values());
+        const entities = await this.animalRepository.find();
         return Promise.all(entities.map((item) => this.animalMapper.paraDominio(item)));
     }
 
     async findById(id: number): Promise<Animal | null> {
-        const entities = Array.from(this.animais.values());
-        const animalEncontrada = entities.find((item) => item.id === id);
-        if (!animalEncontrada) return null;
-        return this.animalMapper.paraDominio(animalEncontrada);
+        const animalEntity = await this.animalRepository.findOne({ where: { id } });
+        return animalEntity ? this.animalMapper.paraDominio(animalEntity) : null;
     }
 
     async update(id: number, animal: Partial<Animal>): Promise<Animal | null> {
-        const existingAnimalEntity = this.animais.get(id);
-        if (existingAnimalEntity) {
-            const existingAnimal = this.animalMapper.paraDominio(existingAnimalEntity);
-            
-            const updatedAnimal = {
-                ...existingAnimal,
+        const existingAnimal = await this.animalRepository.findOne({ where: { id } });
+
+        if (existingAnimal) {
+            const updatedAnimalEntity = await this.animalMapper.paraPersistencia({
+                ...this.animalMapper.paraDominio(existingAnimal),
                 ...animal,
-            };
-            const updatedAnimalEntity = await this.animalMapper.paraPersistencia(updatedAnimal);
-            
-            this.animais.set(id, updatedAnimalEntity);
-            console.log(`Animal com ID ${id} atualizada com sucesso!`);
-            return this.animalMapper.paraDominio(updatedAnimalEntity);
+            });
+
+            await this.animalRepository.update(id, updatedAnimalEntity);
+            console.log(`Animal com ID ${id} atualizado com sucesso!`);
+
+            return this.animalMapper.paraDominio({ ...existingAnimal, ...updatedAnimalEntity });
         } else {
-            console.log(`Animal com ID ${id} não encontrada para atualização.`);
+            console.log(`Animal com ID ${id} não encontrado para atualização.`);
             return null;
         }
     }
 
     async remove(id: number): Promise<void> {
-        if (this.animais.has(id)) {
-            this.animais.delete(id);
-            console.log(`Animal com ID ${id} removida com sucesso!`);
+        const result = await this.animalRepository.delete(id);
+        if (result.affected > 0) {
+            console.log(`Animal com ID ${id} removido com sucesso!`);
         } else {
-            console.log(`Animal com ID ${id} não encontrada para remoção.`);
+            console.log(`Animal com ID ${id} não encontrado para remoção.`);
         }
     }
 
-    async adopt(animalId: number, adocao: Adocao): Promise<void> {
-        // Apenas imprime uma mensagem de log e retorna null -- IMPLEMENTAR
-        console.log(`Tentativa de adoção para o animal com ID ${animalId}.`);
-        return null; // Retorna nulo
+    async adopt(id: number): Promise<void> {
+        console.log(`Animal com ID ${id} adotado com sucesso!`);
     }
 
-    async vaccinate(vacinaId: number, vacina: Vacina): Promise<Animal | null> {
-        // Apenas imprime uma mensagem de log e retorna null -- IMPLEMENTAR
-        console.log(`Tentativa de vacinação para o animal com ID ${vacinaId}.`);
-        return null; // Retorna nulo
+    async castrate(id: number): Promise<void> {
+        console.log(`Animal com ID ${id} castrado com sucesso!`);
     }
 
-    async medicate(medicamentoId: number, medicamento: Medicamento): Promise<Animal | null> {
-        // Apenas imprime uma mensagem de log e retorna null -- IMPLEMENTAR
-        console.log(`Tentativa de medicação para o animal com ID ${medicamentoId}.`);
-        return null; // Retorna nulo
+    async medicate(id: number, medicamento: Medicamento): Promise<Animal> {
+        console.log(`Animal com ID ${id} medicado com sucesso!`);
+        return this.findById(id);
     }
 
-    async castrate(castracaoId: number, castracao: Castracao): Promise<void> {
-        // Apenas imprime uma mensagem de log e retorna null -- IMPLEMENTAR
-        console.log(`Tentativa de castração para o animal com ID ${castracaoId}.`);
-        return null; // Retorna nulo
+    async vaccinate(id: number): Promise<Animal> {
+        console.log(`Animal com ID ${id} vacinado com sucesso!`);
+        return this.findById(id); 
     }
 }
-

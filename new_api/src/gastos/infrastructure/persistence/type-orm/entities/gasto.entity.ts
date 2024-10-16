@@ -7,33 +7,39 @@ import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('gastos')
 export class GastoEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    data_gasto: Date;
+  @Column()
+  data_gasto: Date;
 
-    @Column({ length: 255 })
-    tipo: string;
+  @Column({ length: 255 })
+  tipo: string;
 
-    @Column('int')
-    quantidade: number;
+  @Column('int')
+  quantidade: number;
 
-    @Column('decimal', { precision: 10, scale: 2 }) 
-    valor: number;
+  @Column('decimal', { precision: 10, scale: 2 })
+  valor: number;
 
-    @OneToOne(() => ConsumivelEntity, (consumivel) => consumivel.gasto)
-    consumivel: ConsumivelEntity;
+  @OneToOne(() => ConsumivelEntity, (consumivel) => consumivel.gasto, {
+    cascade: false,
+  })
+  consumivel?: ConsumivelEntity;
 
-    @OneToOne(() => DoacaoEntity, (doacao) => doacao.gasto)
-    doacao: DoacaoEntity;
+  @OneToOne(() => DoacaoEntity, (doacao) => doacao.gasto, { cascade: false })
+  doacao?: DoacaoEntity;
 
-    @OneToOne(() => CastracaoEntity, (castracao) => castracao.gasto)
-    castracao: CastracaoEntity;
+  @OneToOne(() => CastracaoEntity, (castracao) => castracao.gasto, {
+    cascade: false,
+  })
+  castracao?: CastracaoEntity;
 
-    @OneToOne(() => VacinaEntity, (vacina) => vacina.gasto)
-    vacina: VacinaEntity;
+  @OneToOne(() => VacinaEntity, (vacina) => vacina.gasto, { cascade: false })
+  vacina?: VacinaEntity;
 
-    @OneToOne(() => MedicamentoEntity, (medicamento) => medicamento.gasto)
-    medicamento: MedicamentoEntity;
+  @OneToOne(() => MedicamentoEntity, (medicamento) => medicamento.gasto, {
+    cascade: false,
+  })
+  medicamento?: MedicamentoEntity;
 }

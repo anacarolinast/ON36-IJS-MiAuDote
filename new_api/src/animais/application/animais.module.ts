@@ -11,6 +11,13 @@ import { TypeOrmAnimalRepository } from '../infrastructure/persistence/type-orm/
 import { AnimalMapper } from '../infrastructure/persistence/type-orm/mappers/animal.mapper';
 import { TypeOrmAnimalPersistenceModule } from '../infrastructure/persistence/type-orm/typeorm-persistence.module';
 import { DatabaseModule } from 'src/database/database.module';
+import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
+import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
+import { DoadorEntity } from 'src/doadores/infrastructure/persistence/type-orm/entities/doador.entity';
+import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
+import { VacinaEntity } from 'src/vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
+import { AdocaoEntity } from 'src/adocoes/infrastructure/persistence/type-orm/entities/adocao.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -18,9 +25,8 @@ import { DatabaseModule } from 'src/database/database.module';
     forwardRef(() => MedicamentosModule),
     forwardRef(() => VacinasModule),
     forwardRef(() => AdocoesModule),
-    TypeOrmAnimalPersistenceModule,
-    DatabaseModule,
-
+    TypeOrmModule.forFeature([CastracaoEntity, MedicamentoEntity, VacinaEntity, AdocaoEntity]),
+    TypeOrmAnimalPersistenceModule
   ],
   controllers: [AnimaisController],
   providers: [
@@ -29,7 +35,7 @@ import { DatabaseModule } from 'src/database/database.module';
     AnimalMapper,
     { provide: AnimalRepository, useClass: TypeOrmAnimalRepository }
   ],
-  exports: [AnimaisService, AnimalRepository],
+  exports: [AnimaisService, AnimalMapper, AnimalRepository],
 })
 export class AnimaisModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

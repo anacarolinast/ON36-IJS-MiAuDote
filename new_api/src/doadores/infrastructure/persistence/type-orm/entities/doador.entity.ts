@@ -16,10 +16,10 @@ export class DoadorEntity {
     @Column()
     pessoa_id: number;
 
-    @OneToOne(() => PessoaEntity, { eager: true })
+    @OneToOne(() => PessoaEntity, { eager: true, cascade: true })
     @JoinColumn({ name: 'pessoa_id' })
     pessoa: PessoaEntity;
 
     @OneToMany(() => DoacaoEntity, (doacao) => doacao.doador)
-    doacoes: DoacaoEntity[];
+    doacoes?: DoacaoEntity[];
 }

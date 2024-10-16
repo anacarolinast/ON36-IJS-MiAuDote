@@ -7,5 +7,8 @@ export class Pessoa {
         public readonly telefone: string[],
         public readonly email: string,
         public readonly cpf: string,
+        public readonly adotanteId?: number,
+        public readonly doadorId?: number,
+        public readonly veterinarioId?: number,
     ) {}
 }

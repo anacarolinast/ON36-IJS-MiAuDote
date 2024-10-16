@@ -25,7 +25,7 @@ export class DoacaoEntity {
     @ManyToOne(() => DoadorEntity, (doador) => doador.doacoes)
     doador: DoadorEntity;
 
-    @OneToOne(() => GastoEntity, (gasto) => gasto.doacao)
+    @OneToOne(() => GastoEntity, (gasto) => gasto.doacao, {cascade: true})
     @JoinColumn({ name: 'gasto_id' })
     gasto: GastoEntity;
 }

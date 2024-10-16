@@ -1,85 +1,114 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { VeterinarioRepository } from '../../../../../veterinarios/application/ports/veterinarios.repository';
 import { Veterinario } from '../../../../../veterinarios/domain/veterinarios';
 import { VeterinarioEntity } from '../entities/veterinario.entity';
 import { VeterinarioMapper } from '../mappers/veterinario.mapper';
-import { Pessoa } from '../../../../../pessoas/domain/pessoas';
 import { Castracao } from '../../../../../castracoes/domain/castracao';
 import { Vacina } from '../../../../../vacinas/domain/vacinas';
 import { Medicamento } from '../../../../../medicamentos/domain/medicamentos';
+import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
+import { PessoaEntity } from 'src/pessoas/infrastructure/persistence/type-orm/entities/pessoa.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TypeOrmVeterinarioRepository implements VeterinarioRepository {
-    private readonly veterinarios = new Map<number, VeterinarioEntity>();
-    constructor(private readonly veterinarioMapper: VeterinarioMapper) {}
+  constructor(
+    private readonly veterinarioMapper: VeterinarioMapper,
+    @Inject(PessoaRepository)
+    private readonly pessoaRepository: PessoaRepository,
+    @InjectRepository(VeterinarioEntity)
+    private readonly veterinarioRepository: Repository<VeterinarioEntity>,
+  ) {}
 
-    async save(veterinario: Veterinario): Promise<Veterinario> {
-        const persistenceModel = await this.veterinarioMapper.paraPersistencia(veterinario);
-        this.veterinarios.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.veterinarios.get(persistenceModel.id);
-        
-        return this.veterinarioMapper.paraDominio(newEntity);
+  async save(veterinario: Veterinario): Promise<Veterinario> {
+    const pessoaEntity = new PessoaEntity();
+
+    pessoaEntity.nome = veterinario.nome;
+    pessoaEntity.cep = veterinario.cep;
+    pessoaEntity.endereco = veterinario.endereco;
+    pessoaEntity.telefone = veterinario.telefone;
+    pessoaEntity.email = veterinario.email;
+    pessoaEntity.cpf = veterinario.cpf;
+
+    const savedPessoa = await this.pessoaRepository.save(pessoaEntity);
+    console.log('Pessoa salva:', savedPessoa);
+
+    const veterinarioEntity =
+      await this.veterinarioMapper.paraPersistencia(veterinario);
+
+    veterinarioEntity.pessoa_id = savedPessoa.id;
+    veterinarioEntity.pessoa = savedPessoa;
+
+    const savedVeterinarioEntity =
+      await this.veterinarioRepository.save(veterinarioEntity);
+
+    return VeterinarioMapper.paraDominio(savedVeterinarioEntity);
+  }
+
+  async findAll(): Promise<Veterinario[]> {
+    const entities = await this.veterinarioRepository.find({
+      relations: ['pessoa'],
+    });
+    return entities.map(VeterinarioMapper.paraDominio);
+  }
+
+  async findById(id: number): Promise<Veterinario | null> {
+    const entity = await this.veterinarioRepository.findOne({
+      where: { id },
+      relations: ['pessoa'],
+    });
+    if (!entity) return null;
+    return VeterinarioMapper.paraDominio(entity);
+  }
+
+  async update(
+    id: number,
+    veterinario: Partial<Veterinario>,
+  ): Promise<Veterinario | null> {
+    const existingVeterinarioEntity = await this.veterinarioRepository.findOne({
+      where: { id },
+      relations: ['pessoa'],
+    });
+    if (!existingVeterinarioEntity) {
+      console.log(`Veterinario com ID ${id} não encontrado.`);
+      return null;
     }
 
-    async findAll(): Promise<Veterinario[]> {
-        const entities = Array.from(this.veterinarios.values());
-        return Promise.all(entities.map((item) => this.veterinarioMapper.paraDominio(item)));
-    }
+    existingVeterinarioEntity.especialidade =
+      veterinario.especialidade ?? existingVeterinarioEntity.especialidade;
+    existingVeterinarioEntity.registro_crmv =
+      veterinario.registro_crmv ?? existingVeterinarioEntity.registro_crmv;
 
-    async findByCpf(cpf: string): Promise<Veterinario | null> {
-        return null;
-    }
+    const updatedVeterinarioEntity = await this.veterinarioRepository.save(
+      existingVeterinarioEntity,
+    );
 
-    async findById(id: number): Promise<Veterinario | null> {
-        const entities = Array.from(this.veterinarios.values());
-        const veterinarioEncontrada = entities.find((item) => item.id === id);
-        if (!veterinarioEncontrada) return null;
-        return this.veterinarioMapper.paraDominio(veterinarioEncontrada);
-    }
+    return VeterinarioMapper.paraDominio(updatedVeterinarioEntity);
+  }
 
-    async update(id: number, veterinario: Partial<Veterinario>): Promise<Veterinario | null> {
-        const existingVeterinarioEntity = this.veterinarios.get(id);
-        if (existingVeterinarioEntity) {
-            const existingVeterinario = this.veterinarioMapper.paraDominio(existingVeterinarioEntity);
-            
-            const updatedVeterinario = {
-                ...existingVeterinario,
-                ...veterinario,
-            };
-            const updatedVeterinarioEntity = await this.veterinarioMapper.paraPersistencia(updatedVeterinario);
-            
-            this.veterinarios.set(id, updatedVeterinarioEntity);
-            console.log(`Veterinario com ID ${id} atualizada com sucesso!`);
-            return this.veterinarioMapper.paraDominio(updatedVeterinarioEntity);
-        } else {
-            console.log(`Veterinario com ID ${id} não encontrada para atualização.`);
-            return null;
-        }
+  async remove(id: number): Promise<void> {
+    const result = await this.veterinarioRepository.delete(id);
+    if (result.affected === 0) {
+      console.log(`Veterinário com ID ${id} não encontrado para remoção.`);
+    } else {
+      console.log(`Veterinário com ID ${id} removido com sucesso!`);
     }
+  }
 
-    async remove(id: number): Promise<void> {
-        if (this.veterinarios.has(id)) {
-            this.veterinarios.delete(id);
-            console.log(`Veterinario com ID ${id} removida com sucesso!`);
-        } else {
-            console.log(`Veterinario com ID ${id} não encontrada para remoção.`);
-        }
-    }
-
-    async findByAnimalAndTipoVeterinario(animalId: number, tipoVeterinario: string): Promise<Veterinario | null> {
-        return null;
-    }
-
-    async vaccinate(id: number, vacina: Vacina): Promise<Veterinario | null>{
-        return null;
-    }
-    async medicate(id: number, medicamento: Medicamento): Promise<Veterinario | null>{
-        return null;
-    }
-    async castrate(id: number, castracao: Castracao): Promise<Veterinario | null>{
-        return null;
-    }
-
-
+  async vaccinate(id: number, vacina: Vacina): Promise<Veterinario | null> {
+    return null;
+  }
+  async medicate(
+    id: number,
+    medicamento: Medicamento,
+  ): Promise<Veterinario | null> {
+    return null;
+  }
+  async castrate(
+    id: number,
+    castracao: Castracao,
+  ): Promise<Veterinario | null> {
+    return null;
+  }
 }
-

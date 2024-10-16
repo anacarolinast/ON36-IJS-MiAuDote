@@ -23,7 +23,7 @@ export class MedicamentoEntity {
     @Column()
     gasto_id: number;
 
-    @ManyToOne(() => AnimalEntity, (animal) => animal.medicamentos, { cascade: true })
+    @ManyToOne(() => AnimalEntity, (animal) => animal.medicamentos)
     @JoinColumn({ name: 'animal_id' })
     animal: AnimalEntity;
 
@@ -31,7 +31,7 @@ export class MedicamentoEntity {
     @JoinColumn({ name: 'veterinario_id' })
     veterinario: VeterinarioEntity;
 
-    @OneToOne(() => GastoEntity, (gasto) => gasto.medicamento)
+    @OneToOne(() => GastoEntity, (gasto) => gasto.medicamento, { cascade: true })
     @JoinColumn({ name: 'gasto_id' })
     gasto: GastoEntity;
 }

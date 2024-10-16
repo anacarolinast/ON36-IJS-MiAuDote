@@ -11,23 +11,23 @@ import { Pessoa } from '../../../../../pessoas/domain/pessoas';
 @Injectable()
 export class AdotanteMapper {
   constructor(
- @InjectRepository(AdocaoEntity)
+    @InjectRepository(AdocaoEntity)
     private readonly adocaoRepository: Repository<AdocaoEntity>,
     @InjectRepository(PessoaEntity)
     private readonly pessoaRepository: Repository<PessoaEntity>,
   ) {}
 
-  paraDominio(adotanteEntity: AdotanteEntity): Adotante {
-    const adocoes = adotanteEntity.adocoes.map(adocaoEntity => {
+  static paraDominio(adotanteEntity: AdotanteEntity): Adotante {
+    const adocoes = adotanteEntity.adocoes?.map(adocaoEntity => {
       return new Adocao(
         adocaoEntity.id,
-        adocaoEntity.adotante.id, 
+        adocaoEntity.adotante.id,
         adocaoEntity.animal.id,
         adocaoEntity.data_adocao,
         adocaoEntity.condicoes_especiais,
         adocaoEntity.status_aprovacao,
       );
-    });
+    }) || []; 
 
     const pessoa = new Pessoa(
       adotanteEntity.pessoa.id,
@@ -55,22 +55,9 @@ export class AdotanteMapper {
   }
 
   async paraPersistencia(adotante: Adotante): Promise<AdotanteEntity> {
-    const pessoaEntity = new PessoaEntity();
-    pessoaEntity.nome = adotante.nome;
-    pessoaEntity.cep = adotante.cep;
-    pessoaEntity.endereco = adotante.endereco;
-    pessoaEntity.telefone = adotante.telefone;
-    pessoaEntity.email = adotante.email;
-    pessoaEntity.cpf = adotante.cpf;
-
-    const savedPessoa = await this.pessoaRepository.save(pessoaEntity);
-
     const entity = new AdotanteEntity();
     entity.renda = adotante.renda;
     entity.condicao_entrevista = adotante.condicao_entrevista;
-    entity.pessoa_id = savedPessoa.id;
-
-    entity.adocoes = [];
 
     return entity;
   }

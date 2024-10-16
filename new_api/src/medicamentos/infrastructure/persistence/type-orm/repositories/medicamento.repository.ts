@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { MedicamentoRepository } from '../../../../../medicamentos/application/ports/medicamento.repository';
 import { Medicamento } from '../../../../../medicamentos/domain/medicamentos';
 import { MedicamentoEntity } from '../entities/medicamento.entity';
@@ -6,60 +6,78 @@ import { MedicamentoMapper } from '../mappers/medicamento.mapper';
 import { Gasto } from '../../../../../gastos/domain/gastos';
 import { Veterinario } from '../../../../../veterinarios/domain/veterinarios';
 import { Animal } from '../../../../../animais/domain/animal';
+import { GastoRepository } from 'src/gastos/application/ports/gasto.repository';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
 
 @Injectable()
 export class TypeOrmMedicamentoRepository implements MedicamentoRepository {
-    private readonly medicamentos = new Map<number, MedicamentoEntity>();
-    constructor(private readonly medicamentoMapper: MedicamentoMapper) {}
+    constructor(
+        private readonly medicamentoMapper: MedicamentoMapper,
+        @Inject(GastoRepository)
+        private readonly gastoRepository: GastoRepository,
+        @InjectRepository(MedicamentoEntity)
+        private readonly medicamentoRepository: Repository<MedicamentoEntity>,
+    ) {}
 
     async save(medicamento: Medicamento): Promise<Medicamento> {
-        const persistenceModel = await this.medicamentoMapper.paraPersistencia(medicamento);
-        this.medicamentos.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.medicamentos.get(persistenceModel.id);
-        
-        return this.medicamentoMapper.paraDominio(newEntity);
+        const gastoEntity = new GastoEntity();
+
+        gastoEntity.data_gasto = medicamento.data_gasto;
+        gastoEntity.tipo = medicamento.tipo;
+        gastoEntity.quantidade = medicamento.quantidade;
+        gastoEntity.valor = medicamento.valor;
+
+        const savedGasto = await this.gastoRepository.save(gastoEntity);
+
+        const medicamentoEntity = await this.medicamentoMapper.paraPersistencia(medicamento);
+
+        medicamentoEntity.gasto_id = savedGasto.id;
+        medicamentoEntity.gasto = savedGasto;
+
+        const savedMedicamentoEntity = await this.medicamentoRepository.save(medicamentoEntity);
+
+        return MedicamentoMapper.paraDominio(savedMedicamentoEntity);
     }
 
     async findAll(): Promise<Medicamento[]> {
-        const entities = Array.from(this.medicamentos.values());
-        return Promise.all(entities.map((item) => this.medicamentoMapper.paraDominio(item)));
+        const entities = await this.medicamentoRepository.find({
+            relations: ['gasto'],
+        });
+        return entities.map(MedicamentoMapper.paraDominio);
     }
 
     async findById(id: number): Promise<Medicamento | null> {
-        const entities = Array.from(this.medicamentos.values());
-        const medicamentoEncontrada = entities.find((item) => item.id === id);
-        if (!medicamentoEncontrada) return null;
-        return this.medicamentoMapper.paraDominio(medicamentoEncontrada);
+        const entity = await this.medicamentoRepository.findOne({
+            where: { id },
+            relations: ['gasto'],
+        });
+        if (!entity) return null;
+        return MedicamentoMapper.paraDominio(entity);
     }
 
     async update(id: number, medicamento: Partial<Medicamento>): Promise<Medicamento | null> {
-        const existingMedicamentoEntity = this.medicamentos.get(id);
-        if (existingMedicamentoEntity) {
-            const existingMedicamento = this.medicamentoMapper.paraDominio(existingMedicamentoEntity);
-            
-            const updatedMedicamento = {
-                ...existingMedicamento,
-                ...medicamento,
-            };
-            const updatedMedicamentoEntity = await this.medicamentoMapper.paraPersistencia(updatedMedicamento);
-            
-            this.medicamentos.set(id, updatedMedicamentoEntity);
-            console.log(`Medicamento com ID ${id} atualizada com sucesso!`);
-            return this.medicamentoMapper.paraDominio(updatedMedicamentoEntity);
-        } else {
-            console.log(`Medicamento com ID ${id} não encontrada para atualização.`);
-            return null;
-        }
+        const existingMedicamentoEntity = await this.medicamentoRepository.findOne({
+            where: { id },
+            relations: ['gasto'],
+        });
+        if (!existingMedicamentoEntity) return null;
+
+        existingMedicamentoEntity.data_compra = medicamento.data_compra ?? existingMedicamentoEntity.data_compra;
+        existingMedicamentoEntity.descricao = medicamento.descricao ?? existingMedicamentoEntity.descricao;
+
+        const updatedMedicamentoEntity = await this.medicamentoRepository.save({...existingMedicamentoEntity, ...medicamento});
+
+        return MedicamentoMapper.paraDominio(updatedMedicamentoEntity);
     }
 
     async remove(id: number): Promise<void> {
-        if (this.medicamentos.has(id)) {
-            this.medicamentos.delete(id);
-            console.log(`Medicamento com ID ${id} removida com sucesso!`);
+        const result = await this.medicamentoRepository.delete(id);
+        if (result.affected === 0) {
+          console.log(`Medicamento com ID ${id} não encontrado.`);
         } else {
-            console.log(`Medicamento com ID ${id} não encontrada para remoção.`);
+          console.log(`Medicamento com ID ${id} removido.`);
         }
-    }
-
+      }
 }
-

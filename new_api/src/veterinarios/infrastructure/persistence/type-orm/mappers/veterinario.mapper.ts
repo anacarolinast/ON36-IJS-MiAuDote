@@ -25,7 +25,7 @@ export class VeterinarioMapper {
     private readonly vacinaRepository: Repository<VacinaEntity>,
   ) {}
 
-  paraDominio(veterinarioEntity: VeterinarioEntity): Veterinario {
+  static paraDominio(veterinarioEntity: VeterinarioEntity): Veterinario {
 
     const pessoa = new Pessoa(
         veterinarioEntity.pessoa.id,
@@ -37,7 +37,7 @@ export class VeterinarioMapper {
         veterinarioEntity.pessoa.cpf,
     );
 
-    const medicamento = veterinarioEntity.medicamentos.map(medicamentoEntity => {
+    const medicamento = veterinarioEntity.medicamentos?.map(medicamentoEntity => {
         return new Medicamento(
             medicamentoEntity.id,
             medicamentoEntity.animal_id, 
@@ -45,14 +45,10 @@ export class VeterinarioMapper {
             medicamentoEntity.descricao,
             medicamentoEntity.veterinario_id,
             medicamentoEntity.gasto_id,
-            // medicamentoEntity.data_gasto,
-            // medicamentoEntity.tipo,
-            // medicamentoEntity.quantidade,
-            // medicamentoEntity.valor,
       );
-    });
+    }) || [];
 
-    const castracao = veterinarioEntity.castracoes.map(castracaoEntity => { 
+    const castracao = veterinarioEntity.castracoes?.map(castracaoEntity => { 
         return new Castracao(
             castracaoEntity.id,
             castracaoEntity.animal_id,
@@ -61,9 +57,9 @@ export class VeterinarioMapper {
             castracaoEntity.veterinario_id,
             castracaoEntity.gasto_id
         );
-    });
+    }) || [];
 
-    const vacina = veterinarioEntity.vacinas.map(vacinaEntity => { 
+    const vacina = veterinarioEntity.vacinas?.map(vacinaEntity => { 
         return new Vacina(
             vacinaEntity.id,
             vacinaEntity.animal_id,
@@ -72,27 +68,29 @@ export class VeterinarioMapper {
             vacinaEntity.veterinario_id,
             vacinaEntity.gasto_id
         );
-    });
+    }) || [];
 
     return new Veterinario(
       veterinarioEntity.id,
       veterinarioEntity.especialidade,
       veterinarioEntity.registro_crmv,
-      [],
-      [],
-      [],
+      vacina,
+      medicamento,
+      castracao,
+      pessoa.id,
+      pessoa.nome,
+      pessoa.cep,
+      pessoa.endereco,
+      pessoa.telefone,
+      pessoa.email,
+      pessoa.cpf
     );
   }
 
   async paraPersistencia(veterinario: Veterinario): Promise<VeterinarioEntity> {
-
     const entity = new VeterinarioEntity();
     entity.especialidade = veterinario.especialidade;
     entity.registro_crmv = veterinario.registro_crmv;
-    entity.vacinas = [];
-    entity.medicamentos = [];
-    entity.castracoes = [];
-
     return entity;
   }
 }

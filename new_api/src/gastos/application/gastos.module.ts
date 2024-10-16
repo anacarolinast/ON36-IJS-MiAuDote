@@ -16,6 +16,7 @@ import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/t
 import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CastracoesModule } from 'src/castracoes/application/castracoes.module';
+import { GastoEntity } from '../infrastructure/persistence/type-orm/entities/gasto.entity';
 
 @Module({
   imports: [
@@ -24,11 +25,7 @@ import { CastracoesModule } from 'src/castracoes/application/castracoes.module';
     forwardRef(() => VacinasModule),
     forwardRef(() => MedicamentosModule),
     forwardRef(() => CastracoesModule),
-    TypeOrmModule.forFeature([DoacaoEntity]),
-    TypeOrmModule.forFeature([ConsumivelEntity]),
-    TypeOrmModule.forFeature([VacinaEntity]),
-    TypeOrmModule.forFeature([MedicamentoEntity]),
-    TypeOrmModule.forFeature([CastracaoEntity]),
+    TypeOrmModule.forFeature([GastoEntity, DoacaoEntity, ConsumivelEntity, VacinaEntity, MedicamentoEntity, CastracaoEntity]),
   ],
   controllers: [GastosController],
   providers: [
@@ -37,7 +34,7 @@ import { CastracoesModule } from 'src/castracoes/application/castracoes.module';
     GastoMapper,
     { provide: GastoRepository, useClass: TypeOrmGastoRepository }
   ],
-  exports: [GastosService, GastoRepository, GastoFactory],
+  exports: [GastosService, GastoRepository, GastoFactory, GastoMapper],
 })
 export class GastosModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

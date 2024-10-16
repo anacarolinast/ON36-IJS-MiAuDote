@@ -9,8 +9,4 @@ export class CreateConsumivelDto extends CreateGastoDto{
     @IsString()
     @Length(1, 255)  
     descricao: string;
-
-    @IsNumber()
-    @Min(1)  
-    gasto_id: number;
 }

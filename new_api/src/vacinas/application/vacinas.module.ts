@@ -11,20 +11,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity';
 import { GastoEntity } from 'src/gastos/infrastructure/persistence/type-orm/entities/gasto.entity';
 import { VacinaMapper } from '../infrastructure/persistence/type-orm/mappers/vacina.mapper';
+import { VacinaEntity } from '../infrastructure/persistence/type-orm/entities/vacina.entity';
 
 @Module({
   imports: [
     forwardRef(() => VeterinariosModule), 
     forwardRef(() => AnimaisModule), 
     forwardRef(() => GastosModule),
-    TypeOrmModule.forFeature([VeterinarioEntity]),
-    TypeOrmModule.forFeature([AnimalEntity]),
-    TypeOrmModule.forFeature([GastoEntity]),
+    TypeOrmModule.forFeature([VeterinarioEntity, AnimalEntity, GastoEntity, VacinaEntity]),
+
   ],
   controllers: [VacinasController],
   providers: [
     VacinasService,
     VacinaMapper,
+    TypeOrmVacinaRepository,
     { provide: VacinaRepository, useClass: TypeOrmVacinaRepository, }
   ],
   exports: [VacinasService, VacinaRepository]

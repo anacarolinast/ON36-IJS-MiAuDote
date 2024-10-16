@@ -27,9 +27,10 @@ import { VeterinarioEntity } from '../infrastructure/persistence/type-orm/entiti
   providers: [
     VeterinariosService,
     VeterinarioMapper,
+    TypeOrmVeterinarioRepository,
     { provide: VeterinarioRepository, useClass: TypeOrmVeterinarioRepository }
   ],
-  exports: [VeterinariosService, VeterinarioRepository],
+  exports: [VeterinarioRepository],
 })
 export class VeterinariosModule {
   static comInfraestrutura(infrastructureModule: Type | DynamicModule) {

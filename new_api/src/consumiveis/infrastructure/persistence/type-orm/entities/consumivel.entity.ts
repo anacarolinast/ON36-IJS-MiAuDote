@@ -15,7 +15,7 @@ export class ConsumivelEntity {
     @Column()
     gasto_id: number; 
 
-    @OneToOne(() => GastoEntity, (gasto) => gasto.consumivel)
+    @OneToOne(() => GastoEntity, (gasto) => gasto.consumivel, {cascade: true})
     @JoinColumn({ name: 'gasto_id' })
     gasto: GastoEntity;
 }

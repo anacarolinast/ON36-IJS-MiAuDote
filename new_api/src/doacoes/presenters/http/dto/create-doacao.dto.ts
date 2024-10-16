@@ -18,8 +18,4 @@ export class CreateDoacaoDto extends CreateGastoDto {
     @IsNumber()
     @Max(0)  
     valor_estimado: number;
-
-    @IsNumber()
-    @Min(1)  
-    gasto_id: number;
 }

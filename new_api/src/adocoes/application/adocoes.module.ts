@@ -11,9 +11,14 @@ import { AdocaoMapper } from '../infrastructure/persistence/type-orm/mappers/ado
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdotanteEntity } from 'src/adotantes/infrastructure/persistence/type-orm/entities/adotante.entity';
 import { AnimalEntity } from 'src/animais/infrastructure/persistence/type-orm/entities/animal.entity';
+import { AdocaoEntity } from '../infrastructure/persistence/type-orm/entities/adocao.entity';
 
 @Module({
-  imports: [forwardRef(() => AnimaisModule), forwardRef(() => AdotantesModule), TypeOrmModule.forFeature([AdotanteEntity]), TypeOrmModule.forFeature([AnimalEntity])],
+  imports: [
+    forwardRef(() => AnimaisModule),
+    forwardRef(() => AdotantesModule),
+    TypeOrmModule.forFeature([AdocaoEntity, AnimalEntity, AdotanteEntity]),
+  ],
   controllers: [AdocoesController],
   providers: [
     AdocoesService,

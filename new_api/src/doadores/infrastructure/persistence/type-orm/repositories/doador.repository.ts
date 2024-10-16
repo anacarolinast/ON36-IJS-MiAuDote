@@ -1,70 +1,82 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DoadorRepository } from '../../../../../doadores/application/ports/doador.repository';
 import { Doador } from '../../../../../doadores/domain/doadores';
 import { DoadorEntity } from '../entities/doador.entity';
 import { DoadorMapper } from '../mappers/doador.mapper';
 import { Doacao } from '../../../../../doacoes/domain/doacoes';
-import { Pessoa } from '../../../../../pessoas/domain/pessoas';
+import { PessoaRepository } from 'src/pessoas/application/ports/pessoas.repository';
+import { PessoaEntity } from 'src/pessoas/infrastructure/persistence/type-orm/entities/pessoa.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TypeOrmDoadorRepository implements DoadorRepository {
-    private readonly doadores = new Map<number, DoadorEntity>();
-    constructor(private readonly doadorMapper: DoadorMapper) {}
+  constructor(
+    private readonly doadorMapper: DoadorMapper,
+    @Inject(PessoaRepository)
+    private readonly pessoaRepository: PessoaRepository,
+    @InjectRepository(DoadorEntity)
+    private readonly doadorRepository: Repository<DoadorEntity>,
+  ) {}
 
-    async save(doador: Doador): Promise<Doador> {
-        const persistenceModel = await this.doadorMapper.paraPersistencia(doador);
-        this.doadores.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.doadores.get(persistenceModel.id);
-        
-        return this.doadorMapper.paraDominio(newEntity);
+  async save(doador: Doador): Promise<Doador> {
+    const pessoaEntity = new PessoaEntity();
+
+    pessoaEntity.nome = doador.nome;
+    pessoaEntity.cep = doador.cep;
+    pessoaEntity.endereco = doador.endereco;
+    pessoaEntity.telefone = doador.telefone;
+    pessoaEntity.email = doador.email;
+    pessoaEntity.cpf = doador.cpf;
+
+    const savedPessoa = await this.pessoaRepository.save(pessoaEntity);
+    console.log('Pessoa salva:', savedPessoa);
+
+    const doadorEntity = await this.doadorMapper.paraPersistencia(doador);
+    doadorEntity.pessoa_id = savedPessoa.id;
+    doadorEntity.pessoa = savedPessoa;
+
+    const savedDoadorEntity = await this.doadorRepository.save(doadorEntity);
+
+    return DoadorMapper.paraDominio(savedDoadorEntity);
+  }
+
+  async findAll(): Promise<Doador[]> {
+    const entities = await this.doadorRepository.find({ relations: ['pessoa'] });
+    return entities.map(DoadorMapper.paraDominio);
+  }
+
+  async findById(id: number): Promise<Doador | null> {
+    const entity = await this.doadorRepository.findOne({ where: { id }, relations: ['pessoa'] });
+    if (!entity) return null;
+    return DoadorMapper.paraDominio(entity);
+  }
+
+  async update(id: number, doador: Partial<Doador>): Promise<Doador | null> {
+    const existingDoadorEntity = await this.doadorRepository.findOne({ where: { id }, relations: ['pessoa'] });
+    if (!existingDoadorEntity) {
+      console.log(`Doador com ID ${id} não encontrado.`);
+      return null;
     }
 
-    async findAll(): Promise<Doador[]> {
-        const entities = Array.from(this.doadores.values());
-        return Promise.all(entities.map((item) => this.doadorMapper.paraDominio(item)));
-    }
+    existingDoadorEntity.tipo_doacao = doador.tipo_doacao ?? existingDoadorEntity.tipo_doacao;
+    existingDoadorEntity.descricao = doador.descricao ?? existingDoadorEntity.descricao;
 
-    async findById(id: number): Promise<Doador | null> {
-        const entities = Array.from(this.doadores.values());
-        const doadorEncontrada = entities.find((item) => item.id === id);
-        if (!doadorEncontrada) return null;
-        return this.doadorMapper.paraDominio(doadorEncontrada);
-    }
+    const updatedDoadorEntity = await this.doadorRepository.save(existingDoadorEntity);
+    return DoadorMapper.paraDominio(updatedDoadorEntity);
+  }
 
-    async update(id: number, doador: Partial<Doador>): Promise<Doador | null> {
-        const existingDoadorEntity = this.doadores.get(id);
-        if (existingDoadorEntity) {
-            const existingDoador = this.doadorMapper.paraDominio(existingDoadorEntity);
-            
-            const updatedDoador = {
-                ...existingDoador,
-                ...doador,
-            };
-            const updatedDoadorEntity = await this.doadorMapper.paraPersistencia(updatedDoador);
-            
-            this.doadores.set(id, updatedDoadorEntity);
-            console.log(`Doador com ID ${id} atualizada com sucesso!`);
-            return this.doadorMapper.paraDominio(updatedDoadorEntity);
-        } else {
-            console.log(`Doador com ID ${id} não encontrada para atualização.`);
-            return null;
-        }
+  async remove(id: number): Promise<void> {
+    const result = await this.doadorRepository.delete(id);
+    if (result.affected === 0) {
+      console.log(`Doador com ID ${id} não encontrado para remoção.`);
+    } else {
+      console.log(`Doador com ID ${id} removido com sucesso!`);
     }
+  }
 
-    async remove(id: number): Promise<void> {
-        if (this.doadores.has(id)) {
-            this.doadores.delete(id);
-            console.log(`Doador com ID ${id} removida com sucesso!`);
-        } else {
-            console.log(`Doador com ID ${id} não encontrada para remoção.`);
-        }
-    }
-
-    async donate(doacaoId: number, doacao: Doacao): Promise<Doador | null> {
-        // Apenas imprime uma mensagem de log e retorna null -- IMPLEMENTAR
-        console.log(`Tentativa de doação para o animal com ID ${doacaoId}.`);
-        return null; // Retorna nulo
-    }
-
+  async donate(doacaoId: number, doacao: Doacao): Promise<Doador | null> {
+    console.log(`Tentativa de doação para o animal com ID ${doacaoId}.`);
+    return null;
+  }
 }
-

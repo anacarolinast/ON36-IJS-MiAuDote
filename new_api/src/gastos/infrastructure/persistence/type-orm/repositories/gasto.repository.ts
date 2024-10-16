@@ -3,63 +3,60 @@ import { GastoRepository } from '../../../../../gastos/application/ports/gasto.r
 import { Gasto } from '../../../../../gastos/domain/gastos';
 import { GastoEntity } from '../entities/gasto.entity';
 import { GastoMapper } from '../mappers/gasto.mapper';
-import { Consumivel } from '../../../../../consumiveis/domain/consumivel';
-import { Doacao } from '../../../../../doacoes/domain/doacoes';
-import { Castracao } from '../../../../../castracoes/domain/castracao';
-import { Vacina } from '../../../../../vacinas/domain/vacinas';
-import { Medicamento } from '../../../../../medicamentos/domain/medicamentos';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TypeOrmGastoRepository implements GastoRepository {
-    private readonly gastos = new Map<number, GastoEntity>();
-    constructor(private readonly gastoMapper: GastoMapper) {}
+    constructor(
+        @InjectRepository(GastoEntity)
+        private readonly gastoRepository: Repository<GastoEntity>,
+        private readonly gastoMapper: GastoMapper,
+    ) {}
 
     async save(gasto: Gasto): Promise<Gasto> {
-        const persistenceModel = await this.gastoMapper.paraPersistencia(gasto);
-        this.gastos.set(persistenceModel.id, persistenceModel);
-        const newEntity = this.gastos.get(persistenceModel.id);
-        
-        return this.gastoMapper.paraDominio(newEntity);
+        const gastoEntity = await this.gastoMapper.paraPersistencia(gasto);
+
+        const savedGastoEntity = await this.gastoRepository.save(gastoEntity);
+
+        return this.gastoMapper.paraDominio(savedGastoEntity);
     }
 
     async findAll(): Promise<Gasto[]> {
-        const entities = Array.from(this.gastos.values());
+        const entities = await this.gastoRepository.find();
         return Promise.all(entities.map((item) => this.gastoMapper.paraDominio(item)));
     }
 
     async findById(id: number): Promise<Gasto | null> {
-        const entities = Array.from(this.gastos.values());
-        const gastoEncontrada = entities.find((item) => item.id === id);
-        if (!gastoEncontrada) return null;
-        return this.gastoMapper.paraDominio(gastoEncontrada);
+        const gastoEntity = await this.gastoRepository.findOne({ where: { id } });
+        return gastoEntity ? this.gastoMapper.paraDominio(gastoEntity) : null;
     }
 
     async update(id: number, gasto: Partial<Gasto>): Promise<Gasto | null> {
-        const existingGastoEntity = this.gastos.get(id);
-        if (existingGastoEntity) {
-            const existingGasto = this.gastoMapper.paraDominio(existingGastoEntity);
-            
-            const updatedGasto = {
-                ...existingGasto,
+        const existingGasto = await this.gastoRepository.findOne({ where: { id } });
+
+        if (existingGasto) {
+            const updatedGastoEntity = await this.gastoMapper.paraPersistencia({
+                ...this.gastoMapper.paraDominio(existingGasto),
                 ...gasto,
-            };
-            const updatedGastoEntity = await this.gastoMapper.paraPersistencia(updatedGasto);
-            
-            this.gastos.set(id, updatedGastoEntity);
-            console.log(`Gasto com ID ${id} atualizada com sucesso!`);
-            return this.gastoMapper.paraDominio(updatedGastoEntity);
+            });
+
+            await this.gastoRepository.update(id, updatedGastoEntity);
+            console.log(`Gasto com ID ${id} atualizado com sucesso!`);
+
+            return this.gastoMapper.paraDominio({ ...existingGasto, ...updatedGastoEntity });
         } else {
-            console.log(`Gasto com ID ${id} não encontrada para atualização.`);
+            console.log(`Gasto com ID ${id} não encontrado para atualização.`);
             return null;
         }
     }
 
     async remove(id: number): Promise<void> {
-        if (this.gastos.has(id)) {
-            this.gastos.delete(id);
-            console.log(`Gasto com ID ${id} removida com sucesso!`);
+        const result = await this.gastoRepository.delete(id);
+        if (result.affected > 0) {
+            console.log(`Gasto com ID ${id} removido com sucesso!`);
         } else {
-            console.log(`Gasto com ID ${id} não encontrada para remoção.`);
+            console.log(`Gasto com ID ${id} não encontrado para remoção.`);
         }
     }
 

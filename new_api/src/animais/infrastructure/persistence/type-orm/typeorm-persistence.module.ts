@@ -8,9 +8,11 @@ import { AnimalMapper } from './mappers/animal.mapper';
 import { CastracaoEntity } from 'src/castracoes/infrastructure/persistence/type-orm/entities/castracao.entity';
 import { VacinaEntity } from 'src/vacinas/infrastructure/persistence/type-orm/entities/vacina.entity';
 import { MedicamentoEntity } from 'src/medicamentos/infrastructure/persistence/type-orm/entities/medicamento.entity';
+import { dataSourceOptions } from 'src/database/typeOrm.config';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot(dataSourceOptions),
     TypeOrmModule.forFeature([AnimalEntity, MedicamentoEntity, VacinaEntity, CastracaoEntity, AdocaoEntity])
   ],
   providers: [
