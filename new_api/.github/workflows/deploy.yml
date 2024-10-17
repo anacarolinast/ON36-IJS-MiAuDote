@@ -2,7 +2,7 @@ name: deploy miaudote
 
 on:
   push:
-    branches: [main]
+    branches: [infra/deployment-aws]
 
 jobs:
   build:
