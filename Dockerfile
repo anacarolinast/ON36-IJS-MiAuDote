@@ -2,7 +2,7 @@ FROM node:20
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY new_api/package*.json ./
 
 RUN npm install
 
