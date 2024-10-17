@@ -6,7 +6,7 @@ COPY new_api/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY new_api/ .
 
 EXPOSE 3000
 
