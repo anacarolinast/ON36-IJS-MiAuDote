@@ -25,14 +25,14 @@ Para testes e visualização do funcionamento dos endpoints, basta acessar o [sw
 
 ### Sobre as desenvolvedoras
 
-- 💗 **Ana Carolina Santos**
+💗 **Ana Carolina Santos**
 
 Graduanda em Análise e Desenvolvimento de Sistemas, atuo como pesquisadora científica e desenvolvedora full-stack.
 
 - 💌 Email: anna1100st@gmail.com
 - 👩🏻‍💻 GitHub: anacarolinast
 
-- 💗 **Maria Luiza Mourão**
+💗 **Maria Luiza Mourão**
 
 Engenheira eletricista e técnica em Eletrônica, em transição de carreira. Apaixonada por gatos, colaborei com este projeto sabendo da importância de transformar a vida de animais de rua, oferecendo a eles uma nova chance de encontrar um lar.
 - 💌 Email: marialuizasm.97@gmail.com
