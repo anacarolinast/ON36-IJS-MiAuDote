@@ -1,6 +1,4 @@
-# 😸 MiAuDote Software de Gerenciamento de Abrigo de Animais 🐶
-
----
+# 😸 MiAuDote - API para Gerenciamento de Abrigo de Animais 🐶
 
 ## Descrição
 
@@ -24,7 +22,6 @@ A motivação para a criação do **MiAuDote** veio da vontade de contribuir par
 Toda a documentação detalhada está disponível na [pasta de documentação do repositório](https://github.com/anacarolinast/ON36-IJS-MiAuDote/tree/main/docs).
 Para testes e visualização do funcionamento dos endpoints, basta acessar o [swagger da api](http://54.208.10.249:3000/docs)
 
----
 
 ## Sobre as desenvolvedoras
 
@@ -32,8 +29,8 @@ Para testes e visualização do funcionamento dos endpoints, basta acessar o [sw
 
 Graduanda em Análise e Desenvolvimento de Sistemas, atuo como pesquisadora científica e desenvolvedora full-stack.
 
--💌 E-mail: anna1100st@gmail.com
--💻 GitHub: anacarolinast
+- 💌 Email: anna1100st@gmail.com
+- 👩🏻‍💻 GitHub: anacarolinast
 
 ## 💗 Maria Luiza Mourão
 
